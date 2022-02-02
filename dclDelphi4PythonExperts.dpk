@@ -40,6 +40,7 @@ requires
 contains
   PythonTools.FormEditor in 'PythonTools.FormEditor.pas',
   PythonTools.Menu in 'menu\PythonTools.Menu.pas',
-  PythonTools.Registration in 'PythonTools.Registration.pas';
+  PythonTools.Registration in 'PythonTools.Registration.pas',
+  PythonTools.SplashScreen in 'PythonTools.SplashScreen.pas';
 
 end.

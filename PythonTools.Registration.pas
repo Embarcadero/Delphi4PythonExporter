@@ -3,7 +3,7 @@ unit PythonTools.Registration;
 interface
 
 uses
-  PythonTools.Menu;
+  PythonTools.SplashScreen, PythonTools.Menu;
 
 procedure Register();
 
@@ -21,6 +21,8 @@ begin
 end;
 
 initialization
+  AddSplashScreen();
+
 finalization
 
 end.

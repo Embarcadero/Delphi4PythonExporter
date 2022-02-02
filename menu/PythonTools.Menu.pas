@@ -60,6 +60,9 @@ type
 
 implementation
 
+uses
+  PythonTools.Menu.ExportProject, PythonTools.Menu.ExportForms;
+
 const
   sToolsMenu = 'ToolsMenu';
   sPythonToolsMenuItem = 'PythonToolsMenuItem';
@@ -69,8 +72,6 @@ type
   end;
 
   TPythonToolsMenuItem = class(TMenuItem)
-  public
-    destructor Destroy(); override;
   end;
 
 { TPythonToolsMenu }
@@ -78,7 +79,8 @@ type
 constructor TPythonToolsMenu.Create;
 begin
   FToolsMenuItems := TObjectList<TMenuItem>.Create();
-  FToolsMenuHook := TToolsMenuEventHook.Create(GetINTAServices().MainMenu.Items.Find('Tools'));
+  FToolsMenuHook := TToolsMenuEventHook.Create(
+    GetINTAServices().MainMenu.Items.Find('Tools'));
 end;
 
 destructor TPythonToolsMenu.Destroy;
@@ -154,16 +156,14 @@ end;
 
 function TPythonToolsMenu.BuildPythonToolsExportFormsMenuItem(AOwner: TMenuItem): TMenuItem;
 begin
-  Result := TPythonToolsMenuItem.Create(AOwner);
-  Result.Name := 'PythonToolsExportForms';
-  Result.Caption := 'Export Forms';
+  Result := TPythonToolsExportFormsMenuItem.Create(AOwner);
+  Result.Action := TPythonToolsExportFormsMenuAction.Create(Result);
 end;
 
 function TPythonToolsMenu.BuildPythonToolsExportProjectMenuItem(AOwner: TMenuItem): TMenuItem;
 begin
-  Result := TPythonToolsMenuItem.Create(AOwner);
-  Result.Name := 'PythonToolsExportProject';
-  Result.Caption := 'Export Current Project';
+  Result := TPythonToolsExportProjectMenuItem.Create(AOwner);
+  Result.Action := TPythonToolsExportProjectMenuAction.Create(Result);
 end;
 
 function TPythonToolsMenu.BuildPythonToolsMenuItem(
@@ -221,13 +221,6 @@ begin
   end;
 end;
 
-{ TPythonToolsMenuItem }
-
-destructor TPythonToolsMenuItem.Destroy;
-begin
-  inherited;
-end;
-
 { TToolsMenuEventHook }
 
 constructor TToolsMenuEventHook.Create(AMenuItem: TMenuItem);
@@ -272,7 +265,9 @@ end;
 
 procedure TToolsMenuEventHook.UnHook(AEvt: TNotifyEvent);
 begin
-  FHook := nil;
+  if (TMethod(FHook).Code = TMethod(AEvt).Code)
+    and (TMethod(FHook).Data = TMethod(AEvt).Data) then
+      FHook := nil;
 end;
 
 initialization

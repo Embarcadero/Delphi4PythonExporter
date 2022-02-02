@@ -41,6 +41,8 @@ contains
   PythonTools.FormEditor in 'PythonTools.FormEditor.pas',
   PythonTools.Menu in 'menu\PythonTools.Menu.pas',
   PythonTools.Registration in 'PythonTools.Registration.pas',
-  PythonTools.SplashScreen in 'PythonTools.SplashScreen.pas';
+  PythonTools.SplashScreen in 'PythonTools.SplashScreen.pas',
+  PythonTools.Menu.ExportProject in 'menu\PythonTools.Menu.ExportProject.pas',
+  PythonTools.Menu.ExportForms in 'menu\PythonTools.Menu.ExportForms.pas';
 
 end.

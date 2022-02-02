@@ -158,6 +158,8 @@
         <DCCReference Include="menu\PythonTools.Menu.pas"/>
         <DCCReference Include="PythonTools.Registration.pas"/>
         <DCCReference Include="PythonTools.SplashScreen.pas"/>
+        <DCCReference Include="menu\PythonTools.Menu.ExportProject.pas"/>
+        <DCCReference Include="menu\PythonTools.Menu.ExportForms.pas"/>
         <RcItem Include="images\EmbarcaderoPython(16px).bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>embarcaderopython_16px</ResourceId>

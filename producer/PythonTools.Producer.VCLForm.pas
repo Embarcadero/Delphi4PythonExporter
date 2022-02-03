@@ -11,8 +11,9 @@ type
     function GetPythonModuleName(): string; override;
   public
     function IsValidFormInheritance(const AClass: TClass): boolean;
-    procedure SavePyFile(const AModel: TFormProducerModel);
-    procedure SavePyBinDfmFile(const AModel: TFormProducerModel);
+    procedure SavePyApplicationFile(const AModel: TApplicationProducerModel);
+    procedure SavePyFormFile(const AModel: TFormProducerModel);
+    procedure SavePyFormBinDfmFile(const AModel: TFormProducerModel);
   end;
 
 implementation
@@ -30,17 +31,23 @@ begin
   Result := DELPHI_VCL_MODULE_NAME;
 end;
 
+procedure TVCLFormProducer.SavePyApplicationFile(
+  const AModel: TApplicationProducerModel);
+begin
+  raise ENotImplemented.Create('Not implemented');
+end;
+
 function TVCLFormProducer.IsValidFormInheritance(const AClass: TClass): boolean;
 begin
   raise ENotImplemented.Create('Not implemented');
 end;
 
-procedure TVCLFormProducer.SavePyBinDfmFile(const AModel: TFormProducerModel);
+procedure TVCLFormProducer.SavePyFormFile(const AModel: TFormProducerModel);
 begin
   raise ENotImplemented.Create('Not implemented');
 end;
 
-procedure TVCLFormProducer.SavePyFile(const AModel: TFormProducerModel);
+procedure TVCLFormProducer.SavePyFormBinDfmFile(const AModel: TFormProducerModel);
 begin
   raise ENotImplemented.Create('Not implemented');
 end;

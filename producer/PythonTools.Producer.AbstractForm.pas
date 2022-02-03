@@ -11,7 +11,8 @@ type
   protected
     function GetPythonModuleName(): string; virtual; abstract;
     //File generators
-    procedure GenerateFormPyFile(const AStream: TStream; const AModel: TFormProducerModel);
+    procedure GeneratePyApplicationFile(const AStream: TStream; const AModel: TApplicationProducerModel);
+    procedure GeneratePyFormFile(const AStream: TStream; const AModel: TFormProducerModel);
   public
 
   end;
@@ -27,6 +28,12 @@ const
   sIdentation2 = sIdentation1 + sIdentation1;
 
 const
+  PY_APP_IMPORTED_FORMS =
+    '@IMPORTED_FORMS';
+
+  PY_APP_IMPORT =
+    'from @FILE import @FORM';
+
   PY_MODULE_IMPORT =
     'import os'
   + sLineBreak
@@ -76,7 +83,38 @@ const
 
 { TAbstractFormProducer }
 
-procedure TAbstractFormProducer.GenerateFormPyFile(const AStream: TStream;
+procedure TAbstractFormProducer.GeneratePyApplicationFile(
+  const AStream: TStream; const AModel: TApplicationProducerModel);
+begin
+  var LImportedForms := String.Empty;
+  for var LFormInfo in AModel.ImportedForms do begin
+    if not LImportedForms.IsEmpty() then
+      LImportedForms := LImportedForms + sLineBreak;
+
+    LImportedForms := LImportedForms
+      + PY_APP_IMPORT
+        .Replace('@FILE', LFormInfo.FileName)
+        .Replace('@FORM', LFormInfo.FormName);
+  end;
+
+  var LStrFile := String.Empty;
+  if not LImportedForms.IsEmpty() then
+    LStrFile :=
+      PY_APP_IMPORTED_FORMS
+        .Replace('@IMPORTED_FORMS', LImportedForms)
+      + sLineBreak
+      + sLineBreak;
+
+  LStrFile := LStrFile
+    + PY_MODULE_APP_INITIALIZATION
+        .Replace('@APP_TITLE', AModel.Title.QuotedString())
+        .Replace('@CLASSNAME', AModel.MainForm);
+
+  var LBytes := TEncoding.UTF8.GetBytes(LStrFile);
+  AStream.WriteData(LBytes, Length(LBytes));
+end;
+
+procedure TAbstractFormProducer.GeneratePyFormFile(const AStream: TStream;
   const AModel: TFormProducerModel);
 begin
   var LProps := String.Empty;

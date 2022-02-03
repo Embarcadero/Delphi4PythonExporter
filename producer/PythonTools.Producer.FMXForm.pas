@@ -11,8 +11,9 @@ type
     function GetPythonModuleName(): string; override;
   public
     function IsValidFormInheritance(const AClass: TClass): boolean;
-    procedure SavePyFile(const AModel: TFormProducerModel);
-    procedure SavePyBinDfmFile(const AModel: TFormProducerModel);
+    procedure SavePyApplicationFile(const AModel: TApplicationProducerModel);
+    procedure SavePyFormFile(const AModel: TFormProducerModel);
+    procedure SavePyFormBinDfmFile(const AModel: TFormProducerModel);
   end;
 
 implementation
@@ -35,20 +36,34 @@ begin
   Result := AClass = TForm;
 end;
 
-procedure TFMXFormProducer.SavePyFile(const AModel: TFormProducerModel);
+procedure TFMXFormProducer.SavePyApplicationFile(
+  const AModel: TApplicationProducerModel);
 begin
   var LFilePath := TPath.Combine(AModel.Directory,
     ChangeFileExt(AModel.FileName, '.py'));
 
   var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
-    GenerateFormPyFile(LStream, AModel);
+    GeneratePyApplicationFile(LStream, AModel);
   finally
     LStream.Free();
   end;
 end;
 
-procedure TFMXFormProducer.SavePyBinDfmFile(const AModel: TFormProducerModel);
+procedure TFMXFormProducer.SavePyFormFile(const AModel: TFormProducerModel);
+begin
+  var LFilePath := TPath.Combine(AModel.Directory,
+    ChangeFileExt(AModel.FileName, '.py'));
+
+  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  try
+    GeneratePyFormFile(LStream, AModel);
+  finally
+    LStream.Free();
+  end;
+end;
+
+procedure TFMXFormProducer.SavePyFormBinDfmFile(const AModel: TFormProducerModel);
 begin
 
 end;

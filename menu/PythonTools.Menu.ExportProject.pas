@@ -12,11 +12,20 @@ type
     procedure DoExportProject(Sender: TObject);
     function FindComponents(const ADesigner: IDesigner): TArray<TComponent>;
     function RequestDirectory(var ADir: string): boolean;
-    function BuildModel(const AProject: IOTAProject;
+
+    //Producer models
+    function BuildFormModel(const AProject: IOTAProject;
       const AModuleInfo: IOTAModuleInfo;
       const AFormDesigner: IDesigner): TFormProducerModel;
-    procedure ExportForm(const ADir: string; const AProject: IOTAProject;
-      const AModuleInfo: IOTAModuleInfo);
+    function BuildApplicationModel(
+      const AProject: IOTAProject;
+      const AExportedForms: TExportedForms): TApplicationProducerModel;
+
+    //Exporters
+    function ExportForm(const ADir: string; const AProject: IOTAProject;
+      const AModuleInfo: IOTAModuleInfo): TExportedForm;
+    procedure ExportProject(const ADir: string; const AProject: IOTAProject;
+      const AExportedForms: TExportedForms);
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -79,7 +88,27 @@ begin
     end
 end;
 
-function TPythonToolsExportProjectMenuAction.BuildModel(
+function TPythonToolsExportProjectMenuAction.BuildApplicationModel(
+  const AProject: IOTAProject;
+  const AExportedForms: TExportedForms): TApplicationProducerModel;
+begin
+  Result := TApplicationProducerModel.Create();
+  try
+    with Result do begin
+      MainForm := 'Form1';
+      Title := 'My Python App';
+      FileName := ChangeFileExt(ExtractFileName(AProject.FileName), String.Empty);
+      ImportedForms := AExportedForms.ToImportedForms();
+    end;
+  except
+    on E: Exception do begin
+      FreeAndNil(Result);
+      raise;
+    end;
+  end;
+end;
+
+function TPythonToolsExportProjectMenuAction.BuildFormModel(
   const AProject: IOTAProject; const AModuleInfo: IOTAModuleInfo;
   const AFormDesigner: IDesigner): TFormProducerModel;
 begin
@@ -114,18 +143,40 @@ begin
   if not RequestDirectory(LDir) then
     Exit;
   //Navigate through all forms
-  for var I := 0 to LProject.GetModuleCount() - 1 do begin
-    var LModuleInfo := LProject.GetModule(I);
-    if (LModuleInfo.ModuleType = omtForm) then begin
-      if not LModuleInfo.FormName.Trim().IsEmpty() then begin
-        ExportForm(LDir, LProject, LModuleInfo);
+  var LExportedFormsList := TExportedFormList.Create();
+  try
+    for var I := 0 to LProject.GetModuleCount() - 1 do begin
+      var LModuleInfo := LProject.GetModule(I);
+      if (LModuleInfo.ModuleType = omtForm) then begin
+        if not LModuleInfo.FormName.Trim().IsEmpty() then begin
+          //Export current form
+          LExportedFormsList.Add(ExportForm(LDir, LProject, LModuleInfo));
+        end;
       end;
     end;
+
+    //Export the application file as the app initializer
+    ExportProject(LDir, LProject, LExportedFormsList.ToArray());
+  finally
+    LExportedFormsList.Free();
   end;
 end;
 
-procedure TPythonToolsExportProjectMenuAction.ExportForm(const ADir: string;
-  const AProject: IOTAProject; const AModuleInfo: IOTAModuleInfo);
+procedure TPythonToolsExportProjectMenuAction.ExportProject(const ADir: string;
+  const AProject: IOTAProject; const AExportedForms: TExportedForms);
+begin
+  var LProducer := TProducerSimpleFactory.CreateProducer(AProject.FrameworkType);
+  var LProducerModel := BuildApplicationModel(AProject, AExportedForms);
+  try
+    LProducerModel.Directory := ADir;
+    LProducer.SavePyApplicationFile(LProducerModel);
+  finally
+    LProducerModel.Free();
+  end;
+end;
+
+function TPythonToolsExportProjectMenuAction.ExportForm(const ADir: string;
+  const AProject: IOTAProject; const AModuleInfo: IOTAModuleInfo): TExportedForm;
 begin
   var LModule := AModuleInfo.OpenModule();
   var LFormEditor := TIOTAUtils.GetFormEditorFromModule(LModule);
@@ -136,10 +187,11 @@ begin
       raise EFormInheritanceNotSupported.CreateFmt(
         '%s TForm direct inheritance only', [AProject.FrameworkType]);
 
-    var LProducerModel := BuildModel(AProject, AModuleInfo, LFormDesigner);
+    var LProducerModel := BuildFormModel(AProject, AModuleInfo, LFormDesigner);
     try
       LProducerModel.Directory := ADir;
-      LProducer.SavePyFile(LProducerModel);
+      LProducer.SavePyFormFile(LProducerModel);
+      Result := TExportedForm.Create(LProducerModel.FormName, LProducerModel.FileName);
     finally
       LProducerModel.Free();
     end;

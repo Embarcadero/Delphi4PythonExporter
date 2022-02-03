@@ -160,6 +160,13 @@
         <DCCReference Include="PythonTools.SplashScreen.pas"/>
         <DCCReference Include="menu\PythonTools.Menu.ExportProject.pas"/>
         <DCCReference Include="menu\PythonTools.Menu.ExportForms.pas"/>
+        <DCCReference Include="producer\PythonTools.Producer.FMXForm.pas"/>
+        <DCCReference Include="producer\PythonTools.Producer.pas"/>
+        <DCCReference Include="producer\PythonTools.Producer.SimpleFactory.pas"/>
+        <DCCReference Include="producer\PythonTools.Producer.VCLForm.pas"/>
+        <DCCReference Include="producer\PythonTools.Producer.AbstractForm.pas"/>
+        <DCCReference Include="PythonTools.IOTAUtils.pas"/>
+        <DCCReference Include="PythonTools.Exceptions.pas"/>
         <RcItem Include="images\EmbarcaderoPython(16px).bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>embarcaderopython_16px</ResourceId>
@@ -926,9 +933,9 @@
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

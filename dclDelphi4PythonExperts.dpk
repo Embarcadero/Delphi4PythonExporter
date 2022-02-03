@@ -43,6 +43,13 @@ contains
   PythonTools.Registration in 'PythonTools.Registration.pas',
   PythonTools.SplashScreen in 'PythonTools.SplashScreen.pas',
   PythonTools.Menu.ExportProject in 'menu\PythonTools.Menu.ExportProject.pas',
-  PythonTools.Menu.ExportForms in 'menu\PythonTools.Menu.ExportForms.pas';
+  PythonTools.Menu.ExportForms in 'menu\PythonTools.Menu.ExportForms.pas',
+  PythonTools.Producer.FMXForm in 'producer\PythonTools.Producer.FMXForm.pas',
+  PythonTools.Producer in 'producer\PythonTools.Producer.pas',
+  PythonTools.Producer.SimpleFactory in 'producer\PythonTools.Producer.SimpleFactory.pas',
+  PythonTools.Producer.VCLForm in 'producer\PythonTools.Producer.VCLForm.pas',
+  PythonTools.Producer.AbstractForm in 'producer\PythonTools.Producer.AbstractForm.pas',
+  PythonTools.IOTAUtils in 'PythonTools.IOTAUtils.pas',
+  PythonTools.Exceptions in 'PythonTools.Exceptions.pas';
 
 end.

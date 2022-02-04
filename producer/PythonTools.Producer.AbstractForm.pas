@@ -29,7 +29,9 @@ const
 
 const
   PY_APP_IMPORTED_FORMS =
-    '@IMPORTED_FORMS';
+    'from @MODULE_NAME import *'
+  + sLineBreak
+  + '@IMPORTED_FORMS';
 
   PY_APP_IMPORT =
     'from @FILE import @FORM';
@@ -101,6 +103,7 @@ begin
   if not LImportedForms.IsEmpty() then
     LStrFile :=
       PY_APP_IMPORTED_FORMS
+        .Replace('@MODULE_NAME', GetPythonModuleName())
         .Replace('@IMPORTED_FORMS', LImportedForms)
       + sLineBreak
       + sLineBreak;

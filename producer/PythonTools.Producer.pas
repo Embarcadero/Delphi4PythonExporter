@@ -3,7 +3,8 @@ unit PythonTools.Producer;
 interface
 
 uses
-  System.Classes, System.Generics.Collections;
+  System.Classes, System.Generics.Collections,
+  PythonTools.Common;
 
 type
   TApplicationProducerModel = class;
@@ -17,21 +18,12 @@ type
     procedure SavePyFormBinDfmFile(const AModel: TFormProducerModel);
   end;
 
-  TImportedForm = record
-  public
-    FormName: string;
-    FileName: string;
-  end;
-
-  TImportedForms = TArray<TImportedForm>;
-  TImportedFormList = TList<TImportedForm>;
-
   TApplicationProducerModel = class
   private
     FFileName: string;
     FTitle: string;
     FMainForm: string;
-    FImportedForms: TImportedForms;
+    FImportedForms: TFormNamesAndFiles;
     FDirectory: string;
   public
     /// <summary>
@@ -49,7 +41,7 @@ type
     /// <summary>
     ///   Forms included in the import section
     /// </summary>
-    property ImportedForms: TArray<TImportedForm> read FImportedForms write FImportedForms;
+    property ImportedForms: TArray<TFormNameAndFile> read FImportedForms write FImportedForms;
     /// <summary>
     ///   The directory where the generated files will be saved
     /// </summary>
@@ -108,22 +100,6 @@ type
     property ModelInitialization: TModuleInitialization read FModelInitialization;
   end;
 
-  TExportedForm = record
-  public
-    FormName: string;
-    FileName: string;
-  public
-    constructor Create(const AFormName, AFileName: string);
-  end;
-
-  TExportedForms = TArray<TExportedForm>;
-  TExportedFormList = TList<TExportedForm>;
-
-  TExportedFormsHelper = record helper for TExportedForms
-  public
-    function ToImportedForms(): TImportedForms;
-  end;
-
 implementation
 
 { TFormProducerModel }
@@ -137,32 +113,6 @@ destructor TFormProducerModel.Destroy;
 begin
   FModelInitialization.Free();
   inherited;
-end;
-
-{ TExportedForm }
-
-constructor TExportedForm.Create(const AFormName, AFileName: string);
-begin
-  FormName := AFormName;
-  FileName := AFileName;
-end;
-
-{ TExportedFormsHelper }
-
-function TExportedFormsHelper.ToImportedForms: TImportedForms;
-begin
-  var LList := TImportedFormList.Create();
-  try
-    for var LExportedForm in Self do begin
-      var LImportedForm := Default(TImportedForm);
-      LImportedForm.FormName := LExportedForm.FormName;
-      LImportedForm.FileName := LExportedForm.FileName;
-      LList.Add(LImportedForm);
-    end;
-    Result := LList.ToArray();
-  finally
-    LList.Free();
-  end;
 end;
 
 end.

@@ -50,6 +50,9 @@ contains
   PythonTools.Producer.VCLForm in 'producer\PythonTools.Producer.VCLForm.pas',
   PythonTools.Producer.AbstractForm in 'producer\PythonTools.Producer.AbstractForm.pas',
   PythonTools.IOTAUtils in 'PythonTools.IOTAUtils.pas',
-  PythonTools.Exceptions in 'PythonTools.Exceptions.pas';
+  PythonTools.Exceptions in 'PythonTools.Exceptions.pas',
+  PythonTools.Model.ExportProject in 'model\PythonTools.Model.ExportProject.pas',
+  PythonTools.Common in 'PythonTools.Common.pas',
+  PythonTools.ExportProject.Design in 'design\PythonTools.ExportProject.Design.pas' {ProjectExport};
 
 end.

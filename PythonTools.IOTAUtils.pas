@@ -7,6 +7,14 @@ uses
   System.SysUtils;
 
 type
+  TIOTAFormInfo = record
+    Project: IOTAProject;
+    ModuleInfo: IOTAModuleInfo;
+    Module: IOTAModule;
+    Editor: IOTAFormEditor;
+    Designer: IDesigner;
+  end;
+
   TIOTAUtils = class
   private
     FComponentNames: TList<string>;
@@ -17,6 +25,7 @@ type
 
     function FindComponents(const ADesigner: IDesigner): TArray<TComponent>;
 
+    class procedure EnumForms(const AProject: IOTAProject; const AProc: TProc<TIOTAFormInfo>);
     class function GetFormEditorFromModule(const AModule: IOTAModule): IOTAFormEditor;
   end;
 
@@ -41,6 +50,25 @@ end;
 procedure TIOTAUtils.DoListComps(const ACompName: string);
 begin
   FComponentNames.Add(ACompName);
+end;
+
+class procedure TIOTAUtils.EnumForms(const AProject: IOTAProject;
+  const AProc: TProc<TIOTAFormInfo>);
+begin
+  var LResult: TIOTAFormInfo;
+  for var I := 0 to AProject.GetModuleCount() - 1 do begin
+    var LModuleInfo := AProject.GetModule(I);
+    if (LModuleInfo.ModuleType = omtForm) then begin
+      if not LModuleInfo.FormName.Trim().IsEmpty() then begin
+        LResult.Project := AProject;
+        LResult.ModuleInfo := LModuleInfo;
+        LResult.Module := LModuleInfo.OpenModule();
+        LResult.Editor := TIOTAUtils.GetFormEditorFromModule(LResult.Module);
+        LResult.Designer := (LResult.Editor as INTAFormEditor).FormDesigner;
+        AProc(LResult);
+      end;
+    end;
+  end;
 end;
 
 function TIOTAUtils.FindComponents(const ADesigner: IDesigner): TArray<TComponent>;

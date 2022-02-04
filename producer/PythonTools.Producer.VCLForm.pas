@@ -13,7 +13,7 @@ type
     function IsValidFormInheritance(const AClass: TClass): boolean;
     procedure SavePyApplicationFile(const AModel: TApplicationProducerModel);
     procedure SavePyFormFile(const AModel: TFormProducerModel);
-    procedure SavePyFormBinDfmFile(const AModel: TFormProducerModel);
+    procedure SavePyFormBinDfmFile(const AModel: TDfmProducerModel);
   end;
 
 implementation
@@ -47,7 +47,7 @@ begin
   raise ENotImplemented.Create('Not implemented');
 end;
 
-procedure TVCLFormProducer.SavePyFormBinDfmFile(const AModel: TFormProducerModel);
+procedure TVCLFormProducer.SavePyFormBinDfmFile(const AModel: TDfmProducerModel);
 begin
   raise ENotImplemented.Create('Not implemented');
 end;

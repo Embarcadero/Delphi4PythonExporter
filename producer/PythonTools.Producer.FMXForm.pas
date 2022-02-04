@@ -13,7 +13,7 @@ type
     function IsValidFormInheritance(const AClass: TClass): boolean;
     procedure SavePyApplicationFile(const AModel: TApplicationProducerModel);
     procedure SavePyFormFile(const AModel: TFormProducerModel);
-    procedure SavePyFormBinDfmFile(const AModel: TFormProducerModel);
+    procedure SavePyFormBinDfmFile(const AModel: TDfmProducerModel);
   end;
 
 implementation
@@ -63,9 +63,17 @@ begin
   end;
 end;
 
-procedure TFMXFormProducer.SavePyFormBinDfmFile(const AModel: TFormProducerModel);
+procedure TFMXFormProducer.SavePyFormBinDfmFile(const AModel: TDfmProducerModel);
 begin
+  var LFilePath := TPath.Combine(AModel.Directory,
+    ChangeFileExt(AModel.FileName, '.pydfm'));
 
+  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  try
+    LStream.WriteComponent(AModel.Form);
+  finally
+    LStream.Free();
+  end;
 end;
 
 end.

@@ -9,7 +9,7 @@ uses
   PythonTools.Common;
 
 type
-  TProjectExport = class(TForm)
+  TProjectExportDialog = class(TForm)
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
@@ -39,13 +39,13 @@ type
   end;
 
 var
-  ProjectExport: TProjectExport;
+  ProjectExportDialog: TProjectExportDialog;
 
 implementation
 
 {$R *.dfm}
 
-procedure TProjectExport.btnExportClick(Sender: TObject);
+procedure TProjectExportDialog.btnExportClick(Sender: TObject);
 begin
   //Make some validations
   if Trim(edtApplicationTitle.Text) = String.Empty then
@@ -60,7 +60,7 @@ begin
   ModalResult := mrOk;
 end;
 
-function TProjectExport.Execute(const AModel: TExportProjectModel): boolean;
+function TProjectExportDialog.Execute(const AModel: TExportProjectModel): boolean;
 begin
   lblProjectName.Caption := AModel.ApplicationName;
   for var LFormNameAndFile in AModel.ApplicationForms do begin
@@ -80,13 +80,13 @@ begin
   AModel.ApplicationDirectory := edtApplicationDirectory.Text;
 end;
 
-procedure TProjectExport.FormCanResize(Sender: TObject; var NewWidth,
+procedure TProjectExportDialog.FormCanResize(Sender: TObject; var NewWidth,
   NewHeight: Integer; var Resize: Boolean);
 begin
   Resize := false;
 end;
 
-procedure TProjectExport.SpeedButton1Click(Sender: TObject);
+procedure TProjectExportDialog.SpeedButton1Click(Sender: TObject);
 begin
   with FileOpenDialog1 do begin
     DefaultFolder := edtApplicationDirectory.Text;

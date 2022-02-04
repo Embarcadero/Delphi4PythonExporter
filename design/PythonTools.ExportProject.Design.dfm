@@ -1,4 +1,4 @@
-object ProjectExport: TProjectExport
+object ProjectExportDialog: TProjectExportDialog
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]
@@ -39,8 +39,6 @@ object ProjectExport: TProjectExport
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = -3
-    ExplicitWidth = 624
     object imgExport: TImage
       AlignWithMargins = True
       Left = 5
@@ -2234,7 +2232,6 @@ object ProjectExport: TProjectExport
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 291
     object btnCancel: TButton
       Left = 529
       Top = 6
@@ -2262,9 +2259,6 @@ object ProjectExport: TProjectExport
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = 40
-    ExplicitTop = 247
-    ExplicitWidth = 624
     object lblApplicationDirectory: TLabel
       Left = 8
       Top = 3
@@ -2297,7 +2291,6 @@ object ProjectExport: TProjectExport
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitTop = 74
     object Label1: TLabel
       Left = 8
       Top = 3

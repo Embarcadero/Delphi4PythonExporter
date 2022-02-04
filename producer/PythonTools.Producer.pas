@@ -9,13 +9,14 @@ uses
 type
   TApplicationProducerModel = class;
   TFormProducerModel = class;
+  TDfmProducerModel = class;
 
   IPythonCodeProducer = interface
     ['{D3A5C0FE-EAF4-4301-9DA9-E867B3081E21}']
     function IsValidFormInheritance(const AClass: TClass): boolean;
     procedure SavePyApplicationFile(const AModel: TApplicationProducerModel);
     procedure SavePyFormFile(const AModel: TFormProducerModel);
-    procedure SavePyFormBinDfmFile(const AModel: TFormProducerModel);
+    procedure SavePyFormBinDfmFile(const AModel: TDfmProducerModel);
   end;
 
   TApplicationProducerModel = class
@@ -98,6 +99,23 @@ type
     ///   Generates the model initialization section
     /// </summary>
     property ModelInitialization: TModuleInitialization read FModelInitialization;
+  end;
+
+  TDfmProducerModel = class
+  private
+    FFileName: string;
+    FDirectory: string;
+    FForm: TComponent;
+  public
+    property FileName: string read FFileName write FFileName;
+    /// <summary>
+    ///   The directory where the generated files will be saved
+    /// </summary>
+    property Directory: string read FDirectory write FDirectory;
+    /// <summary>
+    ///   The exported form
+    /// </summary>
+    property Form: TComponent read FForm write FForm;
   end;
 
 implementation

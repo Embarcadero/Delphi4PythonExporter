@@ -20,7 +20,7 @@ type
     //Request export project info
     function RequestExportInfo(const AModel: TExportProjectModel): boolean;
     //Export the given project
-    procedure ExportProject();
+    function ExportProject(): boolean;
   end;
 
 implementation
@@ -39,13 +39,13 @@ begin
   FProject := AProject;
 end;
 
-procedure TExportProjectService.ExportProject;
+function TExportProjectService.ExportProject: boolean;
 begin
   var LExportProjectModel := BuildExportProjectModel();
   try
     //Request user info
     if not RequestExportInfo(LExportProjectModel) then
-      Exit;
+      Exit(false);
     //Export the application file as the app initializer
     var LAppService := TExportApplicationService.Create(LExportProjectModel, FProject);
     try
@@ -69,6 +69,7 @@ begin
         LService.Free();
       end;
     end);
+    Result := true;
   finally
     LExportProjectModel.Free();
   end;

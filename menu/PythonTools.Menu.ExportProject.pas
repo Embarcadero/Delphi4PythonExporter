@@ -49,11 +49,11 @@ begin
   //Exports the current project
   var LService := TExportProjectService.Create(GetActiveProject());
   try
-    LService.ExportProject();
+    if LService.ExportProject() then
+      ShowMessage('Project successfully exported.');
   finally
     LService.Free();
   end;
-  ShowMessage('Project successfully exported.');
 end;
 
 { TPythonToolsExportProjectMenuItem }

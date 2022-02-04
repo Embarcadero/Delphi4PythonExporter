@@ -154,7 +154,6 @@
         <DCCReference Include="designide.dcp"/>
         <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="VCL.dcp"/>
-        <DCCReference Include="PythonTools.FormEditor.pas"/>
         <DCCReference Include="menu\PythonTools.Menu.pas"/>
         <DCCReference Include="PythonTools.Registration.pas"/>
         <DCCReference Include="PythonTools.SplashScreen.pas"/>

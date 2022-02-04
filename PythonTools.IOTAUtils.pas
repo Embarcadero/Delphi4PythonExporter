@@ -55,19 +55,23 @@ end;
 class procedure TIOTAUtils.EnumForms(const AProject: IOTAProject;
   const AProc: TProc<TIOTAFormInfo>);
 begin
-  var LResult: TIOTAFormInfo;
+  var LFormPredicate := function(AModuleInfo: IOTAModuleInfo): boolean begin
+    Result := (AModuleInfo.ModuleType = omtForm)
+      and not AModuleInfo.FormName.Trim().IsEmpty();
+  end;
+
   for var I := 0 to AProject.GetModuleCount() - 1 do begin
     var LModuleInfo := AProject.GetModule(I);
-    if (LModuleInfo.ModuleType = omtForm) then begin
-      if not LModuleInfo.FormName.Trim().IsEmpty() then begin
-        LResult.Project := AProject;
-        LResult.ModuleInfo := LModuleInfo;
-        LResult.Module := LModuleInfo.OpenModule();
-        LResult.Editor := TIOTAUtils.GetFormEditorFromModule(LResult.Module);
-        LResult.Designer := (LResult.Editor as INTAFormEditor).FormDesigner;
-        AProc(LResult);
-      end;
-    end;
+    if not LFormPredicate(LModuleInfo) then
+      Continue;
+
+    var LResult: TIOTAFormInfo;
+    LResult.Project := AProject;
+    LResult.ModuleInfo := LModuleInfo;
+    LResult.Module := LModuleInfo.OpenModule();
+    LResult.Editor := TIOTAUtils.GetFormEditorFromModule(LResult.Module);
+    LResult.Designer := (LResult.Editor as INTAFormEditor).FormDesigner;
+    AProc(LResult);
   end;
 end;
 

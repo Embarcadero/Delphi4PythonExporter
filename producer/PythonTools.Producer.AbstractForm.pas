@@ -4,12 +4,15 @@ interface
 
 uses
   DesignIntf, System.Classes, System.Generics.Collections,
-  PythonTools.Producer;
+  PythonTools.Producer,
+  PythonTools.Model.ApplicationProducer,
+  PythonTools.Model.FormProducer;
 
 type
   TAbstractFormProducer = class abstract(TInterfacedObject)
   protected
     function GetPythonModuleName(): string; virtual; abstract;
+    function GetPythonFormFileExtension(): string; virtual; abstract;
     function GetAppInitializationSection(): string; virtual; abstract;
     //File generators
     procedure GeneratePyApplicationFile(const AStream: TStream; const AModel: TApplicationProducerModel);
@@ -54,7 +57,7 @@ const
 
   PY_MODULE_LOAD_PROPS =
     sIdentation2
-  + 'self.LoadProps(os.path.join(os.path.dirname(os.path.abspath(__file__)), "@FILE.pydfm"))';
+  + 'self.LoadProps(os.path.join(os.path.dirname(os.path.abspath(__file__)), "@FILE@FORMFILEEXT"))';
 
 { TAbstractFormProducer }
 
@@ -118,7 +121,8 @@ begin
   LStrFile := LStrFile
     + sLineBreak
     + PY_MODULE_LOAD_PROPS
-      .Replace('@FILE', AModel.FileName);
+      .Replace('@FILE', AModel.FileName)
+      .Replace('@FORMFILEEXT', GetPythonFormFileExtension());
 
   if AModel.ModelInitialization.GenerateInitialization then
     LStrFile := LStrFile

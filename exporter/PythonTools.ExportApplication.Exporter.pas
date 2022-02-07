@@ -4,8 +4,10 @@ interface
 
 uses
   ToolsAPI,
-  PythonTools.Model.ExportProject, PythonTools.Producer.SimpleFactory,
-  PythonTools.Producer;
+  PythonTools.Producer,
+  PythonTools.Producer.SimpleFactory,
+  PythonTools.Model.ExportProject,
+  PythonTools.Model.ApplicationProducer;
 
 type
   TExportApplicationExporter = class

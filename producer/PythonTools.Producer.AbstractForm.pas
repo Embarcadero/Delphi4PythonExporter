@@ -10,6 +10,7 @@ type
   TAbstractFormProducer = class abstract(TInterfacedObject)
   protected
     function GetPythonModuleName(): string; virtual; abstract;
+    function GetAppInitializationSection(): string; virtual; abstract;
     //File generators
     procedure GeneratePyApplicationFile(const AStream: TStream; const AModel: TApplicationProducerModel);
     procedure GeneratePyFormFile(const AStream: TStream; const AModel: TFormProducerModel);
@@ -17,15 +18,15 @@ type
 
   end;
 
-implementation
-
-uses
-  TypInfo, System.SysUtils, System.StrUtils;
-
 const
   //Using 4 spaces identation
   sIdentation1 = '    ';
   sIdentation2 = sIdentation1 + sIdentation1;
+
+implementation
+
+uses
+  TypInfo, System.SysUtils, System.StrUtils;
 
 const
   PY_APP_IMPORTED_FORMS =
@@ -53,35 +54,7 @@ const
 
   PY_MODULE_LOAD_PROPS =
     sIdentation2
-  + 'self.LoadProps(os.path.join(os.path.dirname(os.path.abspath(__file__)), "@CLASSNAME.pydfm"))';
-
-  PY_MODULE_APP_INITIALIZATION =
-    'def main():'
-  + sLineBreak
-  + sIdentation1
-  + 'Application.Initialize()'
-  + sLineBreak
-  + sIdentation1
-  + 'Application.Title = @APP_TITLE'
-  + sLineBreak
-  + sIdentation1
-  + 'Application.MainForm = @CLASSNAME(Application)'
-  + sLineBreak
-  + sIdentation1
-  + 'Application.MainForm.Show()'
-  + sLineBreak
-  + sIdentation1
-  + 'Application.Run()'
-  + sLineBreak
-  + sIdentation1
-  + 'Application.MainForm.Destroy()'
-  + sLineBreak
-  + sLineBreak
-  + 'if __name__ == ''__main__'':'
-  + sLineBreak
-  + sIdentation1
-  + 'main()'
-  + sLineBreak;
+  + 'self.LoadProps(os.path.join(os.path.dirname(os.path.abspath(__file__)), "@FILE.pydfm"))';
 
 { TAbstractFormProducer }
 
@@ -109,7 +82,7 @@ begin
       + sLineBreak;
 
   LStrFile := LStrFile
-    + PY_MODULE_APP_INITIALIZATION
+    + GetAppInitializationSection()
         .Replace('@APP_TITLE', AModel.Title.QuotedString())
         .Replace('@CLASSNAME', AModel.MainForm);
 
@@ -145,13 +118,13 @@ begin
   LStrFile := LStrFile
     + sLineBreak
     + PY_MODULE_LOAD_PROPS
-      .Replace('@CLASSNAME', AModel.FormName);
+      .Replace('@FILE', AModel.FileName);
 
   if AModel.ModelInitialization.GenerateInitialization then
     LStrFile := LStrFile
     + sLineBreak
     + sLineBreak
-    + PY_MODULE_APP_INITIALIZATION
+    + GetAppInitializationSection()
       .Replace('@APP_TITLE', AModel.ModelInitialization.Title)
       .Replace('@CLASSNAME', AModel.FormName);
 

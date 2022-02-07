@@ -9,6 +9,7 @@ type
   TVCLFormProducer = class(TAbstractFormProducer, IPythonCodeProducer)
   protected
     function GetPythonModuleName(): string; override;
+    function GetAppInitializationSection(): string; override;
   public
     function IsValidFormInheritance(const AClass: TClass): boolean;
     procedure SavePyApplicationFile(const AModel: TApplicationProducerModel);
@@ -19,10 +20,37 @@ type
 implementation
 
 uses
-  System.SysUtils;
+  System.SysUtils, System.IOUtils, System.Classes, Vcl.Forms;
 
 const
   DELPHI_VCL_MODULE_NAME = 'delphivcl';
+  PY_MODULE_APP_INITIALIZATION =
+    'def main():'
+  + sLineBreak
+  + sIdentation1
+  + 'Application.Initialize()'
+  + sLineBreak
+  + sIdentation1
+  + 'Application.Title = @APP_TITLE'
+  + sLineBreak
+  + sIdentation1
+  + 'MainForm = @CLASSNAME(Application)'
+  + sLineBreak
+  + sIdentation1
+  + 'MainForm.Show()'
+  + sLineBreak
+  + sIdentation1
+  + 'FreeConsole()'
+  + sLineBreak
+  + sIdentation1
+  + 'Application.Run()'
+  + sLineBreak
+  + sLineBreak
+  + 'if __name__ == ''__main__'':'
+  + sLineBreak
+  + sIdentation1
+  + 'main()'
+  + sLineBreak;
 
 { TVCLFormProducer }
 
@@ -31,25 +59,54 @@ begin
   Result := DELPHI_VCL_MODULE_NAME;
 end;
 
-procedure TVCLFormProducer.SavePyApplicationFile(
-  const AModel: TApplicationProducerModel);
+function TVCLFormProducer.GetAppInitializationSection: string;
 begin
-  raise ENotImplemented.Create('Not implemented');
+  Result := PY_MODULE_APP_INITIALIZATION;
 end;
 
 function TVCLFormProducer.IsValidFormInheritance(const AClass: TClass): boolean;
 begin
-  raise ENotImplemented.Create('Not implemented');
+  Result := AClass = TForm;
+end;
+
+procedure TVCLFormProducer.SavePyApplicationFile(
+  const AModel: TApplicationProducerModel);
+begin
+  var LFilePath := TPath.Combine(AModel.Directory,
+    ChangeFileExt(AModel.FileName, '.py'));
+
+  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  try
+    GeneratePyApplicationFile(LStream, AModel);
+  finally
+    LStream.Free();
+  end;
 end;
 
 procedure TVCLFormProducer.SavePyFormFile(const AModel: TFormProducerModel);
 begin
-  raise ENotImplemented.Create('Not implemented');
+  var LFilePath := TPath.Combine(AModel.Directory,
+    ChangeFileExt(AModel.FileName, '.py'));
+
+  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  try
+    GeneratePyFormFile(LStream, AModel);
+  finally
+    LStream.Free();
+  end;
 end;
 
 procedure TVCLFormProducer.SavePyFormBinDfmFile(const AModel: TDfmProducerModel);
 begin
-  raise ENotImplemented.Create('Not implemented');
+  var LFilePath := TPath.Combine(AModel.Directory,
+    ChangeFileExt(AModel.FileName, '.pydfm'));
+
+  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  try
+    LStream.WriteComponent(AModel.Form);
+  finally
+    LStream.Free();
+  end;
 end;
 
 end.

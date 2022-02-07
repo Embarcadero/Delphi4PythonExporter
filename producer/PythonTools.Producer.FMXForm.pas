@@ -9,6 +9,7 @@ type
   TFMXFormProducer = class(TAbstractFormProducer, IPythonCodeProducer)
   protected
     function GetPythonModuleName(): string; override;
+    function GetAppInitializationSection(): string; override;
   public
     function IsValidFormInheritance(const AClass: TClass): boolean;
     procedure SavePyApplicationFile(const AModel: TApplicationProducerModel);
@@ -23,12 +24,44 @@ uses
 
 const
   DELPHI_FMX_MODULE_NAME = 'delphifmx';
+  PY_MODULE_APP_INITIALIZATION =
+    'def main():'
+  + sLineBreak
+  + sIdentation1
+  + 'Application.Initialize()'
+  + sLineBreak
+  + sIdentation1
+  + 'Application.Title = @APP_TITLE'
+  + sLineBreak
+  + sIdentation1
+  + 'Application.MainForm = @CLASSNAME(Application)'
+  + sLineBreak
+  + sIdentation1
+  + 'Application.MainForm.Show()'
+  + sLineBreak
+  + sIdentation1
+  + 'Application.Run()'
+  + sLineBreak
+  + sIdentation1
+  + 'Application.MainForm.Destroy()'
+  + sLineBreak
+  + sLineBreak
+  + 'if __name__ == ''__main__'':'
+  + sLineBreak
+  + sIdentation1
+  + 'main()'
+  + sLineBreak;
 
 { TFMXFormProducer }
 
 function TFMXFormProducer.GetPythonModuleName: string;
 begin
   Result := DELPHI_FMX_MODULE_NAME;
+end;
+
+function TFMXFormProducer.GetAppInitializationSection: string;
+begin
+  Result := PY_MODULE_APP_INITIALIZATION;
 end;
 
 function TFMXFormProducer.IsValidFormInheritance(const AClass: TClass): boolean;

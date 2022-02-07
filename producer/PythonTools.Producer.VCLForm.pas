@@ -3,24 +3,31 @@ unit PythonTools.Producer.VCLForm;
 interface
 
 uses
-  PythonTools.Producer.AbstractForm, PythonTools.Producer;
+  PythonTools.Producer,
+  PythonTools.Producer.AbstractForm,
+  PythonTools.Model.ApplicationProducer,
+  PythonTools.Model.FormProducer,
+  PythonTools.Model.FormFileProducer;
 
 type
   TVCLFormProducer = class(TAbstractFormProducer, IPythonCodeProducer)
   protected
     function GetPythonModuleName(): string; override;
+    function GetPythonFormFileExtension(): string; override;
     function GetAppInitializationSection(): string; override;
   public
     function IsValidFormInheritance(const AClass: TClass): boolean;
     procedure SavePyApplicationFile(const AModel: TApplicationProducerModel);
-    procedure SavePyFormFile(const AModel: TFormProducerModel);
-    procedure SavePyFormBinDfmFile(const AModel: TDfmProducerModel);
+    procedure SavePyForm(const AModel: TFormProducerModel);
+    procedure SavePyFormFileBin(const AModel: TFormFileProducerModel);
+    procedure SavePyFormFileTxt(const AModel: TFormFileProducerModel);
   end;
 
 implementation
 
 uses
-  System.SysUtils, System.IOUtils, System.Classes, Vcl.Forms;
+  System.SysUtils, System.IOUtils, System.Classes, Vcl.Forms,
+  PythonTools.Exceptions;
 
 const
   DELPHI_VCL_MODULE_NAME = 'delphivcl';
@@ -54,6 +61,11 @@ const
 
 { TVCLFormProducer }
 
+function TVCLFormProducer.GetPythonFormFileExtension: string;
+begin
+  Result := '.pydfm';
+end;
+
 function TVCLFormProducer.GetPythonModuleName: string;
 begin
   Result := DELPHI_VCL_MODULE_NAME;
@@ -83,7 +95,7 @@ begin
   end;
 end;
 
-procedure TVCLFormProducer.SavePyFormFile(const AModel: TFormProducerModel);
+procedure TVCLFormProducer.SavePyForm(const AModel: TFormProducerModel);
 begin
   var LFilePath := TPath.Combine(AModel.Directory,
     ChangeFileExt(AModel.FileName, '.py'));
@@ -96,7 +108,7 @@ begin
   end;
 end;
 
-procedure TVCLFormProducer.SavePyFormBinDfmFile(const AModel: TDfmProducerModel);
+procedure TVCLFormProducer.SavePyFormFileBin(const AModel: TFormFileProducerModel);
 begin
   var LFilePath := TPath.Combine(AModel.Directory,
     ChangeFileExt(AModel.FileName, '.pydfm'));
@@ -107,6 +119,21 @@ begin
   finally
     LStream.Free();
   end;
+end;
+
+procedure TVCLFormProducer.SavePyFormFileTxt(
+  const AModel: TFormFileProducerModel);
+begin
+  var LDfmFile := AModel.FormFilePath.AsDfm();
+  if not TFile.Exists(LDfmFile) then
+    raise EFormFileNotFound.CreateFmt('Dfm file not found at: %s', [LDfmFile]);
+
+  var LPyDfm := TPath.Combine(
+    AModel.Directory,
+    ExtractFileName(ChangeFileExt(LDfmFile, '.pydfm'))
+  );
+
+  TFile.Copy(LDfmFile, LPyDfm, true);
 end;
 
 end.

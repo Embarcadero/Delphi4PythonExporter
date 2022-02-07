@@ -10,28 +10,33 @@ uses
 
 type
   TProjectExportDialog = class(TForm)
-    Panel1: TPanel;
-    Panel2: TPanel;
-    Panel3: TPanel;
-    Panel4: TPanel;
+    pnlHeader: TPanel;
+    plnFooter: TPanel;
+    pnlAppDir: TPanel;
+    pnlAppSettings: TPanel;
     imgExport: TImage;
     lblExport: TLabel;
     lblProjectName: TLabel;
-    Shape1: TShape;
-    Label1: TLabel;
+    spHeader: TShape;
+    lblAppTitle: TLabel;
     edtApplicationTitle: TEdit;
-    Label2: TLabel;
+    lblAppMainForm: TLabel;
     cbApplicationMainForm: TComboBox;
     FileOpenDialog1: TFileOpenDialog;
     lblApplicationDirectory: TLabel;
     edtApplicationDirectory: TEdit;
     btnCancel: TButton;
     btnExport: TButton;
-    SpeedButton1: TSpeedButton;
+    btnSelectDir: TSpeedButton;
+    pnlFormFileKind: TPanel;
+    pnlExpOpts: TPanel;
+    lblExpOpts: TLabel;
+    rgFormFileKind: TRadioGroup;
+    lblFormFileKind: TLabel;
     procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
       var Resize: Boolean);
     procedure btnExportClick(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
+    procedure btnSelectDirClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -70,6 +75,11 @@ begin
     cbApplicationMainForm.ItemIndex := 0;
   edtApplicationDirectory.Text := AModel.ApplicationDirectory;
 
+  case AModel.FormFileKind of
+    ffkText: rgFormFileKind.ItemIndex := 0;
+    ffkBinary: rgFormFileKind.ItemIndex := 1;
+  end;
+
   Result := ShowModal() = mrOk;
 
   if not Result then
@@ -78,6 +88,11 @@ begin
   AModel.ApplicationTitle := edtApplicationTitle.Text;
   AModel.ApplicationMainForm := AModel.ApplicationForms[cbApplicationMainForm.ItemIndex];
   AModel.ApplicationDirectory := edtApplicationDirectory.Text;
+
+  case rgFormFileKind.ItemIndex of
+    0: AModel.FormFileKind := ffkText;
+    1: AModel.FormFileKind := ffkBinary;
+  end;
 end;
 
 procedure TProjectExportDialog.FormCanResize(Sender: TObject; var NewWidth,
@@ -86,7 +101,7 @@ begin
   Resize := false;
 end;
 
-procedure TProjectExportDialog.SpeedButton1Click(Sender: TObject);
+procedure TProjectExportDialog.btnSelectDirClick(Sender: TObject);
 begin
   with FileOpenDialog1 do begin
     DefaultFolder := edtApplicationDirectory.Text;

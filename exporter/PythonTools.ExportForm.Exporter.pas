@@ -4,7 +4,10 @@ interface
 
 uses
   DesignIntf, System.Classes, System.Generics.Collections,
-  PythonTools.Model.ExportProject, PythonTools.IOTAUtils, PythonTools.Producer;
+  PythonTools.IOTAUtils,
+  PythonTools.Model.ExportProject,
+  PythonTools.Model.FormProducer,
+  PythonTools.Model.FormFileProducer;
 
 type
   TExportFormExporter = class
@@ -16,15 +19,17 @@ type
   protected
      //Producer models
     function BuildFormModel: TFormProducerModel;
-    function BuildDfmModel: TDfmProducerModel;
+    function BuildFormFileModel: TFormFileProducerModel;
     //Exporters
     procedure DoExportForm;
-    procedure DoExportBinDfm;
+    procedure DoExportFormFileBin;
+    procedure DoExportFormFileTxt;
   public
     constructor Create(const AModel: TExportProjectModel; AFormInfo: TIOTAFormInfo);
 
     procedure ExportForm;
-    procedure ExportBinDfm;
+    procedure ExportFormFileBin;
+    procedure ExportFormFileTxt;
   end;
 
 implementation
@@ -57,9 +62,14 @@ begin
   DoExportForm();
 end;
 
-procedure TExportFormExporter.ExportBinDfm;
+procedure TExportFormExporter.ExportFormFileTxt;
 begin
-  DoExportBinDfm();
+  DoExportFormFileTxt();
+end;
+
+procedure TExportFormExporter.ExportFormFileBin;
+begin
+  DoExportFormFileBin();
 end;
 
 function TExportFormExporter.BuildFormModel: TFormProducerModel;
@@ -87,14 +97,15 @@ begin
   end;
 end;
 
-function TExportFormExporter.BuildDfmModel: TDfmProducerModel;
+function TExportFormExporter.BuildFormFileModel: TFormFileProducerModel;
 begin
-  Result := TDfmProducerModel.Create();
+  Result := TFormFileProducerModel.Create();
   try
     with Result do begin
       FileName := ChangeFileExt(ExtractFileName(FFormInfo.ModuleInfo.FileName), '');
-      Form := FFormInfo.Designer.Root;
       Directory := FModel.ApplicationDirectory;
+      FormFilePath := ChangeFileExt(FFormInfo.ModuleInfo.FileName, '');
+      Form := FFormInfo.Designer.Root;
     end;
   except
     on E: Exception do begin
@@ -113,18 +124,29 @@ begin
 
   var LProducerModel := BuildFormModel();
   try
-    LProducer.SavePyFormFile(LProducerModel);
+    LProducer.SavePyForm(LProducerModel);
   finally
     LProducerModel.Free();
   end;
 end;
 
-procedure TExportFormExporter.DoExportBinDfm;
+procedure TExportFormExporter.DoExportFormFileTxt;
 begin
   var LProducer := TProducerSimpleFactory.CreateProducer(FFormInfo.Project.FrameworkType);
-  var LProducerModel := BuildDfmModel();
+  var LProducerModel := BuildFormFileModel();
   try
-    LProducer.SavePyFormBinDfmFile(LProducerModel);
+    LProducer.SavePyFormFileTxt(LProducerModel);
+  finally
+    LProducerModel.Free();
+  end;
+end;
+
+procedure TExportFormExporter.DoExportFormFileBin;
+begin
+  var LProducer := TProducerSimpleFactory.CreateProducer(FFormInfo.Project.FrameworkType);
+  var LProducerModel := BuildFormFileModel();
+  try
+    LProducer.SavePyFormFileBin(LProducerModel);
   finally
     LProducerModel.Free();
   end;

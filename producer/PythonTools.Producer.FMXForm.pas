@@ -3,24 +3,31 @@ unit PythonTools.Producer.FMXForm;
 interface
 
 uses
-  PythonTools.Producer.AbstractForm, PythonTools.Producer;
+  PythonTools.Producer,
+  PythonTools.Producer.AbstractForm,
+  PythonTools.Model.ApplicationProducer,
+  PythonTools.Model.FormProducer,
+  PythonTools.Model.FormFileProducer;
 
 type
   TFMXFormProducer = class(TAbstractFormProducer, IPythonCodeProducer)
   protected
     function GetPythonModuleName(): string; override;
+    function GetPythonFormFileExtension(): string; override;
     function GetAppInitializationSection(): string; override;
   public
     function IsValidFormInheritance(const AClass: TClass): boolean;
     procedure SavePyApplicationFile(const AModel: TApplicationProducerModel);
-    procedure SavePyFormFile(const AModel: TFormProducerModel);
-    procedure SavePyFormBinDfmFile(const AModel: TDfmProducerModel);
+    procedure SavePyForm(const AModel: TFormProducerModel);
+    procedure SavePyFormFileBin(const AModel: TFormFileProducerModel);
+    procedure SavePyFormFileTxt(const AModel: TFormFileProducerModel);
   end;
 
 implementation
 
 uses
-  System.Classes, System.SysUtils, System.IOUtils, FMX.Forms;
+  System.Classes, System.SysUtils, System.IOUtils, FMX.Forms,
+  PythonTools.Exceptions;
 
 const
   DELPHI_FMX_MODULE_NAME = 'delphifmx';
@@ -54,6 +61,11 @@ const
 
 { TFMXFormProducer }
 
+function TFMXFormProducer.GetPythonFormFileExtension: string;
+begin
+  Result := '.pyfmx';
+end;
+
 function TFMXFormProducer.GetPythonModuleName: string;
 begin
   Result := DELPHI_FMX_MODULE_NAME;
@@ -83,7 +95,7 @@ begin
   end;
 end;
 
-procedure TFMXFormProducer.SavePyFormFile(const AModel: TFormProducerModel);
+procedure TFMXFormProducer.SavePyForm(const AModel: TFormProducerModel);
 begin
   var LFilePath := TPath.Combine(AModel.Directory,
     ChangeFileExt(AModel.FileName, '.py'));
@@ -96,7 +108,7 @@ begin
   end;
 end;
 
-procedure TFMXFormProducer.SavePyFormBinDfmFile(const AModel: TDfmProducerModel);
+procedure TFMXFormProducer.SavePyFormFileBin(const AModel: TFormFileProducerModel);
 begin
   var LFilePath := TPath.Combine(AModel.Directory,
     ChangeFileExt(AModel.FileName, '.pydfm'));
@@ -107,6 +119,21 @@ begin
   finally
     LStream.Free();
   end;
+end;
+
+procedure TFMXFormProducer.SavePyFormFileTxt(
+  const AModel: TFormFileProducerModel);
+begin
+  var LFmxFile := AModel.FormFilePath.AsFmx();
+  if not TFile.Exists(LFmxFile) then
+    raise EFormFileNotFound.CreateFmt('Fmx file not found at: %s', [LFmxFile]);
+
+  var LPyFmxFile := TPath.Combine(
+    AModel.Directory,
+    ExtractFileName(ChangeFileExt(LFmxFile, '.pyfmx'))
+  );
+
+  TFile.Copy(LFmxFile, LPyFmxFile, true);
 end;
 
 end.

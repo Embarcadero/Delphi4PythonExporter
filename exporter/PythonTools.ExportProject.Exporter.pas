@@ -64,7 +64,12 @@ begin
         //Export current form
         LFormExporter.ExportForm();
         //Export current form dfm
-        LFormExporter.ExportBinDfm();
+        if (LExportProjectModel.FormFileKind = ffkText) then
+          LFormExporter.ExportFormFileTxt()
+        else if (LExportProjectModel.FormFileKind = ffkBinary) then
+          LFormExporter.ExportFormFileBin()
+        else
+          raise EInvalidFormFileKind.Create('Invalid form file kind.');
       finally
         LFormExporter.Free();
       end;

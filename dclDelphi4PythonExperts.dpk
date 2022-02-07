@@ -55,6 +55,9 @@ contains
   PythonTools.ExportProject.Design in 'design\PythonTools.ExportProject.Design.pas' {ProjectExportDialog},
   PythonTools.ExportApplication.Exporter in 'exporter\PythonTools.ExportApplication.Exporter.pas',
   PythonTools.ExportForm.Exporter in 'exporter\PythonTools.ExportForm.Exporter.pas',
-  PythonTools.ExportProject.Exporter in 'exporter\PythonTools.ExportProject.Exporter.pas';
+  PythonTools.ExportProject.Exporter in 'exporter\PythonTools.ExportProject.Exporter.pas',
+  PythonTools.Model.ApplicationProducer in 'model\PythonTools.Model.ApplicationProducer.pas',
+  PythonTools.Model.FormProducer in 'model\PythonTools.Model.FormProducer.pas',
+  PythonTools.Model.FormFileProducer in 'model\PythonTools.Model.FormFileProducer.pas';
 
 end.

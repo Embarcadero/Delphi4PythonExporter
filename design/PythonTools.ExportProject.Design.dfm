@@ -4,7 +4,7 @@ object ProjectExportDialog: TProjectExportDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Export'
-  ClientHeight = 252
+  ClientHeight = 336
   ClientWidth = 619
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,7 +16,7 @@ object ProjectExportDialog: TProjectExportDialog
   OnCanResize = FormCanResize
   PixelsPerInch = 96
   TextHeight = 15
-  object Shape1: TShape
+  object spHeader: TShape
     AlignWithMargins = True
     Left = 0
     Top = 65
@@ -31,7 +31,7 @@ object ProjectExportDialog: TProjectExportDialog
     ExplicitTop = 336
     ExplicitWidth = 65
   end
-  object Panel1: TPanel
+  object pnlHeader: TPanel
     Left = 0
     Top = 0
     Width = 619
@@ -2224,9 +2224,9 @@ object ProjectExportDialog: TProjectExportDialog
       ParentFont = False
     end
   end
-  object Panel2: TPanel
+  object plnFooter: TPanel
     Left = 0
-    Top = 212
+    Top = 296
     Width = 619
     Height = 40
     Align = alBottom
@@ -2251,7 +2251,7 @@ object ProjectExportDialog: TProjectExportDialog
       OnClick = btnExportClick
     end
   end
-  object Panel3: TPanel
+  object pnlAppDir: TPanel
     Left = 0
     Top = 131
     Width = 619
@@ -2262,17 +2262,17 @@ object ProjectExportDialog: TProjectExportDialog
     object lblApplicationDirectory: TLabel
       Left = 8
       Top = 3
-      Width = 112
+      Width = 115
       Height = 15
-      Caption = 'Application Directory'
+      Caption = 'Application Directory:'
     end
-    object SpeedButton1: TSpeedButton
+    object btnSelectDir: TSpeedButton
       Left = 588
       Top = 23
       Width = 26
       Height = 25
       Caption = '...'
-      OnClick = SpeedButton1Click
+      OnClick = btnSelectDirClick
     end
     object edtApplicationDirectory: TEdit
       Left = 8
@@ -2283,7 +2283,7 @@ object ProjectExportDialog: TProjectExportDialog
       TabOrder = 0
     end
   end
-  object Panel4: TPanel
+  object pnlAppSettings: TPanel
     Left = 0
     Top = 71
     Width = 619
@@ -2291,19 +2291,19 @@ object ProjectExportDialog: TProjectExportDialog
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 3
-    object Label1: TLabel
+    object lblAppTitle: TLabel
       Left = 8
       Top = 3
-      Width = 86
+      Width = 89
       Height = 15
-      Caption = 'Application Title'
+      Caption = 'Application Title:'
     end
-    object Label2: TLabel
+    object lblAppMainForm: TLabel
       Left = 314
       Top = 3
-      Width = 122
+      Width = 125
       Height = 15
-      Caption = 'Application Main Form'
+      Caption = 'Application Main Form:'
     end
     object edtApplicationTitle: TEdit
       Left = 8
@@ -2318,6 +2318,59 @@ object ProjectExportDialog: TProjectExportDialog
       Width = 300
       Height = 23
       TabOrder = 1
+    end
+  end
+  object pnlFormFileKind: TPanel
+    Left = 0
+    Top = 232
+    Width = 619
+    Height = 60
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 4
+    object lblFormFileKind: TLabel
+      Left = 8
+      Top = 3
+      Width = 135
+      Height = 15
+      Caption = 'Form file kind (dfm/fmx):'
+    end
+    object rgFormFileKind: TRadioGroup
+      Left = 8
+      Top = 20
+      Width = 137
+      Height = 38
+      BiDiMode = bdLeftToRight
+      Columns = 2
+      ItemIndex = 0
+      Items.Strings = (
+        'Text'
+        'Binary')
+      ParentBiDiMode = False
+      ShowFrame = False
+      TabOrder = 0
+    end
+  end
+  object pnlExpOpts: TPanel
+    Left = 0
+    Top = 191
+    Width = 619
+    Height = 41
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 5
+    object lblExpOpts: TLabel
+      Left = 8
+      Top = 6
+      Width = 156
+      Height = 21
+      Caption = 'Exportation options:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
     end
   end
   object FileOpenDialog1: TFileOpenDialog

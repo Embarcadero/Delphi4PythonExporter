@@ -1,4 +1,4 @@
-unit PythonTools.ExportApplication.Service;
+unit PythonTools.ExportApplication.Exporter;
 
 interface
 
@@ -8,7 +8,7 @@ uses
   PythonTools.Producer;
 
 type
-  TExportApplicationService = class
+  TExportApplicationExporter = class
   private
     FModel: TExportProjectModel;
     FProject: IOTAProject;
@@ -31,7 +31,7 @@ uses
 
 { TExportApplicationService }
 
-function TExportApplicationService.BuildApplicationModel: TApplicationProducerModel;
+function TExportApplicationExporter.BuildApplicationModel: TApplicationProducerModel;
 begin
   Result := TApplicationProducerModel.Create();
   try
@@ -50,14 +50,14 @@ begin
   end;
 end;
 
-constructor TExportApplicationService.Create(
+constructor TExportApplicationExporter.Create(
   const AExportProjectModel: TExportProjectModel; const AProject: IOTAProject);
 begin
   FModel := AExportProjectModel;
   FProject := AProject;
 end;
 
-procedure TExportApplicationService.DoExportApplication;
+procedure TExportApplicationExporter.DoExportApplication;
 begin
   var LProducer := TProducerSimpleFactory.CreateProducer(FProject.FrameworkType);
   var LProducerModel := BuildApplicationModel();
@@ -68,7 +68,7 @@ begin
   end;
 end;
 
-procedure TExportApplicationService.ExportApplication;
+procedure TExportApplicationExporter.ExportApplication;
 begin
   DoExportApplication();
 end;

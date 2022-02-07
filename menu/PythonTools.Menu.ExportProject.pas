@@ -26,7 +26,7 @@ implementation
 
 uses
   System.StrUtils,
-  PythonTools.ExportProject.Service;
+  PythonTools.ExportProject.Exporter;
 
 { TPythonToolsExportProjectMenuAction }
 
@@ -47,12 +47,12 @@ end;
 procedure TPythonToolsExportProjectMenuAction.DoExportProject(Sender: TObject);
 begin
   //Exports the current project
-  var LService := TExportProjectService.Create(GetActiveProject());
+  var LExporter := TExportProjectExporter.Create(GetActiveProject());
   try
-    if LService.ExportProject() then
+    if LExporter.ExportProject() then
       ShowMessage('Project successfully exported.');
   finally
-    LService.Free();
+    LExporter.Free();
   end;
 end;
 

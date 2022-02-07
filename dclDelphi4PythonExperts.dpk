@@ -53,8 +53,8 @@ contains
   PythonTools.Model.ExportProject in 'model\PythonTools.Model.ExportProject.pas',
   PythonTools.Common in 'PythonTools.Common.pas',
   PythonTools.ExportProject.Design in 'design\PythonTools.ExportProject.Design.pas' {ProjectExportDialog},
-  PythonTools.ExportForm.Service in 'service\PythonTools.ExportForm.Service.pas',
-  PythonTools.ExportApplication.Service in 'service\PythonTools.ExportApplication.Service.pas',
-  PythonTools.ExportProject.Service in 'service\PythonTools.ExportProject.Service.pas';
+  PythonTools.ExportForm.Exporter in 'service\PythonTools.ExportForm.Exporter.pas',
+  PythonTools.ExportApplication.Exporter in 'service\PythonTools.ExportApplication.Exporter.pas',
+  PythonTools.ExportProject.Exporter in 'service\PythonTools.ExportProject.Exporter.pas';
 
 end.

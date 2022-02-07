@@ -1,4 +1,4 @@
-unit PythonTools.ExportProject.Service;
+unit PythonTools.ExportProject.Exporter;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   PythonTools.IOTAUtils, PythonTools.Model.ExportProject;
 
 type
-  TExportProjectService = class
+  TExportProjectExporter = class
   private
     FProject: IOTAProject;
   protected
@@ -28,18 +28,18 @@ implementation
 uses
   System.SysUtils,
   PythonTools.Common, PythonTools.Exceptions,
-  PythonTools.ExportApplication.Service,
-  PythonTools.ExportForm.Service,
+  PythonTools.ExportApplication.Exporter,
+  PythonTools.ExportForm.Exporter,
   PythonTools.ExportProject.Design;
 
 { TExportProjectService }
 
-constructor TExportProjectService.Create(const AProject: IOTAProject);
+constructor TExportProjectExporter.Create(const AProject: IOTAProject);
 begin
   FProject := AProject;
 end;
 
-function TExportProjectService.ExportProject: boolean;
+function TExportProjectExporter.ExportProject: boolean;
 begin
   var LExportProjectModel := BuildExportProjectModel();
   try
@@ -47,11 +47,11 @@ begin
     if not RequestExportInfo(LExportProjectModel) then
       Exit(false);
     //Export the application file as the app initializer
-    var LAppService := TExportApplicationService.Create(LExportProjectModel, FProject);
+    var LAppExporter := TExportApplicationExporter.Create(LExportProjectModel, FProject);
     try
-      LAppService.ExportApplication();
+      LAppExporter.ExportApplication();
     finally
-      LAppService.Free();
+      LAppExporter.Free();
     end;
 
     //Navigate through all forms
@@ -59,14 +59,14 @@ begin
       //Check for valid instances
       CheckDesigner(AFormInfo);
       //Export the current form
-      var LService := TExportFormService.Create(LExportProjectModel, AFormInfo);
+      var LFormExporter := TExportFormExporter.Create(LExportProjectModel, AFormInfo);
       try
         //Export current form
-        LService.ExportForm();
+        LFormExporter.ExportForm();
         //Export current form dfm
-        LService.ExportBinDfm();
+        LFormExporter.ExportBinDfm();
       finally
-        LService.Free();
+        LFormExporter.Free();
       end;
     end);
     Result := true;
@@ -75,14 +75,14 @@ begin
   end;
 end;
 
-procedure TExportProjectService.CheckDesigner(const AFormInfo: TIOTAFormInfo);
+procedure TExportProjectExporter.CheckDesigner(const AFormInfo: TIOTAFormInfo);
 begin
   if not Assigned(AFormInfo.Designer) then
     raise EUnableToObtainFormDesigner.CreateFmt(
       'Unable to obtain the form designer for type %s.', [AFormInfo.ModuleInfo.FormName]);
 end;
 
-function TExportProjectService.BuildExportProjectModel: TExportProjectModel;
+function TExportProjectExporter.BuildExportProjectModel: TExportProjectModel;
 begin
   Result := TExportProjectModel.Create();
   try
@@ -108,7 +108,7 @@ begin
   end;
 end;
 
-function TExportProjectService.RequestExportInfo(
+function TExportProjectExporter.RequestExportInfo(
   const AModel: TExportProjectModel): boolean;
 begin
   var LForm := TProjectExportDialog.Create(nil);

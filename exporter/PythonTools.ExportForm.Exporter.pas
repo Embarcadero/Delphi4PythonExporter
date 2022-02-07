@@ -1,4 +1,4 @@
-unit PythonTools.ExportForm.Service;
+unit PythonTools.ExportForm.Exporter;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   PythonTools.Model.ExportProject, PythonTools.IOTAUtils, PythonTools.Producer;
 
 type
-  TExportFormService = class
+  TExportFormExporter = class
   private
     FModel: TExportProjectModel;
     FFormInfo: TIOTAFormInfo;
@@ -34,14 +34,14 @@ uses
 
 { TExportFormService }
 
-constructor TExportFormService.Create(const AModel: TExportProjectModel;
+constructor TExportFormExporter.Create(const AModel: TExportProjectModel;
   AFormInfo: TIOTAFormInfo);
 begin
   FModel := AModel;
   FFormInfo := AFormInfo;
 end;
 
-function TExportFormService.FindComponents(
+function TExportFormExporter.FindComponents(
   const ADesigner: IDesigner): TArray<TComponent>;
 begin
   var LIOTAUtils := TIOTAUtils.Create();
@@ -52,17 +52,17 @@ begin
   end;
 end;
 
-procedure TExportFormService.ExportForm;
+procedure TExportFormExporter.ExportForm;
 begin
   DoExportForm();
 end;
 
-procedure TExportFormService.ExportBinDfm;
+procedure TExportFormExporter.ExportBinDfm;
 begin
   DoExportBinDfm();
 end;
 
-function TExportFormService.BuildFormModel: TFormProducerModel;
+function TExportFormExporter.BuildFormModel: TFormProducerModel;
 begin
   Result := TFormProducerModel.Create();
   try
@@ -87,7 +87,7 @@ begin
   end;
 end;
 
-function TExportFormService.BuildDfmModel: TDfmProducerModel;
+function TExportFormExporter.BuildDfmModel: TDfmProducerModel;
 begin
   Result := TDfmProducerModel.Create();
   try
@@ -104,7 +104,7 @@ begin
   end;
 end;
 
-procedure TExportFormService.DoExportForm;
+procedure TExportFormExporter.DoExportForm;
 begin
   var LProducer := TProducerSimpleFactory.CreateProducer(FFormInfo.Project.FrameworkType);
   if not LProducer.IsValidFormInheritance(FFormInfo.Designer.Root.ClassParent) then
@@ -119,7 +119,7 @@ begin
   end;
 end;
 
-procedure TExportFormService.DoExportBinDfm;
+procedure TExportFormExporter.DoExportBinDfm;
 begin
   var LProducer := TProducerSimpleFactory.CreateProducer(FFormInfo.Project.FrameworkType);
   var LProducerModel := BuildDfmModel();

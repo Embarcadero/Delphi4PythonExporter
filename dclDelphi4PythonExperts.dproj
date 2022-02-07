@@ -172,9 +172,9 @@
             <Form>ProjectExportDialog</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="service\PythonTools.ExportForm.Service.pas"/>
-        <DCCReference Include="service\PythonTools.ExportApplication.Service.pas"/>
-        <DCCReference Include="service\PythonTools.ExportProject.Service.pas"/>
+        <DCCReference Include="service\PythonTools.ExportForm.Exporter.pas"/>
+        <DCCReference Include="service\PythonTools.ExportApplication.Exporter.pas"/>
+        <DCCReference Include="service\PythonTools.ExportProject.Exporter.pas"/>
         <RcItem Include="images\EmbarcaderoPython(16px).bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>embarcaderopython_16px</ResourceId>
@@ -942,8 +942,8 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

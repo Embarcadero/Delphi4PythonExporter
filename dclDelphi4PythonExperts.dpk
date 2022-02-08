@@ -26,7 +26,7 @@ package dclDelphi4PythonExperts;
 {$IMAGEBASE $400000}
 {$DEFINE DEBUG}
 {$ENDIF IMPLICITBUILDING}
-{$DESCRIPTION 'Delphi4Python - Experts Components'}
+{$DESCRIPTION 'Delphi4Python - Export forms for Python'}
 {$LIBSUFFIX AUTO}
 {$DESIGNONLY}
 {$IMPLICITBUILD ON}

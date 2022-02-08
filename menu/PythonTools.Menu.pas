@@ -61,6 +61,7 @@ type
 implementation
 
 uses
+  Vcl.Imaging.pngimage,
   PythonTools.Menu.ExportProject, PythonTools.Menu.ExportForms;
 
 const
@@ -145,12 +146,12 @@ function TPythonToolsMenu.LoadPythonToolMenuImage(): integer;
 const
   EMB_PY_IMG = 'embarcaderopython_16px';
 begin
-  var LBmp := TBitmap.Create();
+  var LPng := TPngImage.Create();
   try
-    LBmp.LoadFromResourceName(HInstance, EMB_PY_IMG);
-    Result := GetINTAServices().AddImage(EMB_PY_IMG, [LBmp]);
+    LPng.LoadFromResourceName(HInstance, EMB_PY_IMG);
+    Result := GetINTAServices().AddImage(EMB_PY_IMG, [LPng]);
   finally
-    LBmp.Free();
+    LPng.Free();
   end;
 end;
 

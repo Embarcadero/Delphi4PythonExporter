@@ -7,18 +7,18 @@ procedure AddSplashScreen();
 implementation
 
 uses
-  ToolsAPI, Vcl.Graphics;
+  ToolsAPI, Vcl.Imaging.pngimage;
 
 procedure AddSplashScreen();
 const
   EMB_PY_IMG = 'embarcaderopython_24px';
 begin
-  var LBmp := TBitmap.Create();
+  var LPng := TPngImage.Create();
   try
-    LBmp.LoadFromResourceName(HInstance, EMB_PY_IMG);
-    SplashScreenServices.AddPluginBitmap('Delphi4Python Experts', LBmp.Handle, false, 'Registered', '');
+    LPng.LoadFromResourceName(HInstance, EMB_PY_IMG);
+    SplashScreenServices.AddPluginBitmap('Delphi4Python - Export forms for Python', [LPng], false, 'Registered', '');
   finally
-    LBmp.Free();
+    LPng.Free();
   end;
 end;
 

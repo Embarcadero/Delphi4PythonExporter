@@ -5,7 +5,7 @@
         <ProjectVersion>19.3</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Package</AppType>
@@ -69,6 +69,12 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
@@ -84,7 +90,7 @@
         <SanitizedProjectName>dclDelphi4PythonExperts</SanitizedProjectName>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <DCC_Description>DelphiFMX - Experts Components</DCC_Description>
+        <DCC_Description>Delphi4Python - Export forms for Python</DCC_Description>
         <DllSuffix>$(Auto)</DllSuffix>
         <DesignOnlyPackage>true</DesignOnlyPackage>
     </PropertyGroup>
@@ -146,6 +152,9 @@
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+    </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
@@ -178,12 +187,12 @@
         <DCCReference Include="model\PythonTools.Model.ApplicationProducer.pas"/>
         <DCCReference Include="model\PythonTools.Model.FormProducer.pas"/>
         <DCCReference Include="model\PythonTools.Model.FormFileProducer.pas"/>
-        <RcItem Include="images\EmbarcaderoPython(16px).bmp">
-            <ResourceType>BITMAP</ResourceType>
+        <RcItem Include="images\EmbarcaderoPython(16px).png">
+            <ResourceType>RCDATA</ResourceType>
             <ResourceId>embarcaderopython_16px</ResourceId>
         </RcItem>
-        <RcItem Include="images\EmbarcaderoPython(24px).bmp">
-            <ResourceType>BITMAP</ResourceType>
+        <RcItem Include="images\EmbarcaderoPython(24px).png">
+            <ResourceType>RCDATA</ResourceType>
             <ResourceId>embarcaderopython_24px</ResourceId>
         </RcItem>
         <BuildConfiguration Include="Base">
@@ -207,6 +216,8 @@
                     <Source Name="MainSource">dclDelphi4PythonExperts.dpk</Source>
                 </Source>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\22.0\Bpl\dclDelphi4PythonExperts280.bpl">Delphi4Python - Experts Components</Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\22.0\Bpl\dclDelphiVCLExperts280.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\22.0\Bpl\dclDelphiVCLExperts280.bpl not found</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcboffice2k280.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
@@ -943,8 +954,8 @@
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

@@ -1,4 +1,4 @@
-unit PythonTools.ExportProject.Design;
+unit PythonTools.Design.ExportProject;
 
 interface
 

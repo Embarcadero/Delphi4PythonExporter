@@ -1,4 +1,4 @@
-unit PythonTools.ExportForm.Exporter;
+unit PythonTools.Exporter.ExportForm;
 
 interface
 

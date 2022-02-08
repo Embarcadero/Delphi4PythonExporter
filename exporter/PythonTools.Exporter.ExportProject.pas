@@ -1,4 +1,4 @@
-unit PythonTools.ExportProject.Exporter;
+unit PythonTools.Exporter.ExportProject;
 
 interface
 
@@ -28,9 +28,9 @@ implementation
 uses
   System.SysUtils,
   PythonTools.Common, PythonTools.Exceptions,
-  PythonTools.ExportApplication.Exporter,
-  PythonTools.ExportForm.Exporter,
-  PythonTools.ExportProject.Design;
+  PythonTools.Exporter.ExportApplication,
+  PythonTools.Exporter.ExportForm,
+  PythonTools.Design.ExportProject;
 
 { TExportProjectService }
 

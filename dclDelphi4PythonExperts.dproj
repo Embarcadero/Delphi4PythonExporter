@@ -177,13 +177,13 @@
         <DCCReference Include="PythonTools.Exceptions.pas"/>
         <DCCReference Include="model\PythonTools.Model.ExportProject.pas"/>
         <DCCReference Include="PythonTools.Common.pas"/>
-        <DCCReference Include="design\PythonTools.ExportProject.Design.pas">
+        <DCCReference Include="design\PythonTools.Design.ExportProject.pas">
             <Form>ProjectExportDialog</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="exporter\PythonTools.ExportApplication.Exporter.pas"/>
-        <DCCReference Include="exporter\PythonTools.ExportForm.Exporter.pas"/>
-        <DCCReference Include="exporter\PythonTools.ExportProject.Exporter.pas"/>
+        <DCCReference Include="exporter\PythonTools.Exporter.ExportApplication.pas"/>
+        <DCCReference Include="exporter\PythonTools.Exporter.ExportForm.pas"/>
+        <DCCReference Include="exporter\PythonTools.Exporter.ExportProject.pas"/>
         <DCCReference Include="model\PythonTools.Model.ApplicationProducer.pas"/>
         <DCCReference Include="model\PythonTools.Model.FormProducer.pas"/>
         <DCCReference Include="model\PythonTools.Model.FormFileProducer.pas"/>

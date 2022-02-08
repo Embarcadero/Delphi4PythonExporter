@@ -26,7 +26,7 @@ implementation
 
 uses
   System.StrUtils,
-  PythonTools.ExportProject.Exporter;
+  PythonTools.Exporter.ExportProject;
 
 { TPythonToolsExportProjectMenuAction }
 

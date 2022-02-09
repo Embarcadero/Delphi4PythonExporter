@@ -1,6 +1,7 @@
 object ProjectExportDialog: TProjectExportDialog
   Left = 0
   Top = 0
+  ActiveControl = edtApplicationTitle
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Export'
@@ -2231,7 +2232,7 @@ object ProjectExportDialog: TProjectExportDialog
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 1
+    TabOrder = 5
     object btnCancel: TButton
       Left = 529
       Top = 6
@@ -2239,7 +2240,7 @@ object ProjectExportDialog: TProjectExportDialog
       Height = 25
       Caption = 'Cancel'
       ModalResult = 2
-      TabOrder = 0
+      TabOrder = 1
     end
     object btnExport: TButton
       Left = 438
@@ -2247,7 +2248,7 @@ object ProjectExportDialog: TProjectExportDialog
       Width = 85
       Height = 25
       Caption = 'Export'
-      TabOrder = 1
+      TabOrder = 0
       OnClick = btnExportClick
     end
   end
@@ -2290,7 +2291,7 @@ object ProjectExportDialog: TProjectExportDialog
     Height = 60
     Align = alTop
     BevelOuter = bvNone
-    TabOrder = 3
+    TabOrder = 1
     object lblAppTitle: TLabel
       Left = 8
       Top = 3
@@ -2358,7 +2359,7 @@ object ProjectExportDialog: TProjectExportDialog
     Height = 41
     Align = alTop
     BevelOuter = bvNone
-    TabOrder = 5
+    TabOrder = 3
     object lblExpOpts: TLabel
       Left = 8
       Top = 6

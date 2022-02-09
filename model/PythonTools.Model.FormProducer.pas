@@ -3,7 +3,7 @@ unit PythonTools.Model.FormProducer;
 interface
 
 uses
-  System.Classes;
+  System.Classes, System.Rtti, PythonTools.Common;
 
 type
   TFormProducerModel = class
@@ -29,6 +29,7 @@ type
     FDirectory: string;
     FExportedComponents: TArray<TComponent>;
     FModelInitialization: TModuleInitialization;
+    FExportedEvents: TExportedEvents;
   public
     constructor Create();
     destructor Destroy(); override;
@@ -52,6 +53,10 @@ type
     ///   List of exported components
     /// </summary>
     property ExportedComponents: TArray<TComponent> read FExportedComponents write FExportedComponents;
+    /// <summary>
+    ///   List of exported events
+    /// </summary>
+    property ExportedEvents: TExportedEvents read FExportedEvents write FExportedEvents;
     /// <summary>
     ///   Generates the model initialization section
     /// </summary>

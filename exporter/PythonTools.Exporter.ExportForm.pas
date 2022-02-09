@@ -3,8 +3,9 @@ unit PythonTools.Exporter.ExportForm;
 interface
 
 uses
-  DesignIntf, System.Classes, System.Generics.Collections,
-  PythonTools.IOTAUtils,
+  DesignIntf,
+  System.Classes, System.Generics.Collections, System.Rtti,
+  PythonTools.IOTAUtils, PythonTools.Common,
   PythonTools.Model.ExportProject,
   PythonTools.Model.FormProducer,
   PythonTools.Model.FormFileProducer;
@@ -16,6 +17,7 @@ type
     FFormInfo: TIOTAFormInfo;
     //Utils
     function FindComponents(const ADesigner: IDesigner): TArray<TComponent>;
+    function FindEvents(const ADesigner: IDesigner): TExportedEvents;
   protected
      //Producer models
     function BuildFormModel: TFormProducerModel;
@@ -57,6 +59,17 @@ begin
   end;
 end;
 
+function TExportFormExporter.FindEvents(
+  const ADesigner: IDesigner): TExportedEvents;
+begin
+  var LIOTAUtils := TIOTAUtils.Create();
+  try
+    Result := LIOTAUtils.FindEvents(ADesigner);
+  finally
+    LIOTAUtils.Free();
+  end;
+end;
+
 procedure TExportFormExporter.ExportForm;
 begin
   DoExportForm();
@@ -85,6 +98,7 @@ begin
       FileName := ChangeFileExt(ExtractFileName(FFormInfo.ModuleInfo.FileName), '');
       Directory := FModel.ApplicationDirectory;
       ExportedComponents := FindComponents(FFormInfo.Designer);
+      ExportedEvents := FindEvents(FFormInfo.Designer);
       with ModelInitialization do begin
         GenerateInitialization := false;
       end;

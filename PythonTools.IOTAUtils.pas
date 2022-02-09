@@ -3,8 +3,8 @@ unit PythonTools.IOTAUtils;
 interface
 
 uses
-  DesignIntf, System.Classes, System.Generics.Collections, ToolsAPI,
-  System.SysUtils;
+  DesignIntf, ToolsAPI, System.Classes, System.Generics.Collections,
+  System.SysUtils, System.Rtti, PythonTools.Common;
 
 type
   TIOTAFormInfo = record
@@ -24,6 +24,7 @@ type
     destructor Destroy(); override;
 
     function FindComponents(const ADesigner: IDesigner): TArray<TComponent>;
+    function FindEvents(const ADesigner: IDesigner): TExportedEvents;
 
     class procedure EnumForms(const AProject: IOTAProject; const AProc: TProc<TIOTAFormInfo>);
     class function GetFormEditorFromModule(const AModule: IOTAModule): IOTAFormEditor;
@@ -32,7 +33,7 @@ type
 implementation
 
 uses
-  TypInfo;
+  TypInfo, System.Generics.Defaults;
 
 { TIOTAUtils }
 
@@ -87,6 +88,71 @@ begin
     Result := LCompList.ToArray();
   finally
     LCompList.Free();
+  end;
+end;
+
+function TIOTAUtils.FindEvents(const ADesigner: IDesigner): TExportedEvents;
+
+  procedure ExtractPropertyEvents(const ARttiContext: TRttiContext;
+    const AComponent: TComponent; const AEvents: TExportedEventList);
+  begin
+    var LRttiType := ARttiContext.GetType(AComponent.ClassInfo);
+    try
+      for var LRttiProp in LRttiType.GetProperties() do begin
+        if not (LRttiProp.Visibility = TMemberVisibility.mvPublished) then
+          Continue;
+
+        if not (LRttiProp.PropertyType is TRttiMethodType) then
+          Continue;
+
+        var LMethod := LRttiProp.GetValue(AComponent);
+
+        if LMethod.IsEmpty then
+          Continue;
+
+        var LMethodName := ADesigner.GetMethodName(PMethod(LMethod.GetReferenceToRawData)^);
+        if not ADesigner.MethodExists(LMethodName) then
+          Continue;
+
+        var LRttiMethod := LRttiProp.PropertyType as TRttiMethodType;
+        var LParamList := TList<string>.Create();
+        try
+          for var LParam in LRttiMethod.GetParameters() do begin
+            LParamList.Add(LParam.Name);
+          end;
+
+          var LEvt := TExportedEvent.Create(LMethodName, LParamList.ToArray());
+          if not AEvents.Contains(LEvt) then
+            AEvents.Add(LEvt);
+        finally
+          LParamList.Free();
+        end;
+      end;
+    finally
+      LRttiType.Free();
+    end;
+  end;
+
+begin
+  var LEvts := TExportedEventList.Create(
+    TDelegatedComparer<TExportedEvent>.Create(
+      function(const Left, Right: TExportedEvent): Integer begin
+        Result := CompareStr(Left.MethodName, Right.MethodName);
+      end));
+  try
+    var LRttiCtx := TRttiContext.Create();
+    try
+      //Extract the form events
+      ExtractPropertyEvents(LRttiCtx, ADesigner.Root, LEvts);
+      //Extract the component events
+      for var LComponent in FindComponents(ADesigner) do
+        ExtractPropertyEvents(LRttiCtx, LComponent, LEvts);
+    finally
+      LRttiCtx.Free();
+    end;
+    Result := LEvts.ToArray();
+  finally
+    LEvts.Free();
   end;
 end;
 

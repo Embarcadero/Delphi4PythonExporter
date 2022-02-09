@@ -6,7 +6,7 @@ uses
   DesignIntf, System.Classes, System.Generics.Collections,
   PythonTools.Producer,
   PythonTools.Model.ApplicationProducer,
-  PythonTools.Model.FormProducer;
+  PythonTools.Model.FormProducer, System.SysUtils;
 
 type
   TAbstractFormProducer = class abstract(TInterfacedObject)
@@ -29,7 +29,7 @@ const
 implementation
 
 uses
-  TypInfo, System.SysUtils, System.StrUtils;
+  TypInfo, System.StrUtils;
 
 const
   PY_APP_IMPORTED_FORMS =
@@ -48,6 +48,7 @@ const
   PY_MODULE_CLASS =
     'class @CLASSNAME(@CLASSPARENT):'
   + sLineBreak
+  + sLineBreak
   + sIdentation1
   + 'def __init__(self, owner):';
 
@@ -58,6 +59,10 @@ const
   PY_MODULE_LOAD_PROPS =
     sIdentation2
   + 'self.LoadProps(os.path.join(os.path.dirname(os.path.abspath(__file__)), "@FILE@FORMFILEEXT"))';
+
+  PY_MODULE_EVTS =
+    sIdentation1
+  + '@EVENTS';
 
 { TAbstractFormProducer }
 
@@ -99,8 +104,27 @@ begin
   var LProps := String.Empty;
   for var LComp in AModel.ExportedComponents do begin
     if not LProps.IsEmpty() then
-      LProps := LProps + sLineBreak + '        ';
+      LProps := LProps
+        + sLineBreak
+        + sIdentation2;
     LProps := LProps + 'self.' + LComp.Name + ' = None';
+  end;
+
+  var LEvts := String.Empty;
+  for var LEvt in AModel.ExportedEvents do begin
+    if not LEvts.IsEmpty then
+      LEvts := LEvts
+        + sLineBreak
+        + sLineBreak
+        + sIdentation1;
+    LEvts := LEvts + 'def ' + LEvt.MethodName + '(self';
+    for var LParam in LEvt.MethodParams do begin
+      LEvts := LEvts + ', ' + LParam
+    end;
+    LEvts := LEvts + '):'
+      + sLineBreak
+      + sIdentation2
+      + 'pass';
   end;
 
   var LStrFile :=
@@ -123,6 +147,13 @@ begin
     + PY_MODULE_LOAD_PROPS
       .Replace('@FILE', AModel.FileName)
       .Replace('@FORMFILEEXT', GetPythonFormFileExtension());
+
+  if not LEvts.IsEmpty() then
+    LStrFile := LStrFile
+      + sLineBreak
+      + sLineBreak
+      + PY_MODULE_EVTS
+        .Replace('@EVENTS', LEvts);
 
   if AModel.ModelInitialization.GenerateInitialization then
     LStrFile := LStrFile

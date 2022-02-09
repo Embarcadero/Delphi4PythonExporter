@@ -27,7 +27,7 @@ type
     FFormParentName: string;
     FFileName: string;
     FDirectory: string;
-    FExportedComponents: TArray<TComponent>;
+    FExportedComponents: TExportedComponents;
     FModelInitialization: TModuleInitialization;
     FExportedEvents: TExportedEvents;
   public
@@ -52,7 +52,7 @@ type
     /// <summary>
     ///   List of exported components
     /// </summary>
-    property ExportedComponents: TArray<TComponent> read FExportedComponents write FExportedComponents;
+    property ExportedComponents: TExportedComponents read FExportedComponents write FExportedComponents;
     /// <summary>
     ///   List of exported events
     /// </summary>

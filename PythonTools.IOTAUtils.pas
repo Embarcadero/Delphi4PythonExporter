@@ -23,7 +23,7 @@ type
     constructor Create();
     destructor Destroy(); override;
 
-    function FindComponents(const ADesigner: IDesigner): TArray<TComponent>;
+    function FindComponents(const ADesigner: IDesigner): TExportedComponents;
     function FindEvents(const ADesigner: IDesigner): TExportedEvents;
 
     class procedure EnumForms(const AProject: IOTAProject; const AProc: TProc<TIOTAFormInfo>);
@@ -76,14 +76,14 @@ begin
   end;
 end;
 
-function TIOTAUtils.FindComponents(const ADesigner: IDesigner): TArray<TComponent>;
+function TIOTAUtils.FindComponents(const ADesigner: IDesigner): TExportedComponents;
 begin
-  var LCompList := TList<TComponent>.Create();
+  var LCompList := TExportedComponentList.Create();
   try
     FComponentNames.Clear();
     ADesigner.GetComponentNames(GetTypeData(TypeInfo(TComponent)), DoListComps);
     for var LCompName in FComponentNames do begin
-      LCompList.Add(ADesigner.GetComponent(LCompName));
+      LCompList.Add(TExportedComponent.Create(ADesigner.GetComponent(LCompName).Name));
     end;
     Result := LCompList.ToArray();
   finally
@@ -133,6 +133,20 @@ function TIOTAUtils.FindEvents(const ADesigner: IDesigner): TExportedEvents;
     end;
   end;
 
+  function FindComponentRefs(): TArray<TComponent>;
+  begin
+    var LComps := FindComponents(ADesigner);
+    var LCompList := TList<TComponent>.Create();
+    try
+      for var LCompName in LComps do begin
+        LCompList.Add(ADesigner.GetComponent(LCompName.ComponentName));
+      end;
+      Result := LCompList.ToArray();
+    finally
+      LCompList.Free();
+    end;
+  end;
+
 begin
   var LEvts := TExportedEventList.Create(
     TDelegatedComparer<TExportedEvent>.Create(
@@ -145,7 +159,7 @@ begin
       //Extract the form events
       ExtractPropertyEvents(LRttiCtx, ADesigner.Root, LEvts);
       //Extract the component events
-      for var LComponent in FindComponents(ADesigner) do
+      for var LComponent in FindComponentRefs() do
         ExtractPropertyEvents(LRttiCtx, LComponent, LEvts);
     finally
       LRttiCtx.Free();

@@ -17,6 +17,16 @@ type
   TFormNamesAndFiles = TArray<TFormNameAndFile>;
   TFormNameAndFileList = TList<TFormNameAndFile>;
 
+  TExportedComponent = record
+  public
+    ComponentName: string;
+  public
+    constructor Create(const AComponentName: string);
+  end;
+
+  TExportedComponents = TArray<TExportedComponent>;
+  TExportedComponentList = TList<TExportedComponent>;
+
   TExportedEvent = record
   public
     MethodName: string;
@@ -36,6 +46,13 @@ constructor TFormNameAndFile.Create(const AFormName, AFileName: string);
 begin
   FormName := AFormName;
   FileName := AFileName;
+end;
+
+{ TExportedComponent }
+
+constructor TExportedComponent.Create(const AComponentName: string);
+begin
+  ComponentName := AComponentName;
 end;
 
 { TExportedEvent }

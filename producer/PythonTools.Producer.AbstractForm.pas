@@ -102,7 +102,7 @@ begin
       LProps := LProps
         + sLineBreak
         + sIdentation2;
-    LProps := LProps + 'self.' + LComp.Name + ' = None';
+    LProps := LProps + 'self.' + LComp.ComponentName + ' = None';
   end;
 
   var LEvts := String.Empty;

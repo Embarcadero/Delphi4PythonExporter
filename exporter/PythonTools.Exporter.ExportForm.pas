@@ -16,7 +16,7 @@ type
     FModel: TExportProjectModel;
     FFormInfo: TIOTAFormInfo;
     //Utils
-    function FindComponents(const ADesigner: IDesigner): TArray<TComponent>;
+    function FindComponents(const ADesigner: IDesigner): TExportedComponents;
     function FindEvents(const ADesigner: IDesigner): TExportedEvents;
   protected
      //Producer models
@@ -49,7 +49,7 @@ begin
 end;
 
 function TExportFormExporter.FindComponents(
-  const ADesigner: IDesigner): TArray<TComponent>;
+  const ADesigner: IDesigner): TExportedComponents;
 begin
   var LIOTAUtils := TIOTAUtils.Create();
   try

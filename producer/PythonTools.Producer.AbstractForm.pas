@@ -3,7 +3,7 @@ unit PythonTools.Producer.AbstractForm;
 interface
 
 uses
-  DesignIntf, System.Classes, System.Generics.Collections,
+  System.Classes, System.Generics.Collections,
   PythonTools.Producer,
   PythonTools.Model.ApplicationProducer,
   PythonTools.Model.FormProducer, System.SysUtils;
@@ -20,11 +20,6 @@ type
   public
 
   end;
-
-const
-  //Using 4 spaces identation
-  sIdentation1 = '    ';
-  sIdentation2 = sIdentation1 + sIdentation1;
 
 implementation
 

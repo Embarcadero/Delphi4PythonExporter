@@ -29,7 +29,7 @@ type
     /// <summary>
     ///   Forms included in the import section
     /// </summary>
-    property ImportedForms: TArray<TFormNameAndFile> read FImportedForms write FImportedForms;
+    property ImportedForms: TFormNamesAndFiles read FImportedForms write FImportedForms;
     /// <summary>
     ///   The directory where the generated files will be saved
     /// </summary>

@@ -19,6 +19,11 @@ type
     procedure SavePyFormFileTxt(const AModel: TFormFileProducerModel);
   end;
 
+const
+  //Using 4 spaces identation
+  sIdentation1 = '    ';
+  sIdentation2 = sIdentation1 + sIdentation1;
+
 implementation
 
 end.

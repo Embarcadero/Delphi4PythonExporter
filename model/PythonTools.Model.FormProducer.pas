@@ -3,7 +3,8 @@ unit PythonTools.Model.FormProducer;
 interface
 
 uses
-  System.Classes, System.Rtti, PythonTools.Common;
+  System.Classes, System.Rtti,
+  PythonTools.Common;
 
 type
   TFormProducerModel = class
@@ -23,9 +24,9 @@ type
       property Title: string read FTitle write FTitle;
     end;
   private
-    FClassName: string;
+    FFormName: string;
     FFormParentName: string;
-    FFileName: string;
+    FFileName: TFileName;
     FDirectory: string;
     FExportedComponents: TExportedComponents;
     FModelInitialization: TModuleInitialization;
@@ -36,15 +37,15 @@ type
     /// <summary>
     ///   The Form name: used to generate the Python class name
     /// </summary>
-    property FormName: string read FClassName write FClassName;
+    property FormName: string read FFormName write FFormName;
     /// <summary>
     ///   The Form parent class name: used to the Form inheritance chain
     /// </summary>
     property FormParentName: string read FFormParentName write FFormParentName;
     /// <summary>
-    ///   The Unit name: used to generate the Python (.py) file name
+    ///   The Unit name: used to generate the Python (.py) file name. Warning: Must not contain extension.
     /// </summary>
-    property FileName: string read FFileName write FFileName;
+    property FileName: TFileName read FFileName write FFileName;
     /// <summary>
     ///   The directory where the generated files will be saved
     /// </summary>

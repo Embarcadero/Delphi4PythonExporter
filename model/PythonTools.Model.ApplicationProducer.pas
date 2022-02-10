@@ -8,7 +8,7 @@ uses
 type
   TApplicationProducerModel = class
   private
-    FFileName: string;
+    FFileName: TApplicationFile;
     FTitle: string;
     FMainForm: string;
     FImportedForms: TFormNamesAndFiles;
@@ -23,9 +23,9 @@ type
     /// </summary>
     property Title: string read FTitle write FTitle;
     /// <summary>
-    ///   The Unit name: used to generate the Python (.py) file name
+    ///   The Unit name: used to generate the Python (.py) file name. Warning: Must not contain extension.
     /// </summary>
-    property FileName: string read FFileName write FFileName;
+    property FileName: TApplicationFile read FFileName write FFileName;
     /// <summary>
     ///   Forms included in the import section
     /// </summary>

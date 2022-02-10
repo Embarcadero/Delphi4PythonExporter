@@ -3,6 +3,7 @@ unit PythonTools.Producer.FMXForm;
 interface
 
 uses
+  PythonTools.Common,
   PythonTools.Producer,
   PythonTools.Producer.AbstractForm,
   PythonTools.Model.ApplicationProducer,
@@ -63,7 +64,7 @@ const
 
 function TFMXFormProducer.GetPythonFormFileExtension: string;
 begin
-  Result := '.pyfmx';
+  Result := TFormFile('').AsPythonFmx;
 end;
 
 function TFMXFormProducer.GetPythonModuleName: string;
@@ -84,8 +85,7 @@ end;
 procedure TFMXFormProducer.SavePyApplicationFile(
   const AModel: TApplicationProducerModel);
 begin
-  var LFilePath := TPath.Combine(AModel.Directory,
-    ChangeFileExt(AModel.FileName, '.py'));
+  var LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
 
   var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
@@ -97,8 +97,7 @@ end;
 
 procedure TFMXFormProducer.SavePyForm(const AModel: TFormProducerModel);
 begin
-  var LFilePath := TPath.Combine(AModel.Directory,
-    ChangeFileExt(AModel.FileName, '.py'));
+  var LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
 
   var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
@@ -110,8 +109,7 @@ end;
 
 procedure TFMXFormProducer.SavePyFormFileBin(const AModel: TFormFileProducerModel);
 begin
-  var LFilePath := TPath.Combine(AModel.Directory,
-    ChangeFileExt(AModel.FileName, '.pydfm'));
+  var LFilePath := TPath.Combine(AModel.Directory, AModel.FormFile.AsPythonFmx());
 
   var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
@@ -124,13 +122,13 @@ end;
 procedure TFMXFormProducer.SavePyFormFileTxt(
   const AModel: TFormFileProducerModel);
 begin
-  var LFmxFile := AModel.FormFilePath.AsFmx();
+  var LFmxFile := AModel.FormFilePath.AsDelphiFmx();
   if not TFile.Exists(LFmxFile) then
     raise EFormFileNotFound.CreateFmt('Fmx file not found at: %s', [LFmxFile]);
 
   var LPyFmxFile := TPath.Combine(
     AModel.Directory,
-    ExtractFileName(ChangeFileExt(LFmxFile, '.pyfmx'))
+    AModel.FormFile.AsPythonFmx()
   );
 
   TFile.Copy(LFmxFile, LPyFmxFile, true);

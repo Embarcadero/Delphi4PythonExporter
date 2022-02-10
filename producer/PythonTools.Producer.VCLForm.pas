@@ -3,6 +3,7 @@ unit PythonTools.Producer.VCLForm;
 interface
 
 uses
+  PythonTools.Common,
   PythonTools.Producer,
   PythonTools.Producer.AbstractForm,
   PythonTools.Model.ApplicationProducer,
@@ -63,7 +64,7 @@ const
 
 function TVCLFormProducer.GetPythonFormFileExtension: string;
 begin
-  Result := '.pydfm';
+  Result := TFormFile('').AsPythonDfm();
 end;
 
 function TVCLFormProducer.GetPythonModuleName: string;
@@ -84,8 +85,7 @@ end;
 procedure TVCLFormProducer.SavePyApplicationFile(
   const AModel: TApplicationProducerModel);
 begin
-  var LFilePath := TPath.Combine(AModel.Directory,
-    ChangeFileExt(AModel.FileName, '.py'));
+  var LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
 
   var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
@@ -97,8 +97,7 @@ end;
 
 procedure TVCLFormProducer.SavePyForm(const AModel: TFormProducerModel);
 begin
-  var LFilePath := TPath.Combine(AModel.Directory,
-    ChangeFileExt(AModel.FileName, '.py'));
+  var LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
 
   var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
@@ -110,8 +109,7 @@ end;
 
 procedure TVCLFormProducer.SavePyFormFileBin(const AModel: TFormFileProducerModel);
 begin
-  var LFilePath := TPath.Combine(AModel.Directory,
-    ChangeFileExt(AModel.FileName, '.pydfm'));
+  var LFilePath := TPath.Combine(AModel.Directory, AModel.FormFile.AsPythonDfm());
 
   var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
@@ -124,16 +122,16 @@ end;
 procedure TVCLFormProducer.SavePyFormFileTxt(
   const AModel: TFormFileProducerModel);
 begin
-  var LDfmFile := AModel.FormFilePath.AsDfm();
+  var LDfmFile := AModel.FormFilePath.AsDelphiDfm();
   if not TFile.Exists(LDfmFile) then
     raise EFormFileNotFound.CreateFmt('Dfm file not found at: %s', [LDfmFile]);
 
-  var LPyDfm := TPath.Combine(
+  var LPyDfmFile := TPath.Combine(
     AModel.Directory,
-    ExtractFileName(ChangeFileExt(LDfmFile, '.pydfm'))
+    AModel.FormFile.AsPythonDfm()
   );
 
-  TFile.Copy(LDfmFile, LPyDfm, true);
+  TFile.Copy(LDfmFile, LPyDfmFile, true);
 end;
 
 end.

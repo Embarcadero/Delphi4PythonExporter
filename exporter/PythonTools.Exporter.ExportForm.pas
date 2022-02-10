@@ -16,8 +16,8 @@ type
     FModel: TExportProjectModel;
     FFormInfo: TIOTAFormInfo;
     //Utils
-    function FindComponents(const ADesigner: IDesigner): TExportedComponents;
-    function FindEvents(const ADesigner: IDesigner): TExportedEvents;
+    function FindComponents(): TExportedComponents;
+    function FindEvents(): TExportedEvents;
   protected
      //Producer models
     function BuildFormModel: TFormProducerModel;
@@ -48,26 +48,14 @@ begin
   FFormInfo := AFormInfo;
 end;
 
-function TExportFormExporter.FindComponents(
-  const ADesigner: IDesigner): TExportedComponents;
+function TExportFormExporter.FindComponents(): TExportedComponents;
 begin
-  var LIOTAUtils := TIOTAUtils.Create();
-  try
-    Result := LIOTAUtils.FindComponents(ADesigner);
-  finally
-    LIOTAUtils.Free();
-  end;
+  Result := TIOTAUtils.FindComponents(FFormInfo.Editor);
 end;
 
-function TExportFormExporter.FindEvents(
-  const ADesigner: IDesigner): TExportedEvents;
+function TExportFormExporter.FindEvents(): TExportedEvents;
 begin
-  var LIOTAUtils := TIOTAUtils.Create();
-  try
-    Result := LIOTAUtils.FindEvents(ADesigner);
-  finally
-    LIOTAUtils.Free();
-  end;
+  Result := TIOTAUtils.FindEvents(FFormInfo.Editor, FFormInfo.Designer);
 end;
 
 procedure TExportFormExporter.ExportForm;
@@ -97,8 +85,8 @@ begin
         FFormInfo.Designer.Root.ClassParent.ClassName.Length);
       FileName := ChangeFileExt(ExtractFileName(FFormInfo.ModuleInfo.FileName), '');
       Directory := FModel.ApplicationDirectory;
-      ExportedComponents := FindComponents(FFormInfo.Designer);
-      ExportedEvents := FindEvents(FFormInfo.Designer);
+      ExportedComponents := FindComponents();
+      ExportedEvents := FindEvents();
       with ModelInitialization do begin
         GenerateInitialization := false;
       end;
@@ -116,7 +104,7 @@ begin
   Result := TFormFileProducerModel.Create();
   try
     with Result do begin
-      FileName := ChangeFileExt(ExtractFileName(FFormInfo.ModuleInfo.FileName), '');
+      FormFile := ChangeFileExt(ExtractFileName(FFormInfo.ModuleInfo.FileName), '');
       Directory := FModel.ApplicationDirectory;
       FormFilePath := ChangeFileExt(FFormInfo.ModuleInfo.FileName, '');
       Form := FFormInfo.Designer.Root;

@@ -13,7 +13,8 @@ uses
   DUnitX.Loggers.Xml.NUnit,
   {$ENDIF }
   DUnitX.TestFramework,
-  VCL.Producer.Test in 'VCL.Producer.Test.pas';
+  VCL.Producer.Test in 'VCL.Producer.Test.pas',
+  Data.VCLForm in 'data\Data.VCLForm.pas' {VclForm};
 
 { keep comment here to protect the following conditional from being removed by the IDE when adding a unit }
 

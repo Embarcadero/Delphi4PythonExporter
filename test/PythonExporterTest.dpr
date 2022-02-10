@@ -14,7 +14,9 @@ uses
   {$ENDIF }
   DUnitX.TestFramework,
   VCL.Producer.Test in 'VCL.Producer.Test.pas',
-  Data.VCLForm in 'data\Data.VCLForm.pas' {VclForm};
+  Data.VCLForm in 'data\Data.VCLForm.pas' {VclForm},
+  Data.FMXForm in 'data\Data.FMXForm.pas' {FmxForm},
+  FMX.Producer.Test in 'FMX.Producer.Test.pas';
 
 { keep comment here to protect the following conditional from being removed by the IDE when adding a unit }
 

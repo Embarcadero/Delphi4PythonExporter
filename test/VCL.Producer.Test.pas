@@ -13,7 +13,7 @@ uses
 
 type
   [TestFixture]
-  TProducerTest = class
+  TVCLProducerTest = class
   private
     FProducer: IPythonCodeProducer;
     FApplicationModel: TApplicationProducerModel;
@@ -49,7 +49,7 @@ implementation
 uses
   System.SysUtils, System.IOUtils, System.Classes, Vcl.Forms, Data.VCLForm;
 
-procedure TProducerTest.Setup;
+procedure TVCLProducerTest.Setup;
 begin
   FProducer := TProducerSimpleFactory.CreateProducer('VCL');
   FApplicationModel := BuildApplicationModel();
@@ -57,7 +57,7 @@ begin
   FFormFileModel := BuildFormFileModel();
 end;
 
-procedure TProducerTest.TearDown;
+procedure TVCLProducerTest.TearDown;
 begin
   FFormFileModel.Free();
   FFormModel.Free();
@@ -66,20 +66,20 @@ begin
   TDirectory.Delete(GetFilesDir(), true);
 end;
 
-function TProducerTest.GetDataDir: string;
+function TVCLProducerTest.GetDataDir: string;
 begin
   Result := TDirectory.GetParent(TDirectory.GetParent(ExtractFileDir(ParamStr(0))));
   Result := TPath.Combine(Result, 'data');
 end;
 
-function TProducerTest.GetFilesDir: string;
+function TVCLProducerTest.GetFilesDir: string;
 begin
   Result := TPath.Combine(ExtractFileDir(ParamStr(0)), 'testfiles');
   if not TDirectory.Exists(Result) then
     TDirectory.CreateDirectory(Result);
 end;
 
-function TProducerTest.BuildApplicationModel: TApplicationProducerModel;
+function TVCLProducerTest.BuildApplicationModel: TApplicationProducerModel;
 const
   UNIT_NAME = 'UnitProjectTest';
   FORM_NAME = 'FormTest';
@@ -107,7 +107,7 @@ begin
   end;
 end;
 
-function TProducerTest.BuildFormFileModel: TFormFileProducerModel;
+function TVCLProducerTest.BuildFormFileModel: TFormFileProducerModel;
 begin
   Result := TFormFileProducerModel.Create();
   try
@@ -123,7 +123,7 @@ begin
   end;
 end;
 
-function TProducerTest.BuildFormModel: TFormProducerModel;
+function TVCLProducerTest.BuildFormModel: TFormProducerModel;
 const
   UNIT_NAME = 'UnitFormTest';
   FORM_NAME = 'FormTest';
@@ -160,12 +160,12 @@ begin
   end;
 end;
 
-procedure TProducerTest.CheckFormInheritance;
+procedure TVCLProducerTest.CheckFormInheritance;
 begin
   Assert.IsTrue(FProducer.IsValidFormInheritance(TForm));
 end;
 
-procedure TProducerTest.GenerateApplication;
+procedure TVCLProducerTest.GenerateApplication;
 begin
   //Save the project file
   FProducer.SavePyApplicationFile(FApplicationModel);
@@ -216,13 +216,13 @@ begin
   end;
 end;
 
-procedure TProducerTest.GenerateForm;
+procedure TVCLProducerTest.GenerateForm;
 begin
   //Save the form file
   FProducer.SavePyForm(FFormModel);
 
   //Check for the generated file
-  var LFilePath := TPath.Combine(FFormModel.Directory, ChangeFileExt(FFormModel.FileName, '.py'));
+  var LFilePath := TPath.Combine(FFormModel.Directory, FFormModel.FileName.AsPython());
   Assert.IsTrue(TFile.Exists(LFilePath));
 
   var LStrings := TStringList.Create();
@@ -250,8 +250,9 @@ begin
     Assert.IsTrue(LStrings[5] = sIdentation1 + 'def __init__(self, owner):');
     Assert.IsTrue(LStrings[6] = sIdentation2 + Format('self.%s = None', [
       FFormModel.ExportedComponents[0].ComponentName]));
-    Assert.IsTrue(LStrings[7] = sIdentation2 + Format('self.LoadProps(os.path.join(os.path.dirname(os.path.abspath(__file__)), "%s.pydfm"))', [
-      FFormModel.FileName]));
+    Assert.IsTrue(LStrings[7] = sIdentation2
+      + Format('self.LoadProps(os.path.join(os.path.dirname(os.path.abspath(__file__)), "%s%s"))', [
+      FFormModel.FileName, TFormFile('').AsPythonDfm()]));
     Assert.IsTrue(LStrings[8] = String.Empty);
     Assert.IsTrue(LStrings[9] = sIdentation1 + Format('def %s(self, %s, %s):', [
       FFormModel.ExportedEvents[0].MethodName,
@@ -263,7 +264,7 @@ begin
   end;
 end;
 
-procedure TProducerTest.GenerateFormFileBin;
+procedure TVCLProducerTest.GenerateFormFileBin;
 begin
   //Save the project file
   FProducer.SavePyFormFileBin(FFormFileModel);
@@ -295,7 +296,7 @@ begin
   end;
 end;
 
-procedure TProducerTest.GenerateFormFileTxt;
+procedure TVCLProducerTest.GenerateFormFileTxt;
 begin
   //Save the project file
   FProducer.SavePyFormFileTxt(FFormFileModel);
@@ -335,6 +336,6 @@ begin
 end;
 
 initialization
-  TDUnitX.RegisterTestFixture(TProducerTest);
+  TDUnitX.RegisterTestFixture(TVCLProducerTest);
 
 end.

@@ -8,7 +8,8 @@ uses
   PythonTools.Producer,
   PythonTools.Producer.SimpleFactory,
   PythonTools.Model.ApplicationProducer,
-  PythonTools.Model.FormProducer;
+  PythonTools.Model.FormProducer,
+  PythonTools.Model.FormFileProducer;
 
 type
   [TestFixture]
@@ -17,10 +18,14 @@ type
     FProducer: IPythonCodeProducer;
     FApplicationModel: TApplicationProducerModel;
     FFormModel: TFormProducerModel;
+    FFormFileModel: TFormFileProducerModel;
 
     function GetFilesDir(): string;
+    function GetDataDir(): string;
+
     function BuildApplicationModel(): TApplicationProducerModel;
     function BuildFormModel(): TFormProducerModel;
+    function BuildFormFileModel(): TFormFileProducerModel;
   public
     [Setup]
     procedure Setup;
@@ -33,26 +38,38 @@ type
     procedure GenerateApplication();
     [Test]
     procedure GenerateForm();
+    [Test]
+    procedure GenerateFormFileBin();
+    [Test]
+    procedure GenerateFormFileTxt();
   end;
 
 implementation
 
 uses
-  System.SysUtils, System.IOUtils, System.Classes, Vcl.Forms;
+  System.SysUtils, System.IOUtils, System.Classes, Vcl.Forms, Data.VCLForm;
 
 procedure TProducerTest.Setup;
 begin
   FProducer := TProducerSimpleFactory.CreateProducer('VCL');
   FApplicationModel := BuildApplicationModel();
   FFormModel := BuildFormModel();
+  FFormFileModel := BuildFormFileModel();
 end;
 
 procedure TProducerTest.TearDown;
 begin
+  FFormFileModel.Free();
   FFormModel.Free();
   FApplicationModel.Free();
   FProducer := nil;
   TDirectory.Delete(GetFilesDir(), true);
+end;
+
+function TProducerTest.GetDataDir: string;
+begin
+  Result := TDirectory.GetParent(TDirectory.GetParent(ExtractFileDir(ParamStr(0))));
+  Result := TPath.Combine(Result, 'data');
 end;
 
 function TProducerTest.GetFilesDir: string;
@@ -82,6 +99,22 @@ begin
     finally
       LForms.Free();
     end;
+  except
+    on E: Exception do begin
+      FreeAndNil(Result);
+      raise;
+    end;
+  end;
+end;
+
+function TProducerTest.BuildFormFileModel: TFormFileProducerModel;
+begin
+  Result := TFormFileProducerModel.Create();
+  try
+    Result.Directory := GetFilesDir();
+    Result.FormFile := 'Data.VCLForm';
+    Result.FormFilePath := TPath.Combine(GetDataDir(), 'Data.VCLForm');
+    Result.Form := VclForm;
   except
     on E: Exception do begin
       FreeAndNil(Result);
@@ -138,7 +171,7 @@ begin
   FProducer.SavePyApplicationFile(FApplicationModel);
 
   //Check for the generated file
-  var LFilePath := TPath.Combine(FApplicationModel.Directory, ChangeFileExt(FApplicationModel.FileName, '.py'));
+  var LFilePath := TPath.Combine(FApplicationModel.Directory, FApplicationModel.FileName.AsPython());
   Assert.IsTrue(TFile.Exists(LFilePath));
 
   var LStrings := TStringList.Create();
@@ -227,6 +260,77 @@ begin
     Assert.IsTrue(LStrings[10] = sIdentation2 +'pass');
   finally
     LStrings.Free();
+  end;
+end;
+
+procedure TProducerTest.GenerateFormFileBin;
+begin
+  //Save the project file
+  FProducer.SavePyFormFileBin(FFormFileModel);
+
+  //Check for the generated file
+  var LFilePath := TPath.Combine(FFormFileModel.Directory, FFormFileModel.FormFile.AsPythonDfm());
+  Assert.IsTrue(TFile.Exists(LFilePath));
+
+  var LStream := TFileStream.Create(LFilePath, fmOpenRead);
+  try
+    var LReader := TReader.Create(LStream, 4096);
+    try
+      var LForm := TVclForm.CreateNew(nil);
+      try
+        try
+          LReader.ReadRootComponent(LForm);
+        except
+          on E: Exception do
+            Assert.Fail(E.Message);
+        end;
+      finally
+        LForm.Free();
+      end;
+    finally
+      LReader.Free();
+    end;
+  finally
+    LStream.Free();
+  end;
+end;
+
+procedure TProducerTest.GenerateFormFileTxt;
+begin
+  //Save the project file
+  FProducer.SavePyFormFileTxt(FFormFileModel);
+
+  //Check for the generated file
+  var LFilePath := TPath.Combine(FFormFileModel.Directory, FFormFileModel.FormFile.AsPythonDfm());
+  Assert.IsTrue(TFile.Exists(LFilePath));
+
+  var LInput := TFileStream.Create(LFilePath, fmOpenRead);
+  try
+    var LOutput := TMemoryStream.Create();
+    try
+      ObjectTextToBinary(LInput, LOutput);
+      var LReader := TReader.Create(LOutput, 4096);
+      try
+        var LForm := TVclForm.CreateNew(nil);
+        try
+          try
+            LOutput.Position := 0;
+            LReader.ReadRootComponent(LForm);
+          except
+            on E: Exception do
+              Assert.Fail(E.Message);
+          end;
+        finally
+          LForm.Free();
+        end;
+      finally
+        LReader.Free();
+      end;
+    finally
+      LOutput.Free();
+    end;
+  finally
+    LInput.Free();
   end;
 end;
 

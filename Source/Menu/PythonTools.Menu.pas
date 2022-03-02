@@ -1,3 +1,5 @@
+{$I PythonTools.inc}
+
 unit PythonTools.Menu;
 
 interface
@@ -121,8 +123,10 @@ begin
 end;
 
 procedure TPythonToolsMenu.BuildMenu;
+var
+  LServices: INTAServices;
 begin
-  var LServices := GetINTAServices();
+  LServices := GetINTAServices();
   LServices.MenuBeginUpdate();
   try
     //Tools->---------
@@ -145,13 +149,19 @@ end;
 function TPythonToolsMenu.LoadPythonToolMenuImage(): integer;
 const
   EMB_PY_IMG = 'embarcaderopython_16px';
+var
+  LImg: {$IFDEF DELPHI11_UP}TPngImage{$ELSE}TBitmap{$ENDIF DELPHI11_UP};
 begin
-  var LPng := TPngImage.Create();
+  LImg := {$IFDEF DELPHI11_UP}TPngImage{$ELSE}TBitmap{$ENDIF DELPHI11_UP}.Create();
   try
-    LPng.LoadFromResourceName(HInstance, EMB_PY_IMG);
-    Result := GetINTAServices().AddImage(EMB_PY_IMG, [LPng]);
+    LImg.LoadFromResourceName(HInstance, EMB_PY_IMG);
+    {$IFDEF DELPHI11_UP}
+    Result := GetINTAServices().AddImage(EMB_PY_IMG, [LImg]);
+    {$ELSE}
+    Result := GetINTAServices().AddMasked(LImg, LImg.Handle, EMB_PY_IMG);
+    {$ENDIF DELPHI11_UP}
   finally
-    LPng.Free();
+    LImg.Free();
   end;
 end;
 
@@ -170,10 +180,12 @@ end;
 
 function TPythonToolsMenu.BuildPythonToolsMenuItem(
   const ACallback: TProc<TMenuItem, TCustomAction>): TMenuItem;
+var
+  LAction: TPythonToolsMenuAction;
 begin
   Result := TPythonToolsMenuItem.Create(nil);
   try
-    var LAction := TPythonToolsMenuAction.Create(Result);
+    LAction := TPythonToolsMenuAction.Create(Result);
     LAction.Caption := 'Export to Python';
     LAction.ImageIndex := LoadPythonToolMenuImage();
     ACallback(Result, TCustomAction(Result.Action));
@@ -206,13 +218,16 @@ begin
 end;
 
 procedure TPythonToolsMenu.DoDestroyMenu;
+var
+  LRoot: TMenuItem;
+  LMenuItem: TMenuItem;
 begin
-  var LRoot := GetINTAServices().MainMenu.Items.Find('Tools');
+  LRoot := GetINTAServices().MainMenu.Items.Find('Tools');
   if Assigned(LRoot) then begin
     with GetINTAServices() do begin
       MenuBeginUpdate();
       try
-        for var LMenuItem in FToolsMenuItems do begin
+        for LMenuItem in FToolsMenuItems do begin
           LRoot.Remove(LMenuItem);
         end;
         FToolsMenuItems.Clear();

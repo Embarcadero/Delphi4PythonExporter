@@ -84,10 +84,13 @@ end;
 
 procedure TVCLFormProducer.SavePyApplicationFile(
   const AModel: TApplicationProducerModel);
+var
+  LFilePath: string;
+  LStream: TStream;
 begin
-  var LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
+  LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
 
-  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
     GeneratePyApplicationFile(LStream, AModel);
   finally
@@ -96,10 +99,13 @@ begin
 end;
 
 procedure TVCLFormProducer.SavePyForm(const AModel: TFormProducerModel);
+var
+  LFilePath: string;
+  LStream: TStream;
 begin
-  var LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
+  LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
 
-  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
     GeneratePyFormFile(LStream, AModel);
   finally
@@ -108,10 +114,13 @@ begin
 end;
 
 procedure TVCLFormProducer.SavePyFormFileBin(const AModel: TFormFileProducerModel);
+var
+  LFilePath: string;
+  LStream: TStream;
 begin
-  var LFilePath := TPath.Combine(AModel.Directory, AModel.FormFile.AsPythonDfm());
+  LFilePath := TPath.Combine(AModel.Directory, AModel.FormFile.AsPythonDfm());
 
-  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
     LStream.WriteComponent(AModel.Form);
   finally
@@ -121,12 +130,15 @@ end;
 
 procedure TVCLFormProducer.SavePyFormFileTxt(
   const AModel: TFormFileProducerModel);
+var
+  LDfmFile: string;
+  LPyDfmFile: string;
 begin
-  var LDfmFile := AModel.FormFilePath.AsDelphiDfm();
+  LDfmFile := AModel.FormFilePath.AsDelphiDfm();
   if not TFile.Exists(LDfmFile) then
     raise EFormFileNotFound.CreateFmt('Dfm file not found at: %s', [LDfmFile]);
 
-  var LPyDfmFile := TPath.Combine(
+  LPyDfmFile := TPath.Combine(
     AModel.Directory,
     AModel.FormFile.AsPythonDfm()
   );

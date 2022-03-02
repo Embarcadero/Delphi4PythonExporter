@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<test-results name="C:\Users\lucas\OneDrive\Documents\Embarcadero\Studio\Projects\Delphi4PythonExporter\test\Win64\Debug\PythonExporterTest.exe" total="10" errors="0" failures="0" ignored="0" inconclusive="0" not-run="0" skipped="0" invalid="0" date="2022-02-10" time="0.199">
+  <culture-info current-culture="en" current-uiculture="en" />
+  <test-suite type="Assembly" name="PythonExporterTest.exe" executed="true" result="Success" success="True" time="0.199" asserts="0">
+    <results>
+        <test-suite type="Namespace" name="FMX" executed="true" result="Success" success="True" time="0.091" asserts="0" >
+          <results>
+              <test-suite type="Fixture" name="TFMXProducerTest" executed="True" result="Success" success="True" time="0.091" >
+                <results>
+                  <test-case name="CheckFormInheritance" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="GenerateApplication" executed="True" result="Success" success="True" time="0.002" asserts="0" />
+                  <test-case name="GenerateForm" executed="True" result="Success" success="True" time="0.002" asserts="0" />
+                  <test-case name="GenerateFormFileBin" executed="True" result="Success" success="True" time="0.014" asserts="0" />
+                  <test-case name="GenerateFormFileTxt" executed="True" result="Success" success="True" time="0.018" asserts="0" />
+                </results>
+              </test-suite>
+          </results>
+        </test-suite>
+        <test-suite type="Namespace" name="VCL" executed="true" result="Success" success="True" time="0.097" asserts="0" >
+          <results>
+              <test-suite type="Fixture" name="TVCLProducerTest" executed="True" result="Success" success="True" time="0.097" >
+                <results>
+                  <test-case name="CheckFormInheritance" executed="True" result="Success" success="True" time="0.000" asserts="0" />
+                  <test-case name="GenerateApplication" executed="True" result="Success" success="True" time="0.003" asserts="0" />
+                  <test-case name="GenerateForm" executed="True" result="Success" success="True" time="0.002" asserts="0" />
+                  <test-case name="GenerateFormFileBin" executed="True" result="Success" success="True" time="0.012" asserts="0" />
+                  <test-case name="GenerateFormFileTxt" executed="True" result="Success" success="True" time="0.009" asserts="0" />
+                </results>
+              </test-suite>
+          </results>
+        </test-suite>
+    </results>
+  </test-suite>
+</test-results>

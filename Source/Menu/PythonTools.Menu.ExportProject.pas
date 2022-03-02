@@ -45,9 +45,11 @@ begin
 end;
 
 procedure TPythonToolsExportProjectMenuAction.DoExportProject(Sender: TObject);
+var
+  LExporter: TExportProjectExporter;
 begin
   //Exports the current project
-  var LExporter := TExportProjectExporter.Create(GetActiveProject());
+  LExporter := TExportProjectExporter.Create(GetActiveProject());
   try
     if LExporter.ExportProject() then
       ShowMessage('Project successfully exported.');

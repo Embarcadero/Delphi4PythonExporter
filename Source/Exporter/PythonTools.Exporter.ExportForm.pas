@@ -37,7 +37,10 @@ type
 implementation
 
 uses
-  System.SysUtils, PythonTools.Exceptions, PythonTools.Producer.SimpleFactory;
+  System.SysUtils,
+  PythonTools.Exceptions,
+  PythonTools.Producer,
+  PythonTools.Producer.SimpleFactory;
 
 { TExportFormService }
 
@@ -118,13 +121,16 @@ begin
 end;
 
 procedure TExportFormExporter.DoExportForm;
+var
+  LProducer: IPythonCodeProducer;
+  LProducerModel: TFormProducerModel;
 begin
-  var LProducer := TProducerSimpleFactory.CreateProducer(FFormInfo.Project.FrameworkType);
+  LProducer := TProducerSimpleFactory.CreateProducer(FFormInfo.Project.FrameworkType);
   if not LProducer.IsValidFormInheritance(FFormInfo.Designer.Root.ClassParent) then
     raise EFormInheritanceNotSupported.CreateFmt(
       '%s TForm direct inheritance only', [FFormInfo.Project.FrameworkType]);
 
-  var LProducerModel := BuildFormModel();
+  LProducerModel := BuildFormModel();
   try
     LProducer.SavePyForm(LProducerModel);
   finally
@@ -133,9 +139,12 @@ begin
 end;
 
 procedure TExportFormExporter.DoExportFormFileTxt;
+var
+  LProducer: IPythonCodeProducer;
+  LProducerModel: TFormFileProducerModel;
 begin
-  var LProducer := TProducerSimpleFactory.CreateProducer(FFormInfo.Project.FrameworkType);
-  var LProducerModel := BuildFormFileModel();
+  LProducer := TProducerSimpleFactory.CreateProducer(FFormInfo.Project.FrameworkType);
+  LProducerModel := BuildFormFileModel();
   try
     LProducer.SavePyFormFileTxt(LProducerModel);
   finally
@@ -144,9 +153,12 @@ begin
 end;
 
 procedure TExportFormExporter.DoExportFormFileBin;
+var
+  LProducer: IPythonCodeProducer;
+  LProducerModel: TFormFileProducerModel;
 begin
-  var LProducer := TProducerSimpleFactory.CreateProducer(FFormInfo.Project.FrameworkType);
-  var LProducerModel := BuildFormFileModel();
+  LProducer := TProducerSimpleFactory.CreateProducer(FFormInfo.Project.FrameworkType);
+  LProducerModel := BuildFormFileModel();
   try
     LProducer.SavePyFormFileBin(LProducerModel);
   finally

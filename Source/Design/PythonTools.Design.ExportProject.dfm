@@ -13,6 +13,7 @@ object ProjectExportDialog: TProjectExportDialog
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OldCreateOrder = True
   Position = poMainFormCenter
   OnCanResize = FormCanResize
   PixelsPerInch = 96
@@ -2348,7 +2349,6 @@ object ProjectExportDialog: TProjectExportDialog
         'Text'
         'Binary')
       ParentBiDiMode = False
-      ShowFrame = False
       TabOrder = 0
     end
   end

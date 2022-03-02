@@ -8,6 +8,8 @@ uses
   Vcl.StdCtrls, Vcl.Buttons, PythonTools.Model.ExportProject,
   PythonTools.Common;
 
+{$WARN SYMBOL_PLATFORM OFF}
+
 type
   TProjectExportDialog = class(TForm)
     pnlHeader: TPanel;
@@ -66,9 +68,11 @@ begin
 end;
 
 function TProjectExportDialog.Execute(const AModel: TExportProjectModel): boolean;
+var
+  LFormNameAndFile: TFormNameAndFile;
 begin
   lblProjectName.Caption := AModel.ApplicationName;
-  for var LFormNameAndFile in AModel.ApplicationForms do begin
+  for LFormNameAndFile in AModel.ApplicationForms do begin
     cbApplicationMainForm.Items.Add(LFormNameAndFile.FileName + '.' + LFormNameAndFile.FormName);
   end;
   if cbApplicationMainForm.Items.Count > 0 then

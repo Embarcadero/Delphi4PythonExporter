@@ -84,10 +84,13 @@ end;
 
 procedure TFMXFormProducer.SavePyApplicationFile(
   const AModel: TApplicationProducerModel);
+var
+  LFilePath: string;
+  LStream: TStream;
 begin
-  var LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
+  LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
 
-  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
     GeneratePyApplicationFile(LStream, AModel);
   finally
@@ -96,10 +99,13 @@ begin
 end;
 
 procedure TFMXFormProducer.SavePyForm(const AModel: TFormProducerModel);
+var
+  LFilePath: string;
+  LStream: TStream;
 begin
-  var LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
+  LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
 
-  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
     GeneratePyFormFile(LStream, AModel);
   finally
@@ -108,10 +114,13 @@ begin
 end;
 
 procedure TFMXFormProducer.SavePyFormFileBin(const AModel: TFormFileProducerModel);
+var
+  LFilePath: string;
+  LStream: TStream;
 begin
-  var LFilePath := TPath.Combine(AModel.Directory, AModel.FormFile.AsPythonFmx());
+  LFilePath := TPath.Combine(AModel.Directory, AModel.FormFile.AsPythonFmx());
 
-  var LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
+  LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
     LStream.WriteComponent(AModel.Form);
   finally
@@ -121,12 +130,15 @@ end;
 
 procedure TFMXFormProducer.SavePyFormFileTxt(
   const AModel: TFormFileProducerModel);
+var
+  LFmxFile: string;
+  LPyFmxFile: string;
 begin
-  var LFmxFile := AModel.FormFilePath.AsDelphiFmx();
+  LFmxFile := AModel.FormFilePath.AsDelphiFmx();
   if not TFile.Exists(LFmxFile) then
     raise EFormFileNotFound.CreateFmt('Fmx file not found at: %s', [LFmxFile]);
 
-  var LPyFmxFile := TPath.Combine(
+  LPyFmxFile := TPath.Combine(
     AModel.Directory,
     AModel.FormFile.AsPythonFmx()
   );

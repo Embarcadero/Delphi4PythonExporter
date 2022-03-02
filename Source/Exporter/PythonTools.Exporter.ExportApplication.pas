@@ -60,9 +60,12 @@ begin
 end;
 
 procedure TExportApplicationExporter.DoExportApplication;
+var
+  LProducer: IPythonCodeProducer;
+  LProducerModel: TApplicationProducerModel;
 begin
-  var LProducer := TProducerSimpleFactory.CreateProducer(FProject.FrameworkType);
-  var LProducerModel := BuildApplicationModel();
+  LProducer := TProducerSimpleFactory.CreateProducer(FProject.FrameworkType);
+  LProducerModel := BuildApplicationModel();
   try
     LProducer.SavePyApplicationFile(LProducerModel);
   finally

@@ -40,14 +40,17 @@ begin
 end;
 
 function TExportProjectExporter.ExportProject: boolean;
+var
+  LExportProjectModel: TExportProjectModel;
+  LAppExporter: TExportApplicationExporter;
 begin
-  var LExportProjectModel := BuildExportProjectModel();
+  LExportProjectModel := BuildExportProjectModel();
   try
     //Request user info
     if not RequestExportInfo(LExportProjectModel) then
       Exit(false);
     //Export the application file as the app initializer
-    var LAppExporter := TExportApplicationExporter.Create(LExportProjectModel, FProject);
+    LAppExporter := TExportApplicationExporter.Create(LExportProjectModel, FProject);
     try
       LAppExporter.ExportApplication();
     finally
@@ -55,11 +58,14 @@ begin
     end;
 
     //Navigate through all forms
-    TIOTAUtils.EnumForms(FProject, procedure(AFormInfo: TIOTAFormInfo) begin
+    TIOTAUtils.EnumForms(FProject, procedure(AFormInfo: TIOTAFormInfo)
+  var
+    LFormExporter: TExportFormExporter;
+  begin
       //Check for valid instances
       CheckDesigner(AFormInfo);
       //Export the current form
-      var LFormExporter := TExportFormExporter.Create(LExportProjectModel, AFormInfo);
+      LFormExporter := TExportFormExporter.Create(LExportProjectModel, AFormInfo);
       try
         //Export current form
         LFormExporter.ExportForm();
@@ -88,13 +94,15 @@ begin
 end;
 
 function TExportProjectExporter.BuildExportProjectModel: TExportProjectModel;
+var
+  LFormInfo: TFormNameAndFileList;
 begin
   Result := TExportProjectModel.Create();
   try
     Result.ApplicationName := ChangeFileExt(
       ExtractFileName(FProject.FileName), String.Empty);
     Result.ApplicationDirectory := ExtractFileDir(FProject.FileName);
-    var LFormInfo := TFormNameAndFileList.Create();
+    LFormInfo := TFormNameAndFileList.Create();
     try
       TIOTAUtils.EnumForms(FProject, procedure(AFormInfo: TIOTAFormInfo) begin
         LFormInfo.Add(TFormNameAndFile.Create(
@@ -115,8 +123,10 @@ end;
 
 function TExportProjectExporter.RequestExportInfo(
   const AModel: TExportProjectModel): boolean;
+var
+  LForm: TProjectExportDialog;
 begin
-  var LForm := TProjectExportDialog.Create(nil);
+  LForm := TProjectExportDialog.Create(nil);
   try
     Result := LForm.Execute(AModel);
   finally

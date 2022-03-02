@@ -4,6 +4,7 @@ interface
 
 uses
   System.Classes, System.Generics.Collections,
+  PythonTools.Common,
   PythonTools.Producer,
   PythonTools.Model.ApplicationProducer,
   PythonTools.Model.FormProducer, System.SysUtils;
@@ -63,9 +64,14 @@ const
 
 procedure TAbstractFormProducer.GeneratePyApplicationFile(
   const AStream: TStream; const AModel: TApplicationProducerModel);
+var
+  LImportedForms: string;
+  LFormInfo: TFormNameAndFile;
+  LStrFile: string;
+  LBytes: TBytes;
 begin
-  var LImportedForms := String.Empty;
-  for var LFormInfo in AModel.ImportedForms do begin
+  LImportedForms := String.Empty;
+  for LFormInfo in AModel.ImportedForms do begin
     if not LImportedForms.IsEmpty() then
       LImportedForms := LImportedForms + sLineBreak;
 
@@ -75,7 +81,7 @@ begin
         .Replace('@FORM', LFormInfo.FormName);
   end;
 
-  var LStrFile := String.Empty;
+  LStrFile := String.Empty;
   if not LImportedForms.IsEmpty() then
     LStrFile :=
       PY_APP_IMPORTED_FORMS
@@ -89,15 +95,23 @@ begin
         .Replace('@APP_TITLE', AModel.Title.QuotedString())
         .Replace('@CLASSNAME', AModel.MainForm);
 
-  var LBytes := TEncoding.UTF8.GetBytes(LStrFile);
+  LBytes := TEncoding.UTF8.GetBytes(LStrFile);
   AStream.WriteData(LBytes, Length(LBytes));
 end;
 
 procedure TAbstractFormProducer.GeneratePyFormFile(const AStream: TStream;
   const AModel: TFormProducerModel);
+var
+  LProps: string;
+  LComp: TExportedComponent;
+  LEvts: string;
+  LEvt: TExportedEvent;
+  LParam: string;
+  LStrFile: string;
+  LBytes: TBytes;
 begin
-  var LProps := String.Empty;
-  for var LComp in AModel.ExportedComponents do begin
+  LProps := String.Empty;
+  for LComp in AModel.ExportedComponents do begin
     if not LProps.IsEmpty() then
       LProps := LProps
         + sLineBreak
@@ -105,15 +119,15 @@ begin
     LProps := LProps + 'self.' + LComp.ComponentName + ' = None';
   end;
 
-  var LEvts := String.Empty;
-  for var LEvt in AModel.ExportedEvents do begin
+  LEvts := String.Empty;
+  for LEvt in AModel.ExportedEvents do begin
     if not LEvts.IsEmpty then
       LEvts := LEvts
         + sLineBreak
         + sLineBreak
         + sIdentation1;
     LEvts := LEvts + 'def ' + LEvt.MethodName + '(self';
-    for var LParam in LEvt.MethodParams do begin
+    for LParam in LEvt.MethodParams do begin
       LEvts := LEvts + ', ' + LParam
     end;
     LEvts := LEvts + '):'
@@ -122,7 +136,7 @@ begin
       + 'pass';
   end;
 
-  var LStrFile :=
+  LStrFile :=
     PY_MODULE_IMPORT
       .Replace('@MODULE_NAME', GetPythonModuleName())
   + sLineBreak
@@ -158,7 +172,7 @@ begin
       .Replace('@APP_TITLE', AModel.ModelInitialization.Title)
       .Replace('@CLASSNAME', AModel.FormName);
 
-  var LBytes := TEncoding.UTF8.GetBytes(LStrFile);
+  LBytes := TEncoding.UTF8.GetBytes(LStrFile);
   AStream.WriteData(LBytes, Length(LBytes));
 end;
 

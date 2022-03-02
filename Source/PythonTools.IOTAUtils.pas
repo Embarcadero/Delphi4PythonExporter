@@ -35,18 +35,22 @@ uses
 
 class procedure TIOTAUtils.EnumForms(const AProject: IOTAProject;
   const AProc: TProc<TIOTAFormInfo>);
+var
+  LFormPredicate: TPredicate<IOTAModuleInfo>;
+  I: integer;
+  LModuleInfo: IOTAModuleInfo;
+  LResult: TIOTAFormInfo;
 begin
-  var LFormPredicate := function(AModuleInfo: IOTAModuleInfo): boolean begin
+  LFormPredicate := function(AModuleInfo: IOTAModuleInfo): boolean begin
     Result := (AModuleInfo.ModuleType = omtForm)
       and not AModuleInfo.FormName.Trim().IsEmpty();
   end;
 
-  for var I := 0 to AProject.GetModuleCount() - 1 do begin
-    var LModuleInfo := AProject.GetModule(I);
+  for I := 0 to AProject.GetModuleCount() - 1 do begin
+    LModuleInfo := AProject.GetModule(I);
     if not LFormPredicate(LModuleInfo) then
       Continue;
-                          
-    var LResult: TIOTAFormInfo;
+
     LResult.Project := AProject;
     LResult.ModuleInfo := LModuleInfo;
     LResult.Module := LModuleInfo.OpenModule();
@@ -57,8 +61,10 @@ begin
 end;
 
 class function TIOTAUtils.FindComponents(const AFormEditor: IOTAFormEditor): TExportedComponents;
+var
+  LCompList: TExportedComponentList;
 begin       
-  var LCompList := TExportedComponentList.Create();
+  LCompList := TExportedComponentList.Create();
   try 
     EnumComps(AFormEditor, procedure(AComponent: TComponent) begin 
       LCompList.Add(TExportedComponent.Create(AComponent.Name));
@@ -74,33 +80,42 @@ class function TIOTAUtils.FindEvents(const AFormEditor: IOTAFormEditor; const AD
 
   procedure ExtractPropertyEvents(const ARttiContext: TRttiContext;
     const AComponent: TComponent; const AEvents: TExportedEventList);
+  var
+    LRttiType: TRttiType;
+    LRttiProp: TRttiProperty;
+    LMethod: TValue;
+    LMethodName: string;
+    LRttiMethod: TRttiMethodType;
+    LParamList: TList<string>;
+    LParam: TRttiParameter;
+    LEvt: TExportedEvent;
   begin
-    var LRttiType := ARttiContext.GetType(AComponent.ClassInfo);
+    LRttiType := ARttiContext.GetType(AComponent.ClassInfo);
     try
-      for var LRttiProp in LRttiType.GetProperties() do begin
+      for LRttiProp in LRttiType.GetProperties() do begin
         if not (LRttiProp.Visibility = TMemberVisibility.mvPublished) then
           Continue;
 
         if not (LRttiProp.PropertyType is TRttiMethodType) then
           Continue;
 
-        var LMethod := LRttiProp.GetValue(AComponent);
+        LMethod := LRttiProp.GetValue(AComponent);
 
         if LMethod.IsEmpty then
           Continue;
                                 
-        var LMethodName := ADesigner.GetMethodName(PMethod(LMethod.GetReferenceToRawData)^);
+        LMethodName := ADesigner.GetMethodName(PMethod(LMethod.GetReferenceToRawData)^);
         if not ADesigner.MethodExists(LMethodName) then
           Continue;
 
-        var LRttiMethod := LRttiProp.PropertyType as TRttiMethodType;
-        var LParamList := TList<string>.Create();
+        LRttiMethod := LRttiProp.PropertyType as TRttiMethodType;
+        LParamList := TList<string>.Create();
         try
-          for var LParam in LRttiMethod.GetParameters() do begin
+          for LParam in LRttiMethod.GetParameters() do begin
             LParamList.Add(LParam.Name);
           end;
 
-          var LEvt := TExportedEvent.Create(LMethodName, LParamList.ToArray());
+          LEvt := TExportedEvent.Create(LMethodName, LParamList.ToArray());
           if not AEvents.Contains(LEvt) then
             AEvents.Add(LEvt);
         finally
@@ -113,8 +128,10 @@ class function TIOTAUtils.FindEvents(const AFormEditor: IOTAFormEditor; const AD
   end;
 
   function FindComponentRefs(): TArray<TComponent>;
+  var
+    LCompList: TList<TComponent>;
   begin    
-    var LCompList := TList<TComponent>.Create();
+    LCompList := TList<TComponent>.Create();
     try
       EnumComps(AFormEditor, procedure(AComponent: TComponent) begin 
         LCompList.Add(AComponent);
@@ -126,19 +143,23 @@ class function TIOTAUtils.FindEvents(const AFormEditor: IOTAFormEditor; const AD
     end;
   end;
 
+var
+  LEvts: TExportedEventList;
+  LRttiCtx: TRttiContext;
+  LComponent: TComponent;
 begin
-  var LEvts := TExportedEventList.Create(
+  LEvts := TExportedEventList.Create(
     TDelegatedComparer<TExportedEvent>.Create(
       function(const Left, Right: TExportedEvent): Integer begin
         Result := CompareStr(Left.MethodName, Right.MethodName);
       end));
   try      
-    var LRttiCtx := TRttiContext.Create();
+    LRttiCtx := TRttiContext.Create();
     try
       //Extract the form events
       ExtractPropertyEvents(LRttiCtx, ADesigner.Root, LEvts);
       //Extract the component events
-      for var LComponent in FindComponentRefs() do
+      for LComponent in FindComponentRefs() do
         ExtractPropertyEvents(LRttiCtx, LComponent, LEvts);
     finally
       LRttiCtx.Free();
@@ -150,12 +171,15 @@ begin
 end;
 
 class function TIOTAUtils.GetFormEditorFromModule(const AModule: IOTAModule): IOTAFormEditor;
+var
+  I: integer;
+  LEditor: IOTAEditor;
 begin
   if AModule = nil then
     Exit(nil);
 
-  for var I := 0 to AModule.GetModuleFileCount - 1 do begin
-    var LEditor := AModule.GetModuleFileEditor(i);
+  for I := 0 to AModule.GetModuleFileCount - 1 do begin
+    LEditor := AModule.GetModuleFileEditor(i);
     if Supports(LEditor, IOTAFormEditor, Result) then
       Break;
   end;
@@ -163,17 +187,21 @@ end;
 
 class procedure TIOTAUtils.EnumComps(const AFormEditor: IOTAFormEditor;
   const ACallback: TProc<TComponent>);
+var
+  LRoot: IOTAComponent;
+  I: integer;
+  LComp: TComponent;
 begin
   if not Assigned(ACallback) then
     Exit;
 
-  var LRoot := AFormEditor.GetRootComponent();  
+  LRoot := AFormEditor.GetRootComponent();
 
   if not Assigned(LRoot) then
     Exit;
   
-  for var I := 0 to LRoot.GetComponentCount() - 1 do begin  
-    var LComp := TComponent(LRoot.GetComponent(I).GetComponentHandle());
+  for I := 0 to LRoot.GetComponentCount() - 1 do begin
+    LComp := TComponent(LRoot.GetComponent(I).GetComponentHandle());
 
     if not Assigned(LComp) then
       Continue;

@@ -2258,9 +2258,6 @@ object FormsExportDialog: TFormsExportDialog
       MultiSelect = True
       TabOrder = 0
       OnClick = lbFormsClick
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitHeight = 340
     end
     object pnlCenter: TPanel
       Left = 185
@@ -2270,8 +2267,6 @@ object FormsExportDialog: TFormsExportDialog
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = 180
-      ExplicitWidth = 624
       object pnlFormFileKind: TPanel
         Left = 0
         Top = 202
@@ -2280,7 +2275,6 @@ object FormsExportDialog: TFormsExportDialog
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitWidth = 624
         object lblFormFileKind: TLabel
           Left = 8
           Top = 3
@@ -2311,7 +2305,6 @@ object FormsExportDialog: TFormsExportDialog
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitWidth = 624
         object lblExpOpts: TLabel
           Left = 8
           Top = 6
@@ -2334,7 +2327,6 @@ object FormsExportDialog: TFormsExportDialog
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 2
-        ExplicitWidth = 624
         object lblDirectory: TLabel
           Left = 8
           Top = 3
@@ -2367,7 +2359,6 @@ object FormsExportDialog: TFormsExportDialog
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 3
-        ExplicitWidth = 624
         object lblAppTitle: TLabel
           Left = 8
           Top = 3
@@ -2405,7 +2396,6 @@ object FormsExportDialog: TFormsExportDialog
         Align = alBottom
         BevelOuter = bvNone
         TabOrder = 4
-        ExplicitWidth = 624
         object btnCancel: TButton
           Left = 529
           Top = 6
@@ -2433,7 +2423,6 @@ object FormsExportDialog: TFormsExportDialog
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 5
-        ExplicitWidth = 624
         object cbGenerateInitialization: TCheckBox
           Left = 8
           Top = 12

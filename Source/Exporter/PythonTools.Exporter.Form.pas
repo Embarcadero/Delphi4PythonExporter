@@ -141,6 +141,7 @@ begin
       Form := FormInfo.Designer.Root;
       LStreamAdapter := TStreamAdapter.Create(FormResource);
       FormInfo.Editor.GetFormResource(LStreamAdapter);
+      FormResource.Position := 0;
     end;
   except
     on E: Exception do begin

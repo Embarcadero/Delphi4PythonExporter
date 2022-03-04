@@ -29,6 +29,7 @@ type
     class function HasForms(): boolean;
     class procedure EnumForms(const AProc: TProc<TIOTAFormInfo>); overload;
     class procedure EnumForms(const AProject: IOTAProject; const AProc: TProc<TIOTAFormInfo>); overload;
+    class function FindForm(const AFormName: string; out AFormInfo: TIOTAFormInfo): boolean;
 
     class function GetFormEditorFromModule(const AModule: IOTAModule): IOTAFormEditor;
     class function GetFrameworkTypeFromDesigner(const ADesigner: IDesigner): string;
@@ -98,6 +99,8 @@ begin
         Continue;
 
       LDesigner := (LEditor as INTAFormEditor).FormDesigner;
+      if not Assigned(LDesigner) then
+        Continue;
 
       LResult.FileName := LModule.FileName;
       LResult.FormName := LDesigner.Root.Name;
@@ -217,6 +220,34 @@ begin
   finally
     LEvts.Free();
   end;
+end;
+
+class function TIOTAUtils.FindForm(const AFormName: string; out AFormInfo: TIOTAFormInfo): boolean;
+var
+  LModuleServices: IOTAModuleServices;
+  LModule: IOTAModule;
+  LEditor: IOTAFormEditor;
+  LDesigner: IDesigner;
+begin
+  LModuleServices := (BorlandIDEServices as IOTAModuleServices);
+  LModule := LModuleServices.FindFormModule(AFormName);
+  if not Assigned(LModule) then
+    Exit(false);
+
+  LEditor := GetFormEditorFromModule(LModule);
+  if not Assigned(LEditor) then
+    Exit(false);
+
+  LDesigner := (LEditor as INTAFormEditor).FormDesigner;
+
+  AFormInfo.FileName := LModule.FileName;
+  AFormInfo.FormName := LDesigner.Root.Name;
+  AFormInfo.FrameworkType := GetFrameworkTypeFromDesigner(LDesigner);
+  AFormInfo.Module := LModule;
+  AFormInfo.Editor := LEditor;
+  AFormInfo.Designer := LDesigner;
+
+  Result := true;
 end;
 
 class function TIOTAUtils.GetFormEditorFromModule(const AModule: IOTAModule): IOTAFormEditor;

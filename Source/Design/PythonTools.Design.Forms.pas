@@ -100,7 +100,9 @@ end;
 
 function TFormsExportDialog.Execute(const AModel: TExportFormsDesignModel): boolean;
 var
+  LFormNamesAndFiles: TFormNameAndFileList;
   LFormNameAndFile: TFormNameAndFile;
+  I: integer;
 begin
   lbForms.Clear();
   for LFormNameAndFile in AModel.Forms do begin
@@ -118,6 +120,17 @@ begin
 
   if not Result then
     Exit();
+
+  LFormNamesAndFiles := TFormNameAndFileList.Create();
+  try
+    for I := 0 to lbForms.Items.Count -1 do begin
+      if lbForms.Selected[I] then
+        LFormNamesAndFiles.Add(AModel.Forms[I]);
+    end;
+    AModel.Forms := LFormNamesAndFiles.ToArray();
+  finally
+    LFormNamesAndFiles.Free();
+  end;
 
   AModel.GenerateInitialization := cbGenerateInitialization.Checked;
   if cbGenerateInitialization.Checked then begin

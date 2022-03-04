@@ -60,7 +60,10 @@ end;
 
 function TFormsExporter.ExportForms: boolean;
 var
+  I: integer;
   LExportModel: TExportFormsDesignModel;
+  LFormInfo: TIOTAFormInfo;
+  LFormExporter: TFormExporterFromForms;
 begin
   LExportModel := BuildExportFormsModel();
   try
@@ -69,12 +72,10 @@ begin
       Exit(false);
 
     //Navigate through all forms
-    TIOTAUtils.EnumForms(procedure(AFormInfo: TIOTAFormInfo)
-    var
-      LFormExporter: TFormExporter;
-    begin
+    for I := Low(LExportModel.Forms) to High(LExportModel.Forms) do
+      if TIOTAUtils.FindForm(LExportModel.Forms[I].FormName, LFormInfo) then begin
         //Export the current form
-        LFormExporter := TFormExporterFromForms.Create(LExportModel, AFormInfo);
+        LFormExporter := TFormExporterFromForms.Create(LExportModel, LFormInfo);
         try
           //Export current form
           LFormExporter.ExportForm();
@@ -88,11 +89,11 @@ begin
         finally
           LFormExporter.Free();
         end;
-    end);
-    Result := true;
+      end;
   finally
     LExportModel.Free();
   end;
+  Result := true;
 end;
 
 function TFormsExporter.RequestExportInfo(

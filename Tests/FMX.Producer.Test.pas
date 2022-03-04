@@ -7,9 +7,9 @@ uses
   PythonTools.Common,
   PythonTools.Producer,
   PythonTools.Producer.SimpleFactory,
-  PythonTools.Model.ApplicationProducer,
-  PythonTools.Model.FormProducer,
-  PythonTools.Model.FormFileProducer;
+  PythonTools.Model.Producer.Application,
+  PythonTools.Model.Producer.Form,
+  PythonTools.Model.Producer.FormFile;
 
 type
   [TestFixture]
@@ -112,8 +112,14 @@ begin
   Result := TFormFileProducerModel.Create();
   try
     Result.Directory := GetFilesDir();
-    Result.FormFile := 'Data.FMXFOrm';
-    Result.FormFilePath := TPath.Combine(GetDataDir(), 'Data.FMXFOrm');
+    Result.FormFile := 'Data.FMXForm';
+    var LStream := TFileStream.Create(TPath.Combine(GetDataDir(), 'Data.FMXForm.fmx'), fmOpenRead);
+    try
+      Result.FormResource := LStream;
+      Result.FormResource.Position := 0;
+    finally
+      LStream.Free();
+    end;
     Result.Form := FmxForm;
   except
     on E: Exception do begin

@@ -7,9 +7,9 @@ uses
   PythonTools.Common,
   PythonTools.Producer,
   PythonTools.Producer.SimpleFactory,
-  PythonTools.Model.ApplicationProducer,
-  PythonTools.Model.FormProducer,
-  PythonTools.Model.FormFileProducer;
+  PythonTools.Model.Producer.Application,
+  PythonTools.Model.Producer.Form,
+  PythonTools.Model.Producer.FormFile;
 
 type
   [TestFixture]
@@ -113,7 +113,13 @@ begin
   try
     Result.Directory := GetFilesDir();
     Result.FormFile := 'Data.VCLForm';
-    Result.FormFilePath := TPath.Combine(GetDataDir(), 'Data.VCLForm');
+    var LStream := TFileStream.Create(TPath.Combine(GetDataDir(), 'Data.VCLForm.dfm'), fmOpenRead);
+    try
+      Result.FormResource := LStream;
+      Result.FormResource.Position := 0;
+    finally
+      LStream.Free();
+    end;
     Result.Form := VclForm;
   except
     on E: Exception do begin

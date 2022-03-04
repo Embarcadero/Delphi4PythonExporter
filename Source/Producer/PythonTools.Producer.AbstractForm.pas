@@ -3,11 +3,12 @@ unit PythonTools.Producer.AbstractForm;
 interface
 
 uses
-  System.Classes, System.Generics.Collections,
+  System.Classes, System.SysUtils, System.Generics.Collections,
   PythonTools.Common,
   PythonTools.Producer,
-  PythonTools.Model.ApplicationProducer,
-  PythonTools.Model.FormProducer, System.SysUtils;
+  PythonTools.Model.Producer.Application,
+  PythonTools.Model.Producer.Form,
+  PythonTools.Model.Producer.FormFile;
 
 type
   TAbstractFormProducer = class abstract(TInterfacedObject)
@@ -18,6 +19,8 @@ type
     //File generators
     procedure GeneratePyApplicationFile(const AStream: TStream; const AModel: TApplicationProducerModel);
     procedure GeneratePyFormFile(const AStream: TStream; const AModel: TFormProducerModel);
+    procedure GeneratePyFormFileBin(const AStream: TStream; const AModel: TFormFileProducerModel);
+    procedure GeneratePyFormFileTxt(const AStream: TStream; const AModel: TFormFileProducerModel);
   public
 
   end;
@@ -164,16 +167,28 @@ begin
       + PY_MODULE_EVTS
         .Replace('@EVENTS', LEvts);
 
-  if AModel.ModelInitialization.GenerateInitialization then
+  if AModel.ModuleInitialization.GenerateInitialization then
     LStrFile := LStrFile
     + sLineBreak
     + sLineBreak
     + GetAppInitializationSection()
-      .Replace('@APP_TITLE', AModel.ModelInitialization.Title)
-      .Replace('@CLASSNAME', AModel.FormName);
+      .Replace('@APP_TITLE', AModel.ModuleInitialization.Title)
+      .Replace('@CLASSNAME', AModel.ModuleInitialization.MainForm);
 
   LBytes := TEncoding.UTF8.GetBytes(LStrFile);
   AStream.WriteData(LBytes, Length(LBytes));
+end;
+
+procedure TAbstractFormProducer.GeneratePyFormFileBin(const AStream: TStream;
+  const AModel: TFormFileProducerModel);
+begin
+  AStream.WriteComponent(AModel.Form);
+end;
+
+procedure TAbstractFormProducer.GeneratePyFormFileTxt(const AStream: TStream;
+  const AModel: TFormFileProducerModel);
+begin
+  AStream.CopyFrom(AModel.FormResource, AModel.FormResource.Size);
 end;
 
 end.

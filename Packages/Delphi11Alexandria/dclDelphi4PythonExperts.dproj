@@ -172,21 +172,27 @@
         <DCCReference Include="..\..\Source\Menu\PythonTools.Menu.pas"/>
         <DCCReference Include="..\..\Source\Menu\PythonTools.Menu.ExportProject.pas"/>
         <DCCReference Include="..\..\Source\Menu\PythonTools.Menu.ExportForms.pas"/>
-        <DCCReference Include="..\..\Source\Model\PythonTools.Model.ExportProject.pas"/>
-        <DCCReference Include="..\..\Source\Model\PythonTools.Model.ApplicationProducer.pas"/>
-        <DCCReference Include="..\..\Source\Model\PythonTools.Model.FormProducer.pas"/>
-        <DCCReference Include="..\..\Source\Model\PythonTools.Model.FormFileProducer.pas"/>
-        <DCCReference Include="..\..\Source\Design\PythonTools.Design.ExportProject.pas">
+        <DCCReference Include="..\..\Source\Design\PythonTools.Design.Project.pas">
             <Form>ProjectExportDialog</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.ExportApplication.pas"/>
-        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.ExportForm.pas"/>
-        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.ExportProject.pas"/>
+        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.Application.pas"/>
+        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.Form.pas"/>
+        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.Project.pas"/>
         <DCCReference Include="..\..\Source\Producer\PythonTools.Producer.FMXForm.pas"/>
         <DCCReference Include="..\..\Source\Producer\PythonTools.Producer.pas"/>
         <DCCReference Include="..\..\Source\Producer\PythonTools.Producer.SimpleFactory.pas"/>
         <DCCReference Include="..\..\Source\Producer\PythonTools.Producer.VCLForm.pas"/>
         <DCCReference Include="..\..\Source\Producer\PythonTools.Producer.AbstractForm.pas"/>
+        <DCCReference Include="..\..\Source\Design\PythonTools.Design.Forms.pas">
+            <Form>FormsExportDialog</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.Forms.pas"/>
+        <DCCReference Include="..\..\Source\Model\Producer\PythonTools.Model.Producer.Application.pas"/>
+        <DCCReference Include="..\..\Source\Model\Producer\PythonTools.Model.Producer.FormFile.pas"/>
+        <DCCReference Include="..\..\Source\Model\Producer\PythonTools.Model.Producer.Form.pas"/>
+        <DCCReference Include="..\..\Source\Model\Design\PythonTools.Model.Design.Forms.pas"/>
+        <DCCReference Include="..\..\Source\Model\Design\PythonTools.Model.Design.Project.pas"/>
         <RcItem Include="..\..\Images\EmbarcaderoPython(16px).png">
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>embarcaderopython_16px</ResourceId>
@@ -952,9 +958,9 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>

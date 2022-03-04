@@ -79,6 +79,7 @@
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <Debugger_HostApplication>C:\Program Files (x86)\Embarcadero\Studio\17.0\bin\bds.exe</Debugger_HostApplication>
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
     </PropertyGroup>
@@ -104,21 +105,26 @@
         <DCCReference Include="..\..\Source\Menu\PythonTools.Menu.pas"/>
         <DCCReference Include="..\..\Source\Menu\PythonTools.Menu.ExportProject.pas"/>
         <DCCReference Include="..\..\Source\Menu\PythonTools.Menu.ExportForms.pas"/>
-        <DCCReference Include="..\..\Source\Model\PythonTools.Model.ExportProject.pas"/>
-        <DCCReference Include="..\..\Source\Model\PythonTools.Model.ApplicationProducer.pas"/>
-        <DCCReference Include="..\..\Source\Model\PythonTools.Model.FormProducer.pas"/>
-        <DCCReference Include="..\..\Source\Model\PythonTools.Model.FormFileProducer.pas"/>
-        <DCCReference Include="..\..\Source\Design\PythonTools.Design.ExportProject.pas">
+        <DCCReference Include="..\..\Source\Design\PythonTools.Design.Project.pas">
             <Form>ProjectExportDialog</Form>
         </DCCReference>
-        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.ExportApplication.pas"/>
-        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.ExportForm.pas"/>
-        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.ExportProject.pas"/>
+        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.Application.pas"/>
+        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.Form.pas"/>
+        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.Project.pas"/>
         <DCCReference Include="..\..\Source\Producer\PythonTools.Producer.FMXForm.pas"/>
         <DCCReference Include="..\..\Source\Producer\PythonTools.Producer.pas"/>
         <DCCReference Include="..\..\Source\Producer\PythonTools.Producer.SimpleFactory.pas"/>
         <DCCReference Include="..\..\Source\Producer\PythonTools.Producer.VCLForm.pas"/>
         <DCCReference Include="..\..\Source\Producer\PythonTools.Producer.AbstractForm.pas"/>
+        <DCCReference Include="..\..\Source\Design\PythonTools.Design.Forms.pas">
+            <Form>FormsExportDialog</Form>
+        </DCCReference>
+        <DCCReference Include="..\..\Source\Exporter\PythonTools.Exporter.Forms.pas"/>
+        <DCCReference Include="..\..\Source\Model\Producer\PythonTools.Model.Producer.Application.pas"/>
+        <DCCReference Include="..\..\Source\Model\Producer\PythonTools.Model.Producer.FormFile.pas"/>
+        <DCCReference Include="..\..\Source\Model\Producer\PythonTools.Model.Producer.Form.pas"/>
+        <DCCReference Include="..\..\Source\Model\Design\PythonTools.Model.Design.Forms.pas"/>
+        <DCCReference Include="..\..\Source\Model\Design\PythonTools.Model.Design.Project.pas"/>
         <RcItem Include="..\..\Images\EmbarcaderoPython(16px).bmp">
             <ResourceType>BITMAP</ResourceType>
             <ResourceId>embarcaderopython_16px</ResourceId>
@@ -184,13 +190,13 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployClass Name="iPad_Notification40">
+                <DeployClass Name="iPhone_LaunchDark3x">
                     <Platform Name="iOSDevice64">
-                        <RemoteDir>..\$(PROJECTNAME).launchscreen\Assets\AppIcon.appiconset</RemoteDir>
+                        <RemoteDir>..\$(PROJECTNAME).launchscreen\Assets\LaunchScreenImage.imageset</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <RemoteDir>..\$(PROJECTNAME).launchscreen\Assets\AppIcon.appiconset</RemoteDir>
+                        <RemoteDir>..\$(PROJECTNAME).launchscreen\Assets\LaunchScreenImage.imageset</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -810,6 +816,12 @@
                         <Extensions>.dylib</Extensions>
                     </Platform>
                 </DeployClass>
+                <DeployClass Name="AndroidServiceOutput_Android32">
+                    <Platform Name="Android64">
+                        <RemoteDir>library\lib\armeabi-v7a</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
                 <DeployClass Name="iPad_Setting58">
                     <Platform Name="iOSDevice64">
                         <RemoteDir>..\$(PROJECTNAME).launchscreen\Assets\AppIcon.appiconset</RemoteDir>
@@ -820,13 +832,19 @@
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
-                <DeployClass Name="iPhone_LaunchDark3x">
+                <DeployClass Name="iPad_Notification40">
                     <Platform Name="iOSDevice64">
-                        <RemoteDir>..\$(PROJECTNAME).launchscreen\Assets\LaunchScreenImage.imageset</RemoteDir>
+                        <RemoteDir>..\$(PROJECTNAME).launchscreen\Assets\AppIcon.appiconset</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="iOSSimulator">
-                        <RemoteDir>..\$(PROJECTNAME).launchscreen\Assets\LaunchScreenImage.imageset</RemoteDir>
+                        <RemoteDir>..\$(PROJECTNAME).launchscreen\Assets\AppIcon.appiconset</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                </DeployClass>
+                <DeployClass Name="Android_LauncherIcon36">
+                    <Platform Name="Android">
+                        <RemoteDir>res\drawable-ldpi</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>
@@ -837,18 +855,6 @@
                     </Platform>
                     <Platform Name="Android">
                         <RemoteDir>res\drawable-hdpi</RemoteDir>
-                        <Operation>1</Operation>
-                    </Platform>
-                </DeployClass>
-                <DeployClass Name="Android_LauncherIcon36">
-                    <Platform Name="Android">
-                        <RemoteDir>res\drawable-ldpi</RemoteDir>
-                        <Operation>1</Operation>
-                    </Platform>
-                </DeployClass>
-                <DeployClass Name="AndroidServiceOutput_Android32">
-                    <Platform Name="Android64">
-                        <RemoteDir>library\lib\armeabi-v7a</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
                 </DeployClass>

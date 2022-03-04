@@ -6,9 +6,9 @@ uses
   PythonTools.Common,
   PythonTools.Producer,
   PythonTools.Producer.AbstractForm,
-  PythonTools.Model.ApplicationProducer,
-  PythonTools.Model.FormProducer,
-  PythonTools.Model.FormFileProducer;
+  PythonTools.Model.Producer.Application,
+  PythonTools.Model.Producer.Form,
+  PythonTools.Model.Producer.FormFile;
 
 type
   TFMXFormProducer = class(TAbstractFormProducer, IPythonCodeProducer)
@@ -122,7 +122,7 @@ begin
 
   LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
   try
-    LStream.WriteComponent(AModel.Form);
+    GeneratePyFormFileBin(LStream, AModel);
   finally
     LStream.Free();
   end;
@@ -131,19 +131,17 @@ end;
 procedure TFMXFormProducer.SavePyFormFileTxt(
   const AModel: TFormFileProducerModel);
 var
-  LFmxFile: string;
   LPyFmxFile: string;
+  LStream: TStream;
 begin
-  LFmxFile := AModel.FormFilePath.AsDelphiFmx();
-  if not TFile.Exists(LFmxFile) then
-    raise EFormFileNotFound.CreateFmt('Fmx file not found at: %s', [LFmxFile]);
+  LPyFmxFile := TPath.Combine(AModel.Directory, AModel.FormFile.AsPythonFmx());
 
-  LPyFmxFile := TPath.Combine(
-    AModel.Directory,
-    AModel.FormFile.AsPythonFmx()
-  );
-
-  TFile.Copy(LFmxFile, LPyFmxFile, true);
+  LStream := TFileStream.Create(LPyFmxFile, fmCreate or fmOpenWrite);
+  try
+    GeneratePyFormFileTxt(LStream, AModel);
+  finally
+    LStream.Free();
+  end;
 end;
 
 end.

@@ -1,4 +1,4 @@
-unit PythonTools.Model.ExportProject;
+unit PythonTools.Model.Design.Project;
 
 interface
 
@@ -7,9 +7,7 @@ uses
   PythonTools.Common;
 
 type
-  TFormFileKind = (ffkText, ffkBinary);
-
-  TExportProjectModel = class
+  TExportProjectDesignModel = class
   private
     FApplicationName: string;
     FApplicationDirectory: string;

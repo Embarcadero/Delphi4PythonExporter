@@ -1,4 +1,4 @@
-unit PythonTools.Model.FormProducer;
+unit PythonTools.Model.Producer.Form;
 
 interface
 
@@ -13,6 +13,7 @@ type
     private
       FGenerateInitialization: boolean;
       FTitle: string;
+      FMainForm: string;
     public
       /// <summary>
       ///   Generate the Python module app GUI initialization section
@@ -22,6 +23,10 @@ type
       ///   The GUI application title
       /// </summary>
       property Title: string read FTitle write FTitle;
+      /// <summary>
+      ///   The GUI application Main Form
+      /// </summary>
+      property MainForm: string read FMainForm write FMainForm;
     end;
   private
     FFormName: string;
@@ -29,7 +34,7 @@ type
     FFileName: TFileName;
     FDirectory: string;
     FExportedComponents: TExportedComponents;
-    FModelInitialization: TModuleInitialization;
+    FModuleInitialization: TModuleInitialization;
     FExportedEvents: TExportedEvents;
   public
     constructor Create();
@@ -61,7 +66,7 @@ type
     /// <summary>
     ///   Generates the model initialization section
     /// </summary>
-    property ModelInitialization: TModuleInitialization read FModelInitialization;
+    property ModuleInitialization: TModuleInitialization read FModuleInitialization;
   end;
 
 implementation
@@ -70,12 +75,12 @@ implementation
 
 constructor TFormProducerModel.Create;
 begin
-  FModelInitialization := TModuleInitialization.Create();
+  FModuleInitialization := TModuleInitialization.Create();
 end;
 
 destructor TFormProducerModel.Destroy;
 begin
-  FModelInitialization.Free();
+  FModuleInitialization.Free();
   inherited;
 end;
 

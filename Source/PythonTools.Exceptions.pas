@@ -15,7 +15,7 @@ type
   EInvalidFormFileKind = class(Exception)
   end;
 
-  EFormFileNotFound = class(Exception)
+  EUnknownFrameworkType = class(Exception)
   end;
 
 implementation

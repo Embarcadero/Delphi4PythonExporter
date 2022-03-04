@@ -5,9 +5,9 @@ interface
 uses
   System.Classes, System.Generics.Collections,
   PythonTools.Common,
-  PythonTools.Model.ApplicationProducer,
-  PythonTools.Model.FormProducer,
-  PythonTools.Model.FormFileProducer;
+  PythonTools.Model.Producer.Application,
+  PythonTools.Model.Producer.Form,
+  PythonTools.Model.Producer.FormFile;
 
 type
   IPythonCodeProducer = interface

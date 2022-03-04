@@ -8,14 +8,16 @@ object ProjectExportDialog: TProjectExportDialog
   ClientHeight = 336
   ClientWidth = 619
   Color = clBtnFace
+  Constraints.MaxHeight = 375
+  Constraints.MaxWidth = 635
+  Constraints.MinHeight = 375
+  Constraints.MinWidth = 635
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
-  OldCreateOrder = True
   Position = poMainFormCenter
-  OnCanResize = FormCanResize
   PixelsPerInch = 96
   TextHeight = 15
   object spHeader: TShape

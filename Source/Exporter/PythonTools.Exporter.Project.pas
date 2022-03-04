@@ -1,24 +1,25 @@
-unit PythonTools.Exporter.ExportProject;
+unit PythonTools.Exporter.Project;
 
 interface
 
 uses
   ToolsAPI,
-  PythonTools.IOTAUtils, PythonTools.Model.ExportProject;
+  PythonTools.IOTAUtils,
+  PythonTools.Model.Design.Project;
 
 type
-  TExportProjectExporter = class
+  TProjectExporter = class
   private
     FProject: IOTAProject;
   protected
     //Checks
     procedure CheckDesigner(const AFormInfo: TIOTAFormInfo);
     //Producer models
-    function BuildExportProjectModel: TExportProjectModel;
+    function BuildExportProjectModel: TExportProjectDesignModel;
   public
     constructor Create(const AProject: IOTAProject);
     //Request export project info
-    function RequestExportInfo(const AModel: TExportProjectModel): boolean;
+    function RequestExportInfo(const AModel: TExportProjectDesignModel): boolean;
     //Export the given project
     function ExportProject(): boolean;
   end;
@@ -28,21 +29,21 @@ implementation
 uses
   System.SysUtils,
   PythonTools.Common, PythonTools.Exceptions,
-  PythonTools.Exporter.ExportApplication,
-  PythonTools.Exporter.ExportForm,
-  PythonTools.Design.ExportProject;
+  PythonTools.Exporter.Application,
+  PythonTools.Exporter.Form,
+  PythonTools.Design.Project;
 
-{ TExportProjectService }
+{ TProjectExporter }
 
-constructor TExportProjectExporter.Create(const AProject: IOTAProject);
+constructor TProjectExporter.Create(const AProject: IOTAProject);
 begin
   FProject := AProject;
 end;
 
-function TExportProjectExporter.ExportProject: boolean;
+function TProjectExporter.ExportProject: boolean;
 var
-  LExportProjectModel: TExportProjectModel;
-  LAppExporter: TExportApplicationExporter;
+  LExportProjectModel: TExportProjectDesignModel;
+  LAppExporter: TApplicationExporter;
 begin
   LExportProjectModel := BuildExportProjectModel();
   try
@@ -50,7 +51,7 @@ begin
     if not RequestExportInfo(LExportProjectModel) then
       Exit(false);
     //Export the application file as the app initializer
-    LAppExporter := TExportApplicationExporter.Create(LExportProjectModel, FProject);
+    LAppExporter := TApplicationExporter.Create(LExportProjectModel, FProject);
     try
       LAppExporter.ExportApplication();
     finally
@@ -60,12 +61,12 @@ begin
     //Navigate through all forms
     TIOTAUtils.EnumForms(FProject, procedure(AFormInfo: TIOTAFormInfo)
   var
-    LFormExporter: TExportFormExporter;
+    LFormExporter: TFormExporter;
   begin
       //Check for valid instances
       CheckDesigner(AFormInfo);
       //Export the current form
-      LFormExporter := TExportFormExporter.Create(LExportProjectModel, AFormInfo);
+      LFormExporter := TFormExporterFromProject.Create(LExportProjectModel, AFormInfo);
       try
         //Export current form
         LFormExporter.ExportForm();
@@ -86,18 +87,18 @@ begin
   end;
 end;
 
-procedure TExportProjectExporter.CheckDesigner(const AFormInfo: TIOTAFormInfo);
+procedure TProjectExporter.CheckDesigner(const AFormInfo: TIOTAFormInfo);
 begin
   if not Assigned(AFormInfo.Designer) then
     raise EUnableToObtainFormDesigner.CreateFmt(
-      'Unable to obtain the form designer for type %s.', [AFormInfo.ModuleInfo.FormName]);
+      'Unable to obtain the form designer for type %s.', [AFormInfo.FormName]);
 end;
 
-function TExportProjectExporter.BuildExportProjectModel: TExportProjectModel;
+function TProjectExporter.BuildExportProjectModel: TExportProjectDesignModel;
 var
   LFormInfo: TFormNameAndFileList;
 begin
-  Result := TExportProjectModel.Create();
+  Result := TExportProjectDesignModel.Create();
   try
     Result.ApplicationName := ChangeFileExt(
       ExtractFileName(FProject.FileName), String.Empty);
@@ -106,8 +107,8 @@ begin
     try
       TIOTAUtils.EnumForms(FProject, procedure(AFormInfo: TIOTAFormInfo) begin
         LFormInfo.Add(TFormNameAndFile.Create(
-          AFormInfo.ModuleInfo.FormName,
-          ChangeFileExt(ExtractFileName(AFormInfo.ModuleInfo.FileName), '')));
+          AFormInfo.FormName,
+          ChangeFileExt(ExtractFileName(AFormInfo.FileName), '')));
       end);
       Result.ApplicationForms := LFormInfo.ToArray();
     finally
@@ -121,8 +122,8 @@ begin
   end;
 end;
 
-function TExportProjectExporter.RequestExportInfo(
-  const AModel: TExportProjectModel): boolean;
+function TProjectExporter.RequestExportInfo(
+  const AModel: TExportProjectDesignModel): boolean;
 var
   LForm: TProjectExportDialog;
 begin

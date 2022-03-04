@@ -1,12 +1,13 @@
-unit PythonTools.Design.ExportProject;
+unit PythonTools.Design.Project;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
-  Vcl.StdCtrls, Vcl.Buttons, PythonTools.Model.ExportProject,
-  PythonTools.Common;
+  Vcl.StdCtrls, Vcl.Buttons,
+  PythonTools.Common,
+  PythonTools.Model.Design.Project;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
@@ -35,14 +36,12 @@ type
     lblExpOpts: TLabel;
     rgFormFileKind: TRadioGroup;
     lblFormFileKind: TLabel;
-    procedure FormCanResize(Sender: TObject; var NewWidth, NewHeight: Integer;
-      var Resize: Boolean);
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
   private
     { Private declarations }
   public
-    function Execute(const AModel: TExportProjectModel): boolean;
+    function Execute(const AModel: TExportProjectDesignModel): boolean;
   end;
 
 var
@@ -67,7 +66,7 @@ begin
   ModalResult := mrOk;
 end;
 
-function TProjectExportDialog.Execute(const AModel: TExportProjectModel): boolean;
+function TProjectExportDialog.Execute(const AModel: TExportProjectDesignModel): boolean;
 var
   LFormNameAndFile: TFormNameAndFile;
 begin
@@ -97,12 +96,6 @@ begin
     0: AModel.FormFileKind := ffkText;
     1: AModel.FormFileKind := ffkBinary;
   end;
-end;
-
-procedure TProjectExportDialog.FormCanResize(Sender: TObject; var NewWidth,
-  NewHeight: Integer; var Resize: Boolean);
-begin
-  Resize := false;
 end;
 
 procedure TProjectExportDialog.btnSelectDirClick(Sender: TObject);

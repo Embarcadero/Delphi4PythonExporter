@@ -14,16 +14,18 @@ type
 implementation
 
 uses
-  PythonTools.Producer.FMXForm, PythonTools.Producer.VCLForm;
+  System.SysUtils,
+  PythonTools.Producer.FMXForm,
+  PythonTools.Producer.VCLForm;
 
 { TProducerSimpleFactory }
 
 class function TProducerSimpleFactory.CreateProducer(
   const AFrameworkType: string): IPythonCodeProducer;
 begin
-  if AFrameworkType = 'FMX' then
+  if CompareText(AFrameworkType, 'FMX') = 0 then
     Result := TFMXFormProducer.Create()
-  else if AFrameworkType = 'VCL' then
+  else if CompareText(AFrameworkType, 'VCL') = 0 then
     Result := TVCLFormProducer.Create()
 end;
 

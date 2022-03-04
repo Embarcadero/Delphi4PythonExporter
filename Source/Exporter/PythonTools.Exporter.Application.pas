@@ -1,4 +1,4 @@
-unit PythonTools.Exporter.ExportApplication;
+unit PythonTools.Exporter.Application;
 
 interface
 
@@ -6,13 +6,13 @@ uses
   ToolsAPI,
   PythonTools.Producer,
   PythonTools.Producer.SimpleFactory,
-  PythonTools.Model.ExportProject,
-  PythonTools.Model.ApplicationProducer;
+  PythonTools.Model.Design.Project,
+  PythonTools.Model.Producer.Application;
 
 type
-  TExportApplicationExporter = class
+  TApplicationExporter = class
   private
-    FModel: TExportProjectModel;
+    FModel: TExportProjectDesignModel;
     FProject: IOTAProject;
   protected
     //Producers models
@@ -20,7 +20,7 @@ type
     //Exporters
     procedure DoExportApplication;
   public
-    constructor Create(const AExportProjectModel: TExportProjectModel;
+    constructor Create(const AExportProjectModel: TExportProjectDesignModel;
       const AProject: IOTAProject);
 
     procedure ExportApplication;
@@ -31,9 +31,9 @@ implementation
 uses
   System.SysUtils;
 
-{ TExportApplicationService }
+{ TApplicationExporter }
 
-function TExportApplicationExporter.BuildApplicationModel: TApplicationProducerModel;
+function TApplicationExporter.BuildApplicationModel: TApplicationProducerModel;
 begin
   Result := TApplicationProducerModel.Create();
   try
@@ -52,14 +52,14 @@ begin
   end;
 end;
 
-constructor TExportApplicationExporter.Create(
-  const AExportProjectModel: TExportProjectModel; const AProject: IOTAProject);
+constructor TApplicationExporter.Create(
+  const AExportProjectModel: TExportProjectDesignModel; const AProject: IOTAProject);
 begin
   FModel := AExportProjectModel;
   FProject := AProject;
 end;
 
-procedure TExportApplicationExporter.DoExportApplication;
+procedure TApplicationExporter.DoExportApplication;
 var
   LProducer: IPythonCodeProducer;
   LProducerModel: TApplicationProducerModel;
@@ -73,7 +73,7 @@ begin
   end;
 end;
 
-procedure TExportApplicationExporter.ExportApplication;
+procedure TApplicationExporter.ExportApplication;
 begin
   DoExportApplication();
 end;

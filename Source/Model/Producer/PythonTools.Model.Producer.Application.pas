@@ -1,4 +1,4 @@
-unit PythonTools.Model.ApplicationProducer;
+unit PythonTools.Model.Producer.Application;
 
 interface
 

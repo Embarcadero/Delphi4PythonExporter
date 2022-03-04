@@ -169,7 +169,6 @@ function TPythonToolsMenu.BuildPythonToolsExportFormsMenuItem(AOwner: TMenuItem)
 begin
   Result := TPythonToolsExportFormsMenuItem.Create(AOwner);
   Result.Action := TPythonToolsExportFormsMenuAction.Create(Result);
-  Result.Visible := false;
 end;
 
 function TPythonToolsMenu.BuildPythonToolsExportProjectMenuItem(AOwner: TMenuItem): TMenuItem;

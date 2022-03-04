@@ -8,8 +8,9 @@ uses
 
 type
   TIOTAFormInfo = record
-    Project: IOTAProject;
-    ModuleInfo: IOTAModuleInfo;
+    FormName: string;
+    FileName: string;
+    FrameworkType: string;
     Module: IOTAModule;
     Editor: IOTAFormEditor;
     Designer: IDesigner;
@@ -17,19 +18,27 @@ type
 
   TIOTAUtils = class
   private
+    class function ModuleIsPas(const AModule: IOTAModule): boolean;
+    class function ModuleIsForm(const AModule: IOTAModule): boolean;
+
     class procedure EnumComps(const AFormEditor: IOTAFormEditor; const ACallback: TProc<TComponent>);
   public
     class function FindComponents(const AFormEditor: IOTAFormEditor): TExportedComponents;
     class function FindEvents(const AFormEditor: IOTAFormEditor; const ADesigner: IDesigner): TExportedEvents;
 
-    class procedure EnumForms(const AProject: IOTAProject; const AProc: TProc<TIOTAFormInfo>);
+    class function HasForms(): boolean;
+    class procedure EnumForms(const AProc: TProc<TIOTAFormInfo>); overload;
+    class procedure EnumForms(const AProject: IOTAProject; const AProc: TProc<TIOTAFormInfo>); overload;
+
     class function GetFormEditorFromModule(const AModule: IOTAModule): IOTAFormEditor;
+    class function GetFrameworkTypeFromDesigner(const ADesigner: IDesigner): string;
   end;
 
 implementation
 
 uses
-  TypInfo, System.Generics.Defaults;
+  TypInfo, System.Generics.Defaults,
+  PythonTools.Exceptions;
 
 { TIOTAUtils }
 
@@ -51,13 +60,53 @@ begin
     if not LFormPredicate(LModuleInfo) then
       Continue;
 
-    LResult.Project := AProject;
-    LResult.ModuleInfo := LModuleInfo;
     LResult.Module := LModuleInfo.OpenModule();
     LResult.Editor := TIOTAUtils.GetFormEditorFromModule(LResult.Module);
     LResult.Designer := (LResult.Editor as INTAFormEditor).FormDesigner;
+    LResult.FileName := LModuleInfo.FileName;
+    LResult.FormName := LModuleInfo.FormName;
+    LResult.FrameworkType := GetFrameworkTypeFromDesigner(LResult.Designer);
     AProc(LResult);
   end;
+end;
+
+class procedure TIOTAUtils.EnumForms(const AProc: TProc<TIOTAFormInfo>);
+var
+  I: integer;
+  LModuleServices: IOTAModuleServices;
+  LProject: IOTAProject;
+  LModule: IOTAModule;
+  LEditor: IOTAFormEditor;
+  LDesigner: IDesigner;
+  LResult: TIOTAFormInfo;
+begin
+  LModuleServices := (BorlandIDEServices as IOTAModuleServices);
+
+  //User has created a project and added files on it.
+  if Assigned(LModuleServices.MainProjectGroup) then begin
+    for I := 0 to LModuleServices.MainProjectGroup.ProjectCount - 1 do begin
+      LProject := LModuleServices.MainProjectGroup.Projects[I];
+      EnumForms(LProject, AProc);
+    end;
+  end else
+    //User has created files out of a project.
+    for I := 0 to LModuleServices.ModuleCount - 1 do begin
+      LModule := LModuleServices.Modules[I];
+      LEditor := GetFormEditorFromModule(LModule);
+
+      if not (ModuleIsPas(LModule) and ModuleIsForm(LModule)) then
+        Continue;
+
+      LDesigner := (LEditor as INTAFormEditor).FormDesigner;
+
+      LResult.FileName := LModule.FileName;
+      LResult.FormName := LDesigner.Root.Name;
+      LResult.FrameworkType := GetFrameworkTypeFromDesigner(LDesigner);
+      LResult.Module := LModule;
+      LResult.Editor := LEditor;
+      LResult.Designer := LDesigner;
+      AProc(LResult);
+    end;
 end;
 
 class function TIOTAUtils.FindComponents(const AFormEditor: IOTAFormEditor): TExportedComponents;
@@ -183,6 +232,58 @@ begin
     if Supports(LEditor, IOTAFormEditor, Result) then
       Break;
   end;
+end;
+
+class function TIOTAUtils.GetFrameworkTypeFromDesigner(
+  const ADesigner: IDesigner): string;
+begin
+  if CompareText(ADesigner.DesignerExtention, 'dfm') = 0 then
+    Result := 'VCL'
+  else if CompareText(ADesigner.DesignerExtention, 'fmx') = 0 then
+    Result := 'FMX'
+  else
+    raise EUnknownFrameworkType.Create('Unknown framework type.');
+end;
+
+class function TIOTAUtils.HasForms: boolean;
+var
+  LModuleServices: IOTAModuleServices;
+  I: Integer;
+  LModule: IOTAModule;
+  LEditor: IOTAFormEditor;
+begin
+  LModuleServices := (BorlandIDEServices as IOTAModuleServices);
+  for I := 0 to LModuleServices.ModuleCount - 1 do begin
+    LModule := LModuleServices.Modules[I];
+    LEditor := GetFormEditorFromModule(LModule);
+    if Assigned(LEditor) then
+      Exit(true);
+  end;
+  Result := false;
+end;
+
+class function TIOTAUtils.ModuleIsForm(const AModule: IOTAModule): boolean;
+var
+  LEditor: IOTAFormEditor;
+  LDesigner: IDesigner;
+begin
+  LEditor := GetFormEditorFromModule(AModule);
+  if not Assigned(LEditor) then
+    Exit(false);
+
+  LDesigner := (LEditor as INTAFormEditor).FormDesigner;
+  if not Assigned(LDesigner) then
+    Exit(false);
+
+  Result := true;
+end;
+
+class function TIOTAUtils.ModuleIsPas(const AModule: IOTAModule): boolean;
+begin
+  if SameText(ExtractFileExt(AModule.FileName), '.pas') then
+    Result := true
+  else
+    Result := false;
 end;
 
 class procedure TIOTAUtils.EnumComps(const AFormEditor: IOTAFormEditor;

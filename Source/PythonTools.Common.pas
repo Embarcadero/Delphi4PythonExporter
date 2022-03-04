@@ -6,6 +6,8 @@ uses
   System.Generics.Collections, System.SysUtils;
 
 type
+  TFormFileKind = (ffkText, ffkBinary);
+
   TFormNameAndFile = record
   public
     FormName: string;

@@ -35,7 +35,10 @@ requires
   rtl,
   designide,
   fmx,
-  vcl;
+  vcl,
+  dbrtl,
+  vcldb,
+  dsnap;
 
 contains
   PythonTools.Registration in '..\..\Source\PythonTools.Registration.pas',

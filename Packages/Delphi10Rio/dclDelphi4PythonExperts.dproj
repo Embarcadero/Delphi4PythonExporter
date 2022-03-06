@@ -96,6 +96,9 @@
         <DCCReference Include="designide.dcp"/>
         <DCCReference Include="fmx.dcp"/>
         <DCCReference Include="vcl.dcp"/>
+        <DCCReference Include="dbrtl.dcp"/>
+        <DCCReference Include="vcldb.dcp"/>
+        <DCCReference Include="dsnap.dcp"/>
         <DCCReference Include="..\..\Source\PythonTools.Registration.pas"/>
         <DCCReference Include="..\..\Source\PythonTools.SplashScreen.pas"/>
         <DCCReference Include="..\..\Source\PythonTools.IOTAUtils.pas"/>
@@ -173,7 +176,7 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile LocalName="..\..\..\..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\21.0\Bpl\dclDelphi4PythonExperts270.bpl" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="..\..\..\..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\20.0\Bpl\dclDelphi4PythonExperts260.bpl" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>dclDelphi4PythonExperts.bpl</RemoteName>
                         <Overwrite>true</Overwrite>

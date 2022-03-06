@@ -3,8 +3,9 @@ unit PythonTools.IOTAUtils;
 interface
 
 uses
-  DesignIntf, ToolsAPI, System.Classes, System.Generics.Collections,
-  System.SysUtils, System.Rtti, PythonTools.Common;
+  DesignIntf, ToolsAPI,
+  System.Classes, System.Generics.Collections, System.SysUtils, System.Rtti,
+  PythonTools.Common;
 
 type
   TIOTAFormInfo = record
@@ -38,7 +39,10 @@ type
 implementation
 
 uses
-  TypInfo, System.Generics.Defaults,
+  TypInfo,
+  System.Generics.Defaults,
+  Vcl.Forms,
+  Fmx.Forms,
   PythonTools.Exceptions;
 
 { TIOTAUtils }
@@ -239,6 +243,8 @@ begin
     Exit(false);
 
   LDesigner := (LEditor as INTAFormEditor).FormDesigner;
+  if not Assigned(LDesigner) then
+    Exit(false);
 
   AFormInfo.FileName := LModule.FileName;
   AFormInfo.FormName := LDesigner.Root.Name;
@@ -281,13 +287,11 @@ var
   LModuleServices: IOTAModuleServices;
   I: Integer;
   LModule: IOTAModule;
-  LEditor: IOTAFormEditor;
 begin
   LModuleServices := (BorlandIDEServices as IOTAModuleServices);
   for I := 0 to LModuleServices.ModuleCount - 1 do begin
     LModule := LModuleServices.Modules[I];
-    LEditor := GetFormEditorFromModule(LModule);
-    if Assigned(LEditor) then
+    if ModuleIsPas(LModule) and ModuleIsForm(LModule) then
       Exit(true);
   end;
   Result := false;
@@ -297,6 +301,7 @@ class function TIOTAUtils.ModuleIsForm(const AModule: IOTAModule): boolean;
 var
   LEditor: IOTAFormEditor;
   LDesigner: IDesigner;
+  LRoot: TComponent;
 begin
   LEditor := GetFormEditorFromModule(AModule);
   if not Assigned(LEditor) then
@@ -305,6 +310,14 @@ begin
   LDesigner := (LEditor as INTAFormEditor).FormDesigner;
   if not Assigned(LDesigner) then
     Exit(false);
+
+  LRoot := LDesigner.Root;
+  if not Assigned(LRoot) then
+    Exit(false);
+
+  if not (LRoot.InheritsFrom(Vcl.Forms.TForm)
+    or LRoot.InheritsFrom(Fmx.Forms.TForm)) then
+      Exit(false);
 
   Result := true;
 end;

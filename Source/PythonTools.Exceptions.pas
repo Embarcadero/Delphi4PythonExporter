@@ -18,6 +18,9 @@ type
   EUnknownFrameworkType = class(Exception)
   end;
 
+  EProducerNotFound = class(Exception)
+  end;
+
 implementation
 
 end.

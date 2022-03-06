@@ -172,7 +172,7 @@ begin
     + sLineBreak
     + sLineBreak
     + GetAppInitializationSection()
-      .Replace('@APP_TITLE', AModel.ModuleInitialization.Title)
+      .Replace('@APP_TITLE', AModel.ModuleInitialization.Title.QuotedString())
       .Replace('@CLASSNAME', AModel.ModuleInitialization.MainForm);
 
   LBytes := TEncoding.UTF8.GetBytes(LStrFile);

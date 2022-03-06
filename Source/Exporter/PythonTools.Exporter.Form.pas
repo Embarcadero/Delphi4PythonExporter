@@ -7,10 +7,10 @@ uses
   System.Classes, System.Generics.Collections, System.Rtti,
   PythonTools.Common,
   PythonTools.IOTAUtils,
-  PythonTools.Model.Design.Project,
-  PythonTools.Model.Design.Forms,
   PythonTools.Model.Producer.Form,
-  PythonTools.Model.Producer.FormFile;
+  PythonTools.Model.Producer.FormFile,
+  PythonTools.Model.Design.Forms,
+  PythonTools.Model.Design.Project;
 
 type
   TFormExporter = class abstract
@@ -25,17 +25,16 @@ type
     function BuildFormFileModel: TFormFileProducerModel; virtual;
     //Exporters
     procedure DoExportForm(const AModel: TFormProducerModel);
-    procedure DoExportFormFileBin;
-    procedure DoExportFormFileTxt;
+    procedure DoExportFormFileBin(const AModel: TFormFileProducerModel);
+    procedure DoExportFormFileTxt(const AModel: TFormFileProducerModel);
   public
     constructor Create(const AFormInfo: TIOTAFormInfo);
 
     procedure ExportForm;
-    procedure ExportFormFileBin;
-    procedure ExportFormFileTxt;
+    procedure ExportFormFile(const AFormFileKind: TFormFileKind);
   end;
 
-  TFormExporterFromProject = class(TFormExporter)
+  TFormExporterFromProject = class sealed(TFormExporter)
   private
     FModel: TExportProjectDesignModel;
   protected
@@ -46,15 +45,17 @@ type
     constructor Create(const AModel: TExportProjectDesignModel; const  AFormInfo: TIOTAFormInfo);
   end;
 
-  TFormExporterFromForms = class(TFormExporter)
+  TFormExporterFromForms = class sealed(TFormExporter)
   private
     FModel: TExportFormsDesignModel;
+    FCurrentForm: integer;
   protected
     //Producer models
     function BuildFormModel: TFormProducerModel; override;
     function BuildFormFileModel: TFormFileProducerModel; override;
   public
-    constructor Create(const AModel: TExportFormsDesignModel; const  AFormInfo: TIOTAFormInfo);
+    constructor Create(const AModel: TExportFormsDesignModel;
+      const ACurrentForm: integer; const  AFormInfo: TIOTAFormInfo);
   end;
 
 implementation
@@ -94,14 +95,21 @@ begin
   end;
 end;
 
-procedure TFormExporter.ExportFormFileTxt;
+procedure TFormExporter.ExportFormFile(const AFormFileKind: TFormFileKind);
+var
+  LProducerModel: TFormFileProducerModel;
 begin
-  DoExportFormFileTxt();
-end;
-
-procedure TFormExporter.ExportFormFileBin;
-begin
-  DoExportFormFileBin();
+  LProducerModel := BuildFormFileModel();
+  try
+    if (AFormFileKind = ffkText) then
+      DoExportFormFileTxt(LProducerModel)
+    else if (AFormFileKind = ffkBinary) then
+      DoExportFormFileBin(LProducerModel)
+    else
+      raise EInvalidFormFileKind.Create('Invalid form file kind.');
+  finally
+    LProducerModel.Free();
+  end;
 end;
 
 function TFormExporter.BuildFormModel: TFormProducerModel;
@@ -115,7 +123,6 @@ begin
         2,
         FormInfo.Designer.Root.ClassParent.ClassName.Length);
       FileName := ChangeFileExt(ExtractFileName(FormInfo.FileName), '');
-      //Directory := FDirectory;
       ExportedComponents := FindComponents();
       ExportedEvents := FindEvents();
       with ModuleInitialization do begin
@@ -156,6 +163,7 @@ var
   LProducer: IPythonCodeProducer;
 begin
   LProducer := TProducerSimpleFactory.CreateProducer(FormInfo.FrameworkType);
+
   if not LProducer.IsValidFormInheritance(FormInfo.Designer.Root.ClassParent) then
     raise EFormInheritanceNotSupported.CreateFmt(
       '%s TForm direct inheritance only', [FormInfo.FrameworkType]);
@@ -163,32 +171,20 @@ begin
   LProducer.SavePyForm(AModel);
 end;
 
-procedure TFormExporter.DoExportFormFileTxt;
+procedure TFormExporter.DoExportFormFileTxt(const AModel: TFormFileProducerModel);
 var
   LProducer: IPythonCodeProducer;
-  LProducerModel: TFormFileProducerModel;
 begin
   LProducer := TProducerSimpleFactory.CreateProducer(FormInfo.FrameworkType);
-  LProducerModel := BuildFormFileModel();
-  try
-    LProducer.SavePyFormFileTxt(LProducerModel);
-  finally
-    LProducerModel.Free();
-  end;
+  LProducer.SavePyFormFileTxt(AModel);
 end;
 
-procedure TFormExporter.DoExportFormFileBin;
+procedure TFormExporter.DoExportFormFileBin(const AModel: TFormFileProducerModel);
 var
   LProducer: IPythonCodeProducer;
-  LProducerModel: TFormFileProducerModel;
 begin
   LProducer := TProducerSimpleFactory.CreateProducer(FormInfo.FrameworkType);
-  LProducerModel := BuildFormFileModel();
-  try
-    LProducer.SavePyFormFileBin(LProducerModel);
-  finally
-    LProducerModel.Free();
-  end;
+  LProducer.SavePyFormFileBin(AModel);
 end;
 
 { TFormExporterFromProject }
@@ -215,10 +211,11 @@ end;
 { TFormExporterFromForms }
 
 constructor TFormExporterFromForms.Create(const AModel: TExportFormsDesignModel;
-  const AFormInfo: TIOTAFormInfo);
+  const ACurrentForm: integer; const AFormInfo: TIOTAFormInfo);
 begin
   inherited Create(AFormInfo);
   FModel := AModel;
+  FCurrentForm := ACurrentForm;
 end;
 
 function TFormExporterFromForms.BuildFormFileModel: TFormFileProducerModel;
@@ -228,13 +225,22 @@ begin
 end;
 
 function TFormExporterFromForms.BuildFormModel: TFormProducerModel;
+var
+  LForm: TOutputForm;
 begin
   Result := inherited;
   Result.Directory := FModel.Directory;
   with Result.ModuleInitialization do begin
-    GenerateInitialization := FModel.GenerateInitialization;
-    Title := FModel.Title;
-    MainForm := FModel.MainForm.FormName;
+    LForm := FModel.OutputForms[FCurrentForm];
+    //Generate the initialization section for the MainForm only
+    if LForm.GenerateInitialization
+      and (Result.FormName = LForm.Form.FormName) then
+    begin
+      GenerateInitialization := true;
+      Title := LForm.Title;
+      MainForm := LForm.Form.FormName;
+    end else
+      GenerateInitialization := false;
   end;
 end;
 

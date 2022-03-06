@@ -66,6 +66,12 @@ type
     function AsPythonFmx(): string;
   end;
 
+  TFormFileKindHelper = record helper for TFormFileKind
+  public
+    function ToString(): string;
+    class function FromString(const AValue: string): TFormFileKind; static;
+  end;
+
 implementation
 
 { TFormNameAndFile }
@@ -136,6 +142,28 @@ end;
 function TFormFileHelper.AsPythonFmx: string;
 begin
   Result := Self + '.pyfmx';
+end;
+
+{ TFormFileKindHelper }
+
+class function TFormFileKindHelper.FromString(
+  const AValue: string): TFormFileKind;
+begin
+  if AValue = 'Text' then
+    Result := ffkText
+  else if AValue = 'Binary' then
+    Result := ffkBinary
+  else
+    raise ENotImplemented.Create('Form file kind not found.');
+end;
+
+function TFormFileKindHelper.ToString: string;
+begin
+  case Self of
+    ffkText: Result := 'Text';
+    ffkBinary: Result := 'Binary';
+    else raise ENotImplemented.Create('Form file kind not found.');
+  end;
 end;
 
 end.

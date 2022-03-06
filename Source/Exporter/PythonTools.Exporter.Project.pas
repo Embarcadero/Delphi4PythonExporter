@@ -60,9 +60,9 @@ begin
 
     //Navigate through all forms
     TIOTAUtils.EnumForms(FProject, procedure(AFormInfo: TIOTAFormInfo)
-  var
-    LFormExporter: TFormExporter;
-  begin
+    var
+      LFormExporter: TFormExporter;
+    begin
       //Check for valid instances
       CheckDesigner(AFormInfo);
       //Export the current form
@@ -70,13 +70,8 @@ begin
       try
         //Export current form
         LFormExporter.ExportForm();
-        //Export current form dfm
-        if (LExportProjectModel.FormFileKind = ffkText) then
-          LFormExporter.ExportFormFileTxt()
-        else if (LExportProjectModel.FormFileKind = ffkBinary) then
-          LFormExporter.ExportFormFileBin()
-        else
-          raise EInvalidFormFileKind.Create('Invalid form file kind.');
+        //Export current form dfm/fmx
+        LFormExporter.ExportFormFile(LExportProjectModel.FormFileKind);
       finally
         LFormExporter.Free();
       end;

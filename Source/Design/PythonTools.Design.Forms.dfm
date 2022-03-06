@@ -2,31 +2,33 @@ object FormsExportDialog: TFormsExportDialog
   Left = 0
   Top = 0
   Margins.Top = 5
+  ActiveControl = btnSelectDir
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Forms Export'
-  ClientHeight = 411
-  ClientWidth = 804
+  ClientHeight = 421
+  ClientWidth = 634
   Color = clBtnFace
-  Constraints.MaxHeight = 450
-  Constraints.MaxWidth = 820
+  Constraints.MaxHeight = 550
+  Constraints.MaxWidth = 650
   Constraints.MinHeight = 450
-  Constraints.MinWidth = 820
+  Constraints.MinWidth = 640
+  DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OldCreateOrder = True
   Position = poScreenCenter
-  OnCanResize = FormCanResize
-  OnShow = FormShow
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 15
   object spHeader: TShape
     AlignWithMargins = True
     Left = 0
     Top = 65
-    Width = 804
+    Width = 634
     Height = 1
     Margins.Left = 0
     Margins.Top = 5
@@ -40,7 +42,7 @@ object FormsExportDialog: TFormsExportDialog
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 804
+    Width = 634
     Height = 60
     Align = alTop
     BevelOuter = bvNone
@@ -2233,206 +2235,171 @@ object FormsExportDialog: TFormsExportDialog
   object pnlContents: TPanel
     Left = 0
     Top = 71
-    Width = 804
-    Height = 340
+    Width = 634
+    Height = 310
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    object lbForms: TListBox
-      AlignWithMargins = True
-      Left = 5
-      Top = 5
-      Width = 180
-      Height = 330
-      Margins.Left = 5
-      Margins.Top = 5
-      Margins.Right = 0
-      Margins.Bottom = 5
-      Align = alLeft
-      ItemHeight = 15
-      Items.Strings = (
-        'Unit1.Form1'
-        'Unit2.Form2'
-        'Unit3.Form3'
-        'Unit4.Form4')
-      MultiSelect = True
-      TabOrder = 0
-      OnClick = lbFormsClick
-    end
-    object pnlCenter: TPanel
-      Left = 185
+    object pnlAppDir: TPanel
+      Left = 0
       Top = 0
-      Width = 619
-      Height = 340
+      Width = 634
+      Height = 60
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 0
+      object lblApplicationDirectory: TLabel
+        AlignWithMargins = True
+        Left = 8
+        Top = 3
+        Width = 623
+        Height = 15
+        Margins.Left = 8
+        Align = alTop
+        Caption = 'Application Directory:'
+        ExplicitWidth = 115
+      end
+      object edtDirectory: TEdit
+        AlignWithMargins = True
+        Left = 8
+        Top = 24
+        Width = 585
+        Height = 23
+        Margins.Left = 8
+        Margins.Right = 0
+        Margins.Bottom = 13
+        Align = alClient
+        Enabled = False
+        TabOrder = 0
+      end
+      object btnSelectDir: TButton
+        AlignWithMargins = True
+        Left = 596
+        Top = 23
+        Width = 30
+        Height = 25
+        Margins.Top = 2
+        Margins.Right = 8
+        Margins.Bottom = 12
+        Align = alRight
+        Caption = '...'
+        TabOrder = 1
+        OnClick = btnSelectDirClick
+        ExplicitHeight = 28
+      end
+    end
+    object pnlGrid: TPanel
+      Left = 0
+      Top = 60
+      Width = 634
+      Height = 250
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      object pnlFormFileKind: TPanel
-        Left = 0
-        Top = 202
-        Width = 619
-        Height = 60
-        Align = alTop
-        BevelOuter = bvNone
+      object grForms: TDBGrid
+        AlignWithMargins = True
+        Left = 8
+        Top = 3
+        Width = 618
+        Height = 244
+        Margins.Left = 8
+        Margins.Right = 8
+        Align = alClient
+        BorderStyle = bsNone
+        DataSource = dsForms
+        Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         TabOrder = 0
-        object lblFormFileKind: TLabel
-          Left = 8
-          Top = 3
-          Width = 135
-          Height = 15
-          Caption = 'Form file kind (dfm/fmx):'
-        end
-        object rgFormFileKind: TRadioGroup
-          Left = 8
-          Top = 20
-          Width = 137
-          Height = 38
-          BiDiMode = bdLeftToRight
-          Columns = 2
-          ItemIndex = 0
-          Items.Strings = (
-            'Text'
-            'Binary')
-          ParentBiDiMode = False
-          TabOrder = 0
-        end
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -12
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+        OnCellClick = grFormsCellClick
+        OnColEnter = grFormsColEnter
+        OnDrawColumnCell = grFormsDrawColumnCell
+        OnKeyPress = grFormsKeyPress
+        OnTitleClick = grFormsTitleClick
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'FL_EXPORT'
+            ReadOnly = True
+            Title.Alignment = taCenter
+            Title.Caption = 'Export'
+            Width = 95
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'DESC_FORM'
+            ReadOnly = True
+            Title.Caption = 'Form'
+            Width = 161
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'FL_FORM_FILE_KIND'
+            PickList.Strings = (
+              'Text'
+              'Binary')
+            Title.Alignment = taCenter
+            Title.Caption = 'Form File Kind'
+            Width = 90
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'FL_INITIALIZE'
+            Title.Alignment = taCenter
+            Title.Caption = 'Initialize'
+            Width = 109
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'TITLE'
+            Title.Caption = 'Title'
+            Width = 140
+            Visible = True
+          end>
       end
-      object pnlExpOpts: TPanel
-        Left = 0
-        Top = 161
-        Width = 619
-        Height = 41
-        Align = alTop
-        BevelOuter = bvNone
-        TabOrder = 1
-        object lblExpOpts: TLabel
-          Left = 8
-          Top = 6
-          Width = 156
-          Height = 21
-          Caption = 'Exportation options:'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = [fsBold]
-          ParentFont = False
-        end
-      end
-      object pnlDir: TPanel
-        Left = 0
-        Top = 101
-        Width = 619
-        Height = 60
-        Align = alTop
-        BevelOuter = bvNone
-        TabOrder = 2
-        object lblDirectory: TLabel
-          Left = 8
-          Top = 3
-          Width = 51
-          Height = 15
-          Caption = 'Directory:'
-        end
-        object btnSelectDir: TSpeedButton
-          Left = 588
-          Top = 23
-          Width = 26
-          Height = 25
-          Caption = '...'
-          OnClick = btnSelectDirClick
-        end
-        object edtDirectory: TEdit
-          Left = 8
-          Top = 24
-          Width = 577
-          Height = 23
-          Enabled = False
-          TabOrder = 0
-        end
-      end
-      object pnlSettings: TPanel
-        Left = 0
-        Top = 41
-        Width = 619
-        Height = 60
-        Align = alTop
-        BevelOuter = bvNone
-        TabOrder = 3
-        object lblAppTitle: TLabel
-          Left = 8
-          Top = 3
-          Width = 25
-          Height = 15
-          Caption = 'Title:'
-        end
-        object lbForm: TLabel
-          Left = 314
-          Top = 3
-          Width = 61
-          Height = 15
-          Caption = 'Main Form:'
-        end
-        object edtTitle: TEdit
-          Left = 8
-          Top = 24
-          Width = 300
-          Height = 23
-          TabOrder = 0
-        end
-        object cbMainForm: TComboBox
-          Left = 314
-          Top = 24
-          Width = 300
-          Height = 23
-          TabOrder = 1
-        end
-      end
-      object plnFooter: TPanel
-        Left = 0
-        Top = 300
-        Width = 619
-        Height = 40
-        Align = alBottom
-        BevelOuter = bvNone
-        TabOrder = 4
-        object btnCancel: TButton
-          Left = 529
-          Top = 6
-          Width = 85
-          Height = 25
-          Caption = 'Cancel'
-          ModalResult = 2
-          TabOrder = 1
-        end
-        object btnExport: TButton
-          Left = 438
-          Top = 6
-          Width = 85
-          Height = 25
-          Caption = 'Export'
-          TabOrder = 0
-          OnClick = btnExportClick
-        end
-      end
-      object pnlInitialization: TPanel
-        Left = 0
-        Top = 0
-        Width = 619
-        Height = 41
-        Align = alTop
-        BevelOuter = bvNone
-        TabOrder = 5
-        object cbGenerateInitialization: TCheckBox
-          Left = 8
-          Top = 12
-          Width = 135
-          Height = 17
-          Caption = 'Generate Initialization'
-          TabOrder = 0
-          OnClick = cbGenerateInitializationClick
-        end
-      end
+    end
+  end
+  object plnFooter: TPanel
+    Left = 0
+    Top = 381
+    Width = 634
+    Height = 40
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 2
+    object btnCancel: TButton
+      AlignWithMargins = True
+      Left = 541
+      Top = 6
+      Width = 85
+      Height = 28
+      Margins.Top = 6
+      Margins.Right = 8
+      Margins.Bottom = 6
+      Align = alRight
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object btnExport: TButton
+      AlignWithMargins = True
+      Left = 450
+      Top = 6
+      Width = 85
+      Height = 28
+      Margins.Top = 6
+      Margins.Bottom = 6
+      Align = alRight
+      Caption = 'Export'
+      TabOrder = 0
+      OnClick = btnExportClick
     end
   end
   object FileOpenDialog1: TFileOpenDialog
@@ -2441,7 +2408,41 @@ object FormsExportDialog: TFormsExportDialog
     OkButtonLabel = 'Select'
     Options = [fdoPickFolders, fdoForceFileSystem, fdoPathMustExist]
     Title = 'Select Project Directory'
-    Left = 552
+    Left = 264
     Top = 11
+  end
+  object cdsForms: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    Left = 344
+    Top = 8
+    object cdsFormsFL_EXPORT: TBooleanField
+      Tag = 1
+      FieldName = 'FL_EXPORT'
+      OnGetText = cdsFormsFL_EXPORTGetText
+    end
+    object cdsFormsDESC_FORM: TStringField
+      DisplayWidth = 20
+      FieldName = 'DESC_FORM'
+      Size = 255
+    end
+    object cdsFormsTITLE: TStringField
+      FieldName = 'TITLE'
+      Size = 255
+    end
+    object cdsFormsFL_INITIALIZE: TBooleanField
+      Tag = 1
+      FieldName = 'FL_INITIALIZE'
+      OnGetText = cdsFormsFL_INITIALIZEGetText
+    end
+    object cdsFormsFL_FORM_FILE_KIND: TStringField
+      FieldName = 'FL_FORM_FILE_KIND'
+      Size = 6
+    end
+  end
+  object dsForms: TDataSource
+    DataSet = cdsForms
+    Left = 408
+    Top = 8
   end
 end

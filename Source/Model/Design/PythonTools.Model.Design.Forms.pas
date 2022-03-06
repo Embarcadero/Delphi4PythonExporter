@@ -7,23 +7,47 @@ uses
   PythonTools.Common;
 
 type
-  TExportFormsDesignModel = class
+  TOutputForm = record
   private
-    FForms: TFormNamesAndFiles;
+    FForm: TFormNameAndFile;
     FGenerateInitialization: boolean;
     FTitle: string;
-    FMainForm: TFormNameAndFile;
-    FDirectory: string;
     FFormFileKind: TFormFileKind;
   public
-    property Forms: TFormNamesAndFiles read FForms write FForms;
+    constructor Create(const AForm: TFormNameAndFile;
+      const AGenerateInitialization: boolean;
+      const ATitle: string;
+      const AFormFileKind: TFormFileKind);
+
+    property Form: TFormNameAndFile read FForm write FForm;
     property GenerateInitialization: boolean read FGenerateInitialization write FGenerateInitialization;
     property Title: string read FTitle write FTitle;
-    property MainForm: TFormNameAndFile read FMainForm write FMainForm;
-    property Directory: string read FDirectory write FDirectory;
     property FormFileKind: TFormFileKind read FFormFileKind write FFormFileKind;
   end;
 
+  TExportFormsDesignModel = class
+  private
+    FInputForms: TFormNamesAndFiles;
+    FDirectory: string;
+    FOutputForms: TArray<TOutputForm>;
+  public
+    property InputForms: TFormNamesAndFiles read FInputForms write FInputForms;
+    property OutputForms: TArray<TOutputForm> read FOutputForms write FOutputForms;
+    property Directory: string read FDirectory write FDirectory;
+  end;
+
 implementation
+
+{ TOutputForm }
+
+constructor TOutputForm.Create(const AForm: TFormNameAndFile;
+  const AGenerateInitialization: boolean; const ATitle: string;
+  const AFormFileKind: TFormFileKind);
+begin
+  Form := AForm;
+  GenerateInitialization := AGenerateInitialization;
+  Title := ATitle;
+  FormFileKind := AFormFileKind;
+end;
 
 end.

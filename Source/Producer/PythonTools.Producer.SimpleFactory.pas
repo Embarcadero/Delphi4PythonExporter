@@ -15,6 +15,7 @@ implementation
 
 uses
   System.SysUtils,
+  PythonTools.Exceptions,
   PythonTools.Producer.FMXForm,
   PythonTools.Producer.VCLForm;
 
@@ -27,6 +28,9 @@ begin
     Result := TFMXFormProducer.Create()
   else if CompareText(AFrameworkType, 'VCL') = 0 then
     Result := TVCLFormProducer.Create()
+  else
+    raise EProducerNotFound.CreateFmt('Producer not found for framework type %s', [
+      AFrameworkType]);
 end;
 
 end.

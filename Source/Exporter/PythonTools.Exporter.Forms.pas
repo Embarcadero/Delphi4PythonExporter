@@ -37,7 +37,7 @@ var
 begin
   Result := TExportFormsDesignModel.Create();
   try
-    Result.Title := String.Empty;
+//    Result.Title := String.Empty;
     Result.Directory := String.Empty;
     LFormInfo := TFormNameAndFileList.Create();
     try
@@ -46,7 +46,7 @@ begin
           AFormInfo.FormName,
           ChangeFileExt(ExtractFileName(AFormInfo.FileName), '')));
       end);
-      Result.Forms := LFormInfo.ToArray();
+      Result.InputForms := LFormInfo.ToArray();
     finally
       LFormInfo.Free();
     end;
@@ -71,21 +71,16 @@ begin
     if not RequestExportInfo(LExportModel) then
       Exit(false);
 
-    //Navigate through all forms
-    for I := Low(LExportModel.Forms) to High(LExportModel.Forms) do
-      if TIOTAUtils.FindForm(LExportModel.Forms[I].FormName, LFormInfo) then begin
+    //Export each selected form
+    for I := Low(LExportModel.OutputForms) to High(LExportModel.OutputForms) do
+      if TIOTAUtils.FindForm(LExportModel.OutputForms[I].Form.FormName, LFormInfo) then begin
         //Export the current form
-        LFormExporter := TFormExporterFromForms.Create(LExportModel, LFormInfo);
+        LFormExporter := TFormExporterFromForms.Create(LExportModel, I, LFormInfo);
         try
           //Export current form
           LFormExporter.ExportForm();
-          //Export current form dfm
-          if (LExportModel.FormFileKind = ffkText) then
-            LFormExporter.ExportFormFileTxt()
-          else if (LExportModel.FormFileKind = ffkBinary) then
-            LFormExporter.ExportFormFileBin()
-          else
-            raise EInvalidFormFileKind.Create('Invalid form file kind.');
+          //Export current form dfm/fmx
+          LFormExporter.ExportFormFile(LExportModel.OutputForms[I].FormFileKind);
         finally
           LFormExporter.Free();
         end;

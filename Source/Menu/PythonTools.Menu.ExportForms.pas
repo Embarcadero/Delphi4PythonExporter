@@ -45,7 +45,7 @@ begin
   LExporter := TFormsExporter.Create();
   try
     if LExporter.ExportForms() then
-      ShowMessage('Project successfully exported.');
+      ShowMessage('Forms successfully exported.');
   finally
     LExporter.Free();
   end;

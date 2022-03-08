@@ -33,7 +33,7 @@ procedure TPythonToolsExportFormsMenuAction.AfterConstruction;
 begin
   inherited;
   Name := 'PythonToolsExportFormsAction';
-  Caption := 'Export Forms';
+  Caption := 'Export Select Forms';
   OnExecute := DoExportForms;
 end;
 

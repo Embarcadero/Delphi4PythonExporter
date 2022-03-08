@@ -34,7 +34,7 @@ constructor TPythonToolsExportProjectMenuAction.Create(AOwner: TComponent);
 begin
   inherited;
   Name := 'PythonToolsExportProjectAction';
-  Caption := 'Export Current Project';
+  Caption := 'Export Entire Current Project';
   OnExecute := DoExportProject;
 end;
 

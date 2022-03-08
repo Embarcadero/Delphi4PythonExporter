@@ -7,7 +7,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
   Vcl.StdCtrls, Vcl.Buttons,
   PythonTools.Common,
-  PythonTools.Model.Design.Project;
+  PythonTools.Model.Design.Project, Vcl.WinXCtrls;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
@@ -32,12 +32,19 @@ type
     btnExport: TButton;
     btnSelectDir: TSpeedButton;
     pnlFormFileKind: TPanel;
-    pnlExpOpts: TPanel;
-    lblExpOpts: TLabel;
-    rgFormFileKind: TRadioGroup;
     lblFormFileKind: TLabel;
+    swFormFileKind: TToggleSwitch;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    LinkLabel1: TLinkLabel;
+    LinkLabel2: TLinkLabel;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
+    procedure Label1Click(Sender: TObject);
+    procedure Label2Click(Sender: TObject);
+    procedure LinkLabel1LinkClick(Sender: TObject; const Link: string;
+      LinkType: TSysLinkType);
   private
     { Private declarations }
   public
@@ -50,6 +57,8 @@ var
 implementation
 
 {$R *.dfm}
+
+uses ShellApi;
 
 procedure TProjectExportDialog.btnExportClick(Sender: TObject);
 begin
@@ -79,8 +88,8 @@ begin
   edtApplicationDirectory.Text := AModel.ApplicationDirectory;
 
   case AModel.FormFileKind of
-    ffkText: rgFormFileKind.ItemIndex := 0;
-    ffkBinary: rgFormFileKind.ItemIndex := 1;
+    ffkText: swFormFileKind.State := tssOff;
+    ffkBinary: swFormFileKind.State := tssOn;
   end;
 
   Result := ShowModal() = mrOk;
@@ -92,10 +101,26 @@ begin
   AModel.ApplicationMainForm := AModel.ApplicationForms[cbApplicationMainForm.ItemIndex];
   AModel.ApplicationDirectory := edtApplicationDirectory.Text;
 
-  case rgFormFileKind.ItemIndex of
-    0: AModel.FormFileKind := ffkText;
-    1: AModel.FormFileKind := ffkBinary;
+  case swFormFileKind.State of
+    tssOff: AModel.FormFileKind := ffkText;
+    tssOn: AModel.FormFileKind := ffkBinary;
   end;
+end;
+
+procedure TProjectExportDialog.Label1Click(Sender: TObject);
+begin
+  swFormFileKind.State := tssOn;
+end;
+
+procedure TProjectExportDialog.Label2Click(Sender: TObject);
+begin
+  swFormFileKind.State := tssOff;
+end;
+
+procedure TProjectExportDialog.LinkLabel1LinkClick(Sender: TObject;
+  const Link: string; LinkType: TSysLinkType);
+Begin
+  ShellExecute(0, 'open', pchar(Link), nil, nil, SW_NORMAL);
 end;
 
 procedure TProjectExportDialog.btnSelectDirClick(Sender: TObject);

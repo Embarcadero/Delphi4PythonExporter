@@ -6,57 +6,59 @@ object FormsExportDialog: TFormsExportDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Forms Export'
-  ClientHeight = 421
-  ClientWidth = 634
+  ClientHeight = 842
+  ClientWidth = 1254
   Color = clBtnFace
-  Constraints.MaxHeight = 550
-  Constraints.MaxWidth = 650
-  Constraints.MinHeight = 450
-  Constraints.MinWidth = 640
+  Constraints.MaxHeight = 1100
+  Constraints.MaxWidth = 1300
+  Constraints.MinHeight = 900
+  Constraints.MinWidth = 1280
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -12
+  Font.Height = -24
   Font.Name = 'Segoe UI'
   Font.Style = []
-  OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
-  PixelsPerInch = 96
-  TextHeight = 15
+  PixelsPerInch = 192
+  TextHeight = 32
   object spHeader: TShape
     AlignWithMargins = True
     Left = 0
-    Top = 65
-    Width = 634
-    Height = 1
+    Top = 130
+    Width = 1254
+    Height = 2
     Margins.Left = 0
-    Margins.Top = 5
+    Margins.Top = 10
     Margins.Right = 0
-    Margins.Bottom = 5
+    Margins.Bottom = 10
     Align = alTop
-    ExplicitLeft = 232
-    ExplicitTop = 336
-    ExplicitWidth = 65
+    Pen.Width = 2
+    ExplicitWidth = 1248
   end
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 634
-    Height = 60
+    Width = 1254
+    Height = 120
+    Margins.Left = 6
+    Margins.Top = 6
+    Margins.Right = 6
+    Margins.Bottom = 6
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
     object imgExport: TImage
       AlignWithMargins = True
-      Left = 5
-      Top = 5
-      Width = 50
-      Height = 50
-      Margins.Left = 5
-      Margins.Top = 5
+      Left = 10
+      Top = 10
+      Width = 100
+      Height = 100
+      Margins.Left = 10
+      Margins.Top = 10
       Margins.Right = 0
-      Margins.Bottom = 5
+      Margins.Bottom = 10
       Align = alLeft
       Picture.Data = {
         0954506E67496D61676589504E470D0A1A0A0000000D49484452000001000000
@@ -2203,30 +2205,37 @@ object FormsExportDialog: TFormsExportDialog
         98A0C83E3C7DCB9CFE1305E49ECDB99D5F55F7414D0000000849444154CFCDFA
         FF3A013EC34395F1210000000049454E44AE426082}
       Proportional = True
-      ExplicitLeft = 8
     end
     object lblDescription: TLabel
-      Left = 66
-      Top = 39
-      Width = 89
-      Height = 21
+      Left = 132
+      Top = 78
+      Width = 182
+      Height = 45
+      Margins.Left = 6
+      Margins.Top = 6
+      Margins.Right = 6
+      Margins.Bottom = 6
       Caption = 'Select Forms'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -32
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
     end
     object lblExport: TLabel
-      Left = 66
-      Top = 10
-      Width = 121
-      Height = 25
+      Left = 132
+      Top = 20
+      Width = 239
+      Height = 51
+      Margins.Left = 6
+      Margins.Top = 6
+      Margins.Right = 6
+      Margins.Bottom = 6
       Caption = 'Forms Export'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -19
+      Font.Height = -38
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
@@ -2234,76 +2243,95 @@ object FormsExportDialog: TFormsExportDialog
   end
   object pnlContents: TPanel
     Left = 0
-    Top = 71
-    Width = 634
-    Height = 310
+    Top = 142
+    Width = 1254
+    Height = 620
+    Margins.Left = 6
+    Margins.Top = 6
+    Margins.Right = 6
+    Margins.Bottom = 6
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
     object pnlAppDir: TPanel
       Left = 0
       Top = 0
-      Width = 634
-      Height = 60
+      Width = 1254
+      Height = 120
+      Margins.Left = 6
+      Margins.Top = 6
+      Margins.Right = 6
+      Margins.Bottom = 6
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 0
       object lblApplicationDirectory: TLabel
         AlignWithMargins = True
-        Left = 8
-        Top = 3
-        Width = 623
-        Height = 15
-        Margins.Left = 8
+        Left = 16
+        Top = 6
+        Width = 1232
+        Height = 32
+        Margins.Left = 16
+        Margins.Top = 6
+        Margins.Right = 6
+        Margins.Bottom = 6
         Align = alTop
         Caption = 'Application Directory:'
-        ExplicitWidth = 115
+        ExplicitWidth = 229
       end
       object edtDirectory: TEdit
         AlignWithMargins = True
-        Left = 8
-        Top = 24
-        Width = 585
-        Height = 23
-        Margins.Left = 8
+        Left = 16
+        Top = 50
+        Width = 1156
+        Height = 44
+        Margins.Left = 16
+        Margins.Top = 6
         Margins.Right = 0
-        Margins.Bottom = 13
+        Margins.Bottom = 26
         Align = alClient
         Enabled = False
         TabOrder = 0
+        ExplicitHeight = 40
       end
       object btnSelectDir: TButton
         AlignWithMargins = True
-        Left = 596
-        Top = 23
-        Width = 30
-        Height = 25
-        Margins.Top = 2
-        Margins.Right = 8
-        Margins.Bottom = 12
+        Left = 1178
+        Top = 48
+        Width = 60
+        Height = 48
+        Margins.Left = 6
+        Margins.Top = 4
+        Margins.Right = 16
+        Margins.Bottom = 24
         Align = alRight
         Caption = '...'
         TabOrder = 1
         OnClick = btnSelectDirClick
-        ExplicitHeight = 28
       end
     end
     object pnlGrid: TPanel
       Left = 0
-      Top = 60
-      Width = 634
-      Height = 250
+      Top = 120
+      Width = 1254
+      Height = 500
+      Margins.Left = 6
+      Margins.Top = 6
+      Margins.Right = 6
+      Margins.Bottom = 6
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
       object grForms: TDBGrid
         AlignWithMargins = True
-        Left = 8
-        Top = 3
-        Width = 618
-        Height = 244
-        Margins.Left = 8
-        Margins.Right = 8
+        Left = 16
+        Top = 6
+        Width = 1222
+        Height = 488
+        Margins.Left = 16
+        Margins.Top = 6
+        Margins.Right = 16
+        Margins.Bottom = 6
         Align = alClient
         BorderStyle = bsNone
         DataSource = dsForms
@@ -2311,7 +2339,7 @@ object FormsExportDialog: TFormsExportDialog
         TabOrder = 0
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
-        TitleFont.Height = -12
+        TitleFont.Height = -24
         TitleFont.Name = 'Segoe UI'
         TitleFont.Style = []
         OnCellClick = grFormsCellClick
@@ -2326,7 +2354,7 @@ object FormsExportDialog: TFormsExportDialog
             ReadOnly = True
             Title.Alignment = taCenter
             Title.Caption = 'Export'
-            Width = 95
+            Width = 190
             Visible = True
           end
           item
@@ -2334,7 +2362,7 @@ object FormsExportDialog: TFormsExportDialog
             FieldName = 'DESC_FORM'
             ReadOnly = True
             Title.Caption = 'Form'
-            Width = 161
+            Width = 322
             Visible = True
           end
           item
@@ -2345,7 +2373,7 @@ object FormsExportDialog: TFormsExportDialog
               'Binary')
             Title.Alignment = taCenter
             Title.Caption = 'Form File Kind'
-            Width = 90
+            Width = 180
             Visible = True
           end
           item
@@ -2353,14 +2381,14 @@ object FormsExportDialog: TFormsExportDialog
             FieldName = 'FL_INITIALIZE'
             Title.Alignment = taCenter
             Title.Caption = 'Initialize'
-            Width = 109
+            Width = 218
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'TITLE'
             Title.Caption = 'Title'
-            Width = 140
+            Width = 280
             Visible = True
           end>
       end
@@ -2368,21 +2396,26 @@ object FormsExportDialog: TFormsExportDialog
   end
   object plnFooter: TPanel
     Left = 0
-    Top = 381
-    Width = 634
-    Height = 40
+    Top = 762
+    Width = 1254
+    Height = 80
+    Margins.Left = 6
+    Margins.Top = 6
+    Margins.Right = 6
+    Margins.Bottom = 6
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
     object btnCancel: TButton
       AlignWithMargins = True
-      Left = 541
-      Top = 6
-      Width = 85
-      Height = 28
-      Margins.Top = 6
-      Margins.Right = 8
-      Margins.Bottom = 6
+      Left = 1068
+      Top = 12
+      Width = 170
+      Height = 56
+      Margins.Left = 6
+      Margins.Top = 12
+      Margins.Right = 16
+      Margins.Bottom = 12
       Align = alRight
       Caption = 'Cancel'
       ModalResult = 2
@@ -2390,12 +2423,14 @@ object FormsExportDialog: TFormsExportDialog
     end
     object btnExport: TButton
       AlignWithMargins = True
-      Left = 450
-      Top = 6
-      Width = 85
-      Height = 28
-      Margins.Top = 6
-      Margins.Bottom = 6
+      Left = 886
+      Top = 12
+      Width = 170
+      Height = 56
+      Margins.Left = 6
+      Margins.Top = 12
+      Margins.Right = 6
+      Margins.Bottom = 12
       Align = alRight
       Caption = 'Export'
       TabOrder = 0

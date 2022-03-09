@@ -99,6 +99,7 @@
         <DCCReference Include="dbrtl.dcp"/>
         <DCCReference Include="vcldb.dcp"/>
         <DCCReference Include="dsnap.dcp"/>
+        <DCCReference Include="vclwinx.dcp"/>
         <DCCReference Include="..\..\Source\PythonTools.Registration.pas"/>
         <DCCReference Include="..\..\Source\PythonTools.SplashScreen.pas"/>
         <DCCReference Include="..\..\Source\PythonTools.IOTAUtils.pas"/>

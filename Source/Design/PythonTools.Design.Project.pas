@@ -36,14 +36,12 @@ type
     swFormFileKind: TToggleSwitch;
     Label1: TLabel;
     Label2: TLabel;
-    Label3: TLabel;
-    LinkLabel1: TLinkLabel;
-    LinkLabel2: TLinkLabel;
+    llblNotification: TLinkLabel;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
     procedure Label1Click(Sender: TObject);
     procedure Label2Click(Sender: TObject);
-    procedure LinkLabel1LinkClick(Sender: TObject; const Link: string;
+    procedure llblNotificationLinkClick(Sender: TObject; const Link: string;
       LinkType: TSysLinkType);
   private
     { Private declarations }
@@ -117,7 +115,7 @@ begin
   swFormFileKind.State := tssOff;
 end;
 
-procedure TProjectExportDialog.LinkLabel1LinkClick(Sender: TObject;
+procedure TProjectExportDialog.llblNotificationLinkClick(Sender: TObject;
   const Link: string; LinkType: TSysLinkType);
 Begin
   ShellExecute(0, 'open', pchar(Link), nil, nil, SW_NORMAL);

@@ -40,6 +40,7 @@ type
     cdsFormsFL_INITIALIZE: TBooleanField;
     cdsFormsFL_FORM_FILE_KIND: TStringField;
     btnSelectDir: TButton;
+    llblNotification: TLinkLabel;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -53,6 +54,8 @@ type
     procedure grFormsTitleClick(Column: TColumn);
     procedure grFormsDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure llblNotificationLinkClick(Sender: TObject; const Link: string;
+      LinkType: TSysLinkType);
   public
     function Execute(const AModel: TExportFormsDesignModel): boolean;
   end;
@@ -64,7 +67,9 @@ implementation
 
 uses
   System.Generics.Collections, System.Math,
-  CommCtrl, UxTheme, Winapi.Windows,
+  CommCtrl, UxTheme,
+  ShellApi,
+  Winapi.Windows,
   Vcl.Graphics,
   PythonTools.Common;
 
@@ -213,6 +218,12 @@ begin
       cdsForms.EnableControls();
     end;
   end;
+end;
+
+procedure TFormsExportDialog.llblNotificationLinkClick(Sender: TObject;
+  const Link: string; LinkType: TSysLinkType);
+begin
+  ShellExecute(0, 'open', pchar(Link), nil, nil, SW_NORMAL);
 end;
 
 function TFormsExportDialog.Execute(const AModel: TExportFormsDesignModel): boolean;

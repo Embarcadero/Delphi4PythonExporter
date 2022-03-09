@@ -38,7 +38,8 @@ requires
   vcl,
   dbrtl,
   vcldb,
-  dsnap;
+  dsnap,
+  vclwinx;
 
 contains
   PythonTools.Registration in '..\..\Source\PythonTools.Registration.pas',

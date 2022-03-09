@@ -5,57 +5,54 @@ object ProjectExportDialog: TProjectExportDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Export'
-  ClientHeight = 589
-  ClientWidth = 1244
+  ClientHeight = 303
+  ClientWidth = 619
   Color = clBtnFace
-  Constraints.MaxHeight = 660
-  Constraints.MaxWidth = 1270
-  Constraints.MinHeight = 660
-  Constraints.MinWidth = 1270
+  Constraints.MaxHeight = 342
+  Constraints.MaxWidth = 635
+  Constraints.MinHeight = 332
+  Constraints.MinWidth = 625
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -24
+  Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poMainFormCenter
-  PixelsPerInch = 192
-  TextHeight = 32
+  PixelsPerInch = 96
+  TextHeight = 15
   object spHeader: TShape
     AlignWithMargins = True
     Left = 0
-    Top = 130
-    Width = 1244
-    Height = 2
+    Top = 80
+    Width = 619
+    Height = 1
     Margins.Left = 0
-    Margins.Top = 10
+    Margins.Top = 0
     Margins.Right = 0
-    Margins.Bottom = 10
+    Margins.Bottom = 0
     Align = alTop
-    Pen.Width = 2
-    ExplicitWidth = 1218
+    ExplicitTop = 65
+    ExplicitWidth = 627
   end
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 1244
-    Height = 120
-    Margins.Left = 10
-    Margins.Top = 10
-    Margins.Right = 6
-    Margins.Bottom = 6
+    Width = 619
+    Height = 80
+    Margins.Left = 5
+    Margins.Top = 5
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
     object imgExport: TImage
       AlignWithMargins = True
-      Left = 15
-      Top = 15
-      Width = 100
-      Height = 100
-      Margins.Left = 15
-      Margins.Top = 15
+      Left = 8
+      Top = 8
+      Width = 50
+      Height = 69
+      Margins.Left = 8
+      Margins.Top = 8
       Margins.Right = 0
-      Margins.Bottom = 5
       Align = alLeft
       Picture.Data = {
         0954506E67496D61676589504E470D0A1A0A0000000D49484452000001000000
@@ -2202,78 +2199,76 @@ object ProjectExportDialog: TProjectExportDialog
         98A0C83E3C7DCB9CFE1305E49ECDB99D5F55F7414D0000000849444154CFCDFA
         FF3A013EC34395F1210000000049454E44AE426082}
       Proportional = True
-      ExplicitLeft = 9
-      ExplicitTop = 10
+      ExplicitHeight = 50
     end
     object lblProjectName: TLabel
-      Left = 131
-      Top = 62
-      Width = 116
-      Height = 45
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 66
+      Top = 31
+      Width = 548
+      Height = 21
+      AutoSize = False
       Caption = 'Project1'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -32
+      Font.Height = -16
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
     end
     object lblExport: TLabel
-      Left = 131
-      Top = 15
-      Width = 255
-      Height = 51
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 66
+      Top = 8
+      Width = 129
+      Height = 25
       Caption = 'Project Export'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -38
+      Font.Height = -19
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
     end
+    object llblNotification: TLinkLabel
+      Left = 305
+      Top = 58
+      Width = 314
+      Height = 19
+      Caption = 
+        'Install <a href="https://github.com/Embarcadero/DelphiVCL4Python' +
+        '">DelphiVCL for Python</a> and/or <a href="https://github.com/Em' +
+        'barcadero/DelphiFMX4Python">DelphiFMX for Python</a>.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      TabOrder = 0
+      OnLinkClick = llblNotificationLinkClick
+    end
   end
   object plnFooter: TPanel
     Left = 0
-    Top = 509
-    Width = 1244
-    Height = 80
-    Margins.Left = 6
-    Margins.Top = 6
-    Margins.Right = 6
-    Margins.Bottom = 6
+    Top = 263
+    Width = 619
+    Height = 40
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 4
     object btnCancel: TButton
-      Left = 1058
-      Top = 12
-      Width = 170
-      Height = 50
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 529
+      Top = 6
+      Width = 85
+      Height = 25
       Caption = 'Cancel'
       ModalResult = 2
       TabOrder = 1
     end
     object btnExport: TButton
-      Left = 876
-      Top = 12
-      Width = 170
-      Height = 50
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 438
+      Top = 6
+      Width = 85
+      Height = 25
       Caption = 'Export'
       TabOrder = 0
       OnClick = btnExportClick
@@ -2281,213 +2276,113 @@ object ProjectExportDialog: TProjectExportDialog
   end
   object pnlAppDir: TPanel
     Left = 0
-    Top = 262
-    Width = 1244
-    Height = 120
-    Margins.Left = 6
-    Margins.Top = 6
-    Margins.Right = 6
-    Margins.Bottom = 6
+    Top = 141
+    Width = 619
+    Height = 60
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 2
     object lblApplicationDirectory: TLabel
-      Left = 16
-      Top = 6
-      Width = 229
-      Height = 32
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 8
+      Top = 3
+      Width = 115
+      Height = 15
       Caption = 'Application Directory:'
     end
     object btnSelectDir: TSpeedButton
-      Left = 1176
-      Top = 44
-      Width = 52
-      Height = 50
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 588
+      Top = 22
+      Width = 26
+      Height = 25
       Caption = '...'
       OnClick = btnSelectDirClick
     end
     object edtApplicationDirectory: TEdit
-      Left = 16
-      Top = 48
-      Width = 1154
-      Height = 40
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 8
+      Top = 24
+      Width = 577
+      Height = 23
       Enabled = False
       TabOrder = 0
     end
   end
   object pnlAppSettings: TPanel
     Left = 0
-    Top = 142
-    Width = 1244
-    Height = 120
-    Margins.Left = 6
-    Margins.Top = 6
-    Margins.Right = 6
-    Margins.Bottom = 6
+    Top = 81
+    Width = 619
+    Height = 60
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
     object lblAppTitle: TLabel
-      Left = 16
-      Top = 6
-      Width = 178
-      Height = 32
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 8
+      Top = 3
+      Width = 89
+      Height = 15
       Caption = 'Application Title:'
     end
     object lblAppMainForm: TLabel
-      Left = 628
-      Top = 6
-      Width = 248
-      Height = 32
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 314
+      Top = 3
+      Width = 125
+      Height = 15
       Caption = 'Application Main Form:'
     end
     object edtApplicationTitle: TEdit
-      Left = 16
-      Top = 48
-      Width = 600
-      Height = 40
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 8
+      Top = 24
+      Width = 300
+      Height = 23
       TabOrder = 0
     end
     object cbApplicationMainForm: TComboBox
-      Left = 628
-      Top = 48
-      Width = 600
-      Height = 40
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 314
+      Top = 24
+      Width = 300
+      Height = 23
       TabOrder = 1
     end
   end
   object pnlFormFileKind: TPanel
     Left = 0
-    Top = 382
-    Width = 1244
-    Height = 139
-    Margins.Left = 6
-    Margins.Top = 6
-    Margins.Right = 6
-    Margins.Bottom = 6
+    Top = 201
+    Width = 619
+    Height = 60
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 3
     object lblFormFileKind: TLabel
-      Left = 16
-      Top = 5
-      Width = 261
-      Height = 32
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 8
+      Top = 3
+      Width = 132
+      Height = 15
       Caption = 'Form file kind (dfm/fmx)'
     end
     object Label1: TLabel
-      Left = 195
-      Top = 49
-      Width = 66
-      Height = 32
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 98
+      Top = 25
+      Width = 33
+      Height = 15
       Caption = 'Binary'
       OnClick = Label1Click
     end
     object Label2: TLabel
-      Left = 28
-      Top = 49
-      Width = 43
-      Height = 32
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 15
+      Top = 25
+      Width = 21
+      Height = 15
       Alignment = taRightJustify
       Caption = 'Text'
       OnClick = Label2Click
     end
-    object Label3: TLabel
-      Left = 876
-      Top = -3
-      Width = 290
-      Height = 32
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
-      Caption = 'Be sure you have the latest'
-    end
     object swFormFileKind: TToggleSwitch
-      Left = 83
-      Top = 49
-      Width = 100
-      Height = 40
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
+      Left = 42
+      Top = 25
+      Width = 50
+      Height = 20
       ShowStateCaption = False
       State = tssOn
-      SwitchHeight = 40
-      SwitchWidth = 100
       TabOrder = 0
-      ThumbWidth = 30
-    end
-    object LinkLabel1: TLinkLabel
-      Left = 876
-      Top = 41
-      Width = 311
-      Height = 36
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
-      Caption = 
-        '<a href="https://github.com/Embarcadero/DelphiVCL4Python">Delphi' +
-        'VCL for Python</a> and/or'
-      TabOrder = 1
-      OnLinkClick = LinkLabel1LinkClick
-    end
-    object LinkLabel2: TLinkLabel
-      Left = 876
-      Top = 89
-      Width = 342
-      Height = 36
-      Margins.Left = 6
-      Margins.Top = 6
-      Margins.Right = 6
-      Margins.Bottom = 6
-      Caption = 
-        '<a href="https://github.com/Embarcadero/DelphiFMX4Python">Delphi' +
-        'FMX for Python</a> installed.'
-      TabOrder = 2
-      OnLinkClick = LinkLabel1LinkClick
     end
   end
   object FileOpenDialog1: TFileOpenDialog
@@ -2496,7 +2391,7 @@ object ProjectExportDialog: TProjectExportDialog
     OkButtonLabel = 'Select'
     Options = [fdoPickFolders, fdoForceFileSystem, fdoPathMustExist]
     Title = 'Select Project Directory'
-    Left = 552
-    Top = 11
+    Left = 560
+    Top = 3
   end
 end

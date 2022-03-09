@@ -37,6 +37,9 @@ type
     Label1: TLabel;
     Label2: TLabel;
     llblNotification: TLinkLabel;
+    pnlContents: TPanel;
+    lbForms: TListBox;
+    pnlClient: TPanel;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
     procedure Label1Click(Sender: TObject);
@@ -76,11 +79,15 @@ end;
 function TProjectExportDialog.Execute(const AModel: TExportProjectDesignModel): boolean;
 var
   LFormNameAndFile: TFormNameAndFile;
+  LQualifiedName: string;
 begin
   lblProjectName.Caption := AModel.ApplicationName;
   for LFormNameAndFile in AModel.ApplicationForms do begin
-    cbApplicationMainForm.Items.Add(LFormNameAndFile.FileName + '.' + LFormNameAndFile.FormName);
+    LQualifiedName := LFormNameAndFile.FileName + '.' + LFormNameAndFile.FormName;
+    cbApplicationMainForm.Items.Add(LQualifiedName);
+    lbForms.Items.Add(LQualifiedName);
   end;
+
   if cbApplicationMainForm.Items.Count > 0 then
     cbApplicationMainForm.ItemIndex := 0;
   edtApplicationDirectory.Text := AModel.ApplicationDirectory;

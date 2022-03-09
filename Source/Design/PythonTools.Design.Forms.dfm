@@ -2450,6 +2450,7 @@ object FormsExportDialog: TFormsExportDialog
       OnGetText = cdsFormsFL_INITIALIZEGetText
     end
     object cdsFormsFL_FORM_FILE_KIND: TStringField
+      Alignment = taCenter
       FieldName = 'FL_FORM_FILE_KIND'
       Size = 6
     end

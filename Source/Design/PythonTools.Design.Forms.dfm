@@ -6,12 +6,9 @@ object FormsExportDialog: TFormsExportDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Forms Export'
-  ClientHeight = 391
+  ClientHeight = 474
   ClientWidth = 632
   Color = clBtnFace
-  Constraints.MaxHeight = 430
-  Constraints.MaxWidth = 650
-  Constraints.MinHeight = 430
   Constraints.MinWidth = 640
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -2251,7 +2248,7 @@ object FormsExportDialog: TFormsExportDialog
     Left = 0
     Top = 81
     Width = 632
-    Height = 270
+    Height = 353
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
@@ -2306,16 +2303,17 @@ object FormsExportDialog: TFormsExportDialog
       Left = 0
       Top = 60
       Width = 632
-      Height = 210
+      Height = 293
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitHeight = 270
       object grForms: TDBGrid
         AlignWithMargins = True
         Left = 8
         Top = 3
         Width = 616
-        Height = 204
+        Height = 287
         Margins.Left = 8
         Margins.Right = 8
         Align = alClient
@@ -2382,7 +2380,7 @@ object FormsExportDialog: TFormsExportDialog
   end
   object plnFooter: TPanel
     Left = 0
-    Top = 351
+    Top = 434
     Width = 632
     Height = 40
     Align = alBottom
@@ -2414,6 +2412,17 @@ object FormsExportDialog: TFormsExportDialog
       Caption = 'Export'
       TabOrder = 0
       OnClick = btnExportClick
+    end
+    object cbShowExportedFiles: TCheckBox
+      AlignWithMargins = True
+      Left = 8
+      Top = 12
+      Width = 185
+      Height = 17
+      Margins.Left = 8
+      Margins.Right = 8
+      Caption = 'Show exported files in explorer'
+      TabOrder = 2
     end
   end
   object FileOpenDialog1: TFileOpenDialog

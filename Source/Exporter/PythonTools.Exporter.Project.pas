@@ -28,6 +28,7 @@ implementation
 
 uses
   System.SysUtils,
+  ShellApi, Winapi.Windows,
   PythonTools.Common, PythonTools.Exceptions,
   PythonTools.Exporter.Application,
   PythonTools.Exporter.Form,
@@ -76,6 +77,10 @@ begin
         LFormExporter.Free();
       end;
     end);
+
+    if LExportProjectModel.ShowInExplorer then
+      ShellExecute(0, 'open', PChar(LExportProjectModel.ApplicationDirectory), nil, nil, SW_NORMAL);
+
     Result := true;
   finally
     LExportProjectModel.Free();

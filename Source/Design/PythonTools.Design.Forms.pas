@@ -41,6 +41,7 @@ type
     cdsFormsFL_FORM_FILE_KIND: TStringField;
     btnSelectDir: TButton;
     llblNotification: TLinkLabel;
+    cbShowExportedFiles: TCheckBox;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -234,15 +235,15 @@ function TFormsExportDialog.Execute(const AModel: TExportFormsDesignModel): bool
   end;
 
 var
-  LFormNameAndFile: TFormNameAndFile;
+  LInput: TInputForm;
   LOutput: TList<TOutputForm>;
 begin
   cdsForms.EmptyDataSet();
-  for LFormNameAndFile in AModel.InputForms do begin
+  for LInput in AModel.InputForms do begin
     cdsForms.AppendRecord([
       true,
-      GetDescForm(LFormNameAndFile),
-      String.Empty,
+      GetDescForm(LInput.Form),
+      LInput.Title,
       True,
       TFormFileKind.ffkText.ToString()
     ]);
@@ -259,18 +260,19 @@ begin
     Exit();
 
   AModel.Directory := edtDirectory.Text;
+  Amodel.ShowInExplorer := cbShowExportedFiles.Checked;
 
   LOutput := TList<TOutputForm>.Create();
   try
     cdsForms.DisableControls();
     try
       cdsForms.First();
-      for LFormNameAndFile in AModel.InputForms do begin
-        if cdsForms.Locate('DESC_FORM', GetDescForm(LFormNameAndFile), []) then begin
+      for LInput in AModel.InputForms do begin
+        if cdsForms.Locate('DESC_FORM', GetDescForm(LInput.Form), []) then begin
           if not cdsFormsFL_EXPORT.AsBoolean then
             Continue;
           LOutput.Add(TOutputForm.Create(
-            LFormNameAndFile,
+            LInput.Form,
             cdsFormsFL_INITIALIZE.AsBoolean,
             cdsFormsTITLE.AsString,
             TFormFileKind.FromString(cdsFormsFL_FORM_FILE_KIND.AsString)

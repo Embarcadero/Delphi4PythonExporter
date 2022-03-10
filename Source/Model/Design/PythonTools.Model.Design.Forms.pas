@@ -25,15 +25,26 @@ type
     property FormFileKind: TFormFileKind read FFormFileKind write FFormFileKind;
   end;
 
+  TInputForm = record
+  private
+    FForm: TFormNameAndFile;
+    FTitle: string;
+  public
+    property Form: TFormNameAndFile read FForm write FForm;
+    property Title: string read FTitle write FTitle;
+  end;
+
   TExportFormsDesignModel = class
   private
-    FInputForms: TFormNamesAndFiles;
+    FInputForms: TArray<TInputForm>;
     FDirectory: string;
     FOutputForms: TArray<TOutputForm>;
+    FShowInExplorer: boolean;
   public
-    property InputForms: TFormNamesAndFiles read FInputForms write FInputForms;
+    property InputForms: TArray<TInputForm> read FInputForms write FInputForms;
     property OutputForms: TArray<TOutputForm> read FOutputForms write FOutputForms;
     property Directory: string read FDirectory write FDirectory;
+    property ShowInExplorer: boolean read FShowInExplorer write FShowInExplorer;
   end;
 
 implementation

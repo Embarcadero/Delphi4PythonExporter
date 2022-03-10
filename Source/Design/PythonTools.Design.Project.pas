@@ -40,6 +40,7 @@ type
     pnlContents: TPanel;
     lbForms: TListBox;
     pnlClient: TPanel;
+    cbShowExportedFiles: TCheckBox;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
     procedure Label1Click(Sender: TObject);
@@ -105,6 +106,7 @@ begin
   AModel.ApplicationTitle := edtApplicationTitle.Text;
   AModel.ApplicationMainForm := AModel.ApplicationForms[cbApplicationMainForm.ItemIndex];
   AModel.ApplicationDirectory := edtApplicationDirectory.Text;
+  Amodel.ShowInExplorer := cbShowExportedFiles.Checked;
 
   case swFormFileKind.State of
     tssOff: AModel.FormFileKind := ffkText;

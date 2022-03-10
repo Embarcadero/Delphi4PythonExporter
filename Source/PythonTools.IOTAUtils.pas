@@ -11,6 +11,7 @@ type
   TIOTAFormInfo = record
     FormName: string;
     FileName: string;
+    Caption: string;
     FrameworkType: string;
     Module: IOTAModule;
     Editor: IOTAFormEditor;
@@ -23,6 +24,7 @@ type
     class function ModuleIsForm(const AModule: IOTAModule): boolean;
 
     class procedure EnumComps(const AFormEditor: IOTAFormEditor; const ACallback: TProc<TComponent>);
+    class function GetFormCaption(const AComponent: TComponent): string;
   public
     class function FindComponents(const AFormEditor: IOTAFormEditor): TExportedComponents;
     class function FindEvents(const AFormEditor: IOTAFormEditor; const ADesigner: IDesigner): TExportedEvents;
@@ -70,6 +72,7 @@ begin
     LResult.Designer := (LResult.Editor as INTAFormEditor).FormDesigner;
     LResult.FileName := LModuleInfo.FileName;
     LResult.FormName := LModuleInfo.FormName;
+    LResult.Caption := GetFormCaption(LResult.Designer.Root);
     LResult.FrameworkType := GetFrameworkTypeFromDesigner(LResult.Designer);
     AProc(LResult);
   end;
@@ -108,6 +111,7 @@ begin
 
       LResult.FileName := LModule.FileName;
       LResult.FormName := LDesigner.Root.Name;
+      LResult.Caption := GetFormCaption(LDesigner.Root);
       LResult.FrameworkType := GetFrameworkTypeFromDesigner(LDesigner);
       LResult.Module := LModule;
       LResult.Editor := LEditor;
@@ -254,6 +258,16 @@ begin
   AFormInfo.Designer := LDesigner;
 
   Result := true;
+end;
+
+class function TIOTAUtils.GetFormCaption(const AComponent: TComponent): string;
+begin
+  if AComponent is Vcl.Forms.TForm then
+    Result := Vcl.Forms.TForm(AComponent).Caption
+  else if AComponent is Fmx.Forms.TForm then
+    Result := Fmx.Forms.TForm(AComponent).Caption
+  else
+    Result := String.Empty;
 end;
 
 class function TIOTAUtils.GetFormEditorFromModule(const AModule: IOTAModule): IOTAFormEditor;

@@ -23,7 +23,8 @@ type
 implementation
 
 uses
-  System.SysUtils,
+  System.SysUtils, System.Generics.Collections,
+  ShellApi, Winapi.Windows,
   PythonTools.Exceptions,
   PythonTools.Common,
   PythonTools.Exporter.Form,
@@ -33,22 +34,26 @@ uses
 
 function TFormsExporter.BuildExportFormsModel: TExportFormsDesignModel;
 var
-  LFormInfo: TFormNameAndFileList;
+  LInputs: TList<TInputForm>;
+  LInput: TInputForm;
 begin
   Result := TExportFormsDesignModel.Create();
   try
 //    Result.Title := String.Empty;
     Result.Directory := String.Empty;
-    LFormInfo := TFormNameAndFileList.Create();
+    LInputs := TList<TInputForm>.Create();
     try
       TIOTAUtils.EnumForms(procedure(AFormInfo: TIOTAFormInfo) begin
-        LFormInfo.Add(TFormNameAndFile.Create(
+        LInput.Form := TFormNameAndFile.Create(
           AFormInfo.FormName,
-          ChangeFileExt(ExtractFileName(AFormInfo.FileName), '')));
+          ChangeFileExt(ExtractFileName(AFormInfo.FileName), ''));
+        LInput.Title := AFormInfo.Caption;
+        LInputs.Add(LInput);
       end);
-      Result.InputForms := LFormInfo.ToArray();
+
+      Result.InputForms := LInputs.ToArray();
     finally
-      LFormInfo.Free();
+      LInputs.Free();
     end;
   except
     on E: Exception do begin
@@ -85,6 +90,9 @@ begin
           LFormExporter.Free();
         end;
       end;
+
+    if LExportModel.ShowInExplorer then
+      ShellExecute(0, 'open', PChar(LExportModel.Directory), nil, nil, SW_NORMAL);
   finally
     LExportModel.Free();
   end;

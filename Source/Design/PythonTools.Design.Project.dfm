@@ -4,7 +4,7 @@ object ProjectExportDialog: TProjectExportDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Export'
-  ClientHeight = 402
+  ClientHeight = 418
   ClientWidth = 820
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -39,7 +39,6 @@ object ProjectExportDialog: TProjectExportDialog
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 897
     object imgExport: TImage
       AlignWithMargins = True
       Left = 8
@@ -2245,13 +2244,13 @@ object ProjectExportDialog: TProjectExportDialog
   end
   object plnFooter: TPanel
     Left = 0
-    Top = 362
+    Top = 378
     Width = 820
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 897
+    ExplicitTop = 362
     object btnCancel: TButton
       AlignWithMargins = True
       Left = 727
@@ -2265,7 +2264,6 @@ object ProjectExportDialog: TProjectExportDialog
       Caption = 'Cancel'
       ModalResult = 2
       TabOrder = 1
-      ExplicitLeft = 804
     end
     object btnExport: TButton
       AlignWithMargins = True
@@ -2279,40 +2277,48 @@ object ProjectExportDialog: TProjectExportDialog
       Caption = 'Export'
       TabOrder = 0
       OnClick = btnExportClick
-      ExplicitLeft = 713
+    end
+    object cbShowExportedFiles: TCheckBox
+      Left = 8
+      Top = 12
+      Width = 187
+      Height = 17
+      Caption = 'Show exported files in explorer'
+      TabOrder = 2
     end
   end
   object pnlContents: TPanel
     Left = 0
     Top = 81
     Width = 820
-    Height = 281
+    Height = 297
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitWidth = 897
+    ExplicitHeight = 281
     object lbForms: TListBox
       AlignWithMargins = True
       Left = 8
       Top = 3
       Width = 187
-      Height = 275
+      Height = 291
       Margins.Left = 8
       Align = alLeft
       BevelOuter = bvNone
       BorderStyle = bsNone
       ItemHeight = 15
       TabOrder = 0
+      ExplicitHeight = 275
     end
     object pnlClient: TPanel
       Left = 198
       Top = 0
       Width = 622
-      Height = 281
+      Height = 297
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 699
+      ExplicitHeight = 281
       object pnlAppDir: TPanel
         Left = 0
         Top = 60
@@ -2321,8 +2327,6 @@ object ProjectExportDialog: TProjectExportDialog
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitTop = 120
-        ExplicitWidth = 699
         object lblApplicationDirectory: TLabel
           Left = 8
           Top = 3
@@ -2355,8 +2359,6 @@ object ProjectExportDialog: TProjectExportDialog
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitTop = 60
-        ExplicitWidth = 699
         object lblAppTitle: TLabel
           Left = 8
           Top = 3
@@ -2394,8 +2396,6 @@ object ProjectExportDialog: TProjectExportDialog
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 2
-        ExplicitLeft = 3
-        ExplicitTop = 186
         object lblFormFileKind: TLabel
           Left = 8
           Top = 3

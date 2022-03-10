@@ -4,9 +4,13 @@ object ProjectExportDialog: TProjectExportDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Export'
-  ClientHeight = 418
+  ClientHeight = 417
   ClientWidth = 820
   Color = clBtnFace
+  Constraints.MaxHeight = 456
+  Constraints.MaxWidth = 836
+  Constraints.MinHeight = 456
+  Constraints.MinWidth = 836
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
@@ -2244,12 +2248,13 @@ object ProjectExportDialog: TProjectExportDialog
   end
   object plnFooter: TPanel
     Left = 0
-    Top = 378
+    Top = 377
     Width = 820
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitTop = 378
     object btnCancel: TButton
       AlignWithMargins = True
       Left = 727
@@ -2290,31 +2295,34 @@ object ProjectExportDialog: TProjectExportDialog
     Left = 0
     Top = 81
     Width = 820
-    Height = 297
+    Height = 296
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitHeight = 297
     object lbForms: TListBox
       AlignWithMargins = True
       Left = 8
       Top = 3
       Width = 187
-      Height = 291
+      Height = 290
       Margins.Left = 8
       Align = alLeft
       BevelOuter = bvNone
       BorderStyle = bsNone
       ItemHeight = 15
       TabOrder = 0
+      ExplicitHeight = 291
     end
     object pnlClient: TPanel
       Left = 198
       Top = 0
       Width = 622
-      Height = 297
+      Height = 296
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitHeight = 297
       object pnlAppDir: TPanel
         Left = 0
         Top = 60

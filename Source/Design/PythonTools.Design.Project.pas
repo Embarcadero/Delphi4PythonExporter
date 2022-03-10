@@ -80,18 +80,22 @@ end;
 function TProjectExportDialog.Execute(const AModel: TExportProjectDesignModel): boolean;
 var
   LFormNameAndFile: TFormNameAndFile;
-  LQualifiedName: string;
 begin
   lblProjectName.Caption := AModel.ApplicationName;
+  edtApplicationTitle.Text := AModel.ApplicationTitle;
+  edtApplicationDirectory.Text := AModel.ApplicationDirectory;
+  cbShowExportedFiles.Checked := AModel.ShowInExplorer;
+
   for LFormNameAndFile in AModel.ApplicationForms do begin
-    LQualifiedName := LFormNameAndFile.FileName + '.' + LFormNameAndFile.FormName;
-    cbApplicationMainForm.Items.Add(LQualifiedName);
-    lbForms.Items.Add(LQualifiedName);
+    cbApplicationMainForm.Items.Add(LFormNameAndFile.CombineFileAndFormName());
+    lbForms.Items.Add(LFormNameAndFile.CombineFileAndFormName());
   end;
 
-  if cbApplicationMainForm.Items.Count > 0 then
+  if (AModel.ApplicationMainForm.CombineFileAndFormName() <> String.Empty) then
+    cbApplicationMainForm.ItemIndex := cbApplicationMainForm.Items.IndexOf(
+      AModel.ApplicationMainForm.CombineFileAndFormName())
+  else if (cbApplicationMainForm.Items.Count > 0) then
     cbApplicationMainForm.ItemIndex := 0;
-  edtApplicationDirectory.Text := AModel.ApplicationDirectory;
 
   case AModel.FormFileKind of
     ffkText: swFormFileKind.State := tssOff;

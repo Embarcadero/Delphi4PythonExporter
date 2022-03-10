@@ -25,8 +25,7 @@ implementation
 uses
   System.SysUtils, System.Generics.Collections,
   ShellApi, Winapi.Windows,
-  PythonTools.Exceptions,
-  PythonTools.Common,
+  PythonTools.Exceptions, PythonTools.Common, PythonTools.Registry,
   PythonTools.Exporter.Form,
   PythonTools.Design.Forms;
 
@@ -72,9 +71,11 @@ var
 begin
   LExportModel := BuildExportFormsModel();
   try
+    TExporterRegistry.LoadFormsModel(LExportModel);
     //Request user info
     if not RequestExportInfo(LExportModel) then
       Exit(false);
+    TExporterRegistry.SaveFormsModel(LExportModel);
 
     //Export each selected form
     for I := Low(LExportModel.OutputForms) to High(LExportModel.OutputForms) do

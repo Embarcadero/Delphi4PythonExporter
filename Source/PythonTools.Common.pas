@@ -14,6 +14,8 @@ type
     FileName: string;
   public
     constructor Create(const AFormName, AFileName: string);
+
+    function CombineFileAndFormName(): string;
   end;
 
   TFormNamesAndFiles = TArray<TFormNameAndFile>;
@@ -75,6 +77,14 @@ type
 implementation
 
 { TFormNameAndFile }
+
+function TFormNameAndFile.CombineFileAndFormName: string;
+begin
+  if (FileName = String.Empty) and (FormName = String.Empty) then
+    Result := String.Empty
+  else
+    Result := FileName + '.' + FormName;
+end;
 
 constructor TFormNameAndFile.Create(const AFormName, AFileName: string);
 begin

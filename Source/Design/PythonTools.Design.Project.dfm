@@ -2250,7 +2250,6 @@ object ProjectExportDialog: TProjectExportDialog
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 362
     object btnCancel: TButton
       AlignWithMargins = True
       Left = 727
@@ -2295,7 +2294,6 @@ object ProjectExportDialog: TProjectExportDialog
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitHeight = 281
     object lbForms: TListBox
       AlignWithMargins = True
       Left = 8
@@ -2308,7 +2306,6 @@ object ProjectExportDialog: TProjectExportDialog
       BorderStyle = bsNone
       ItemHeight = 15
       TabOrder = 0
-      ExplicitHeight = 275
     end
     object pnlClient: TPanel
       Left = 198
@@ -2318,7 +2315,6 @@ object ProjectExportDialog: TProjectExportDialog
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitHeight = 281
       object pnlAppDir: TPanel
         Left = 0
         Top = 60

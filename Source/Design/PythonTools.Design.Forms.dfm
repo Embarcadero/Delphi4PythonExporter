@@ -2264,12 +2264,11 @@ object FormsExportDialog: TFormsExportDialog
         AlignWithMargins = True
         Left = 8
         Top = 3
-        Width = 621
+        Width = 115
         Height = 15
         Margins.Left = 8
         Align = alTop
         Caption = 'Application Directory:'
-        ExplicitWidth = 115
       end
       object edtDirectory: TEdit
         AlignWithMargins = True
@@ -2307,7 +2306,6 @@ object FormsExportDialog: TFormsExportDialog
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitHeight = 270
       object grForms: TDBGrid
         AlignWithMargins = True
         Left = 8

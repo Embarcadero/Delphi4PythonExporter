@@ -29,7 +29,7 @@ implementation
 uses
   System.SysUtils,
   ShellApi, Winapi.Windows,
-  PythonTools.Common, PythonTools.Exceptions,
+  PythonTools.Exceptions, PythonTools.Common, PythonTools.Registry,
   PythonTools.Exporter.Application,
   PythonTools.Exporter.Form,
   PythonTools.Design.Project;
@@ -48,9 +48,11 @@ var
 begin
   LExportProjectModel := BuildExportProjectModel();
   try
+    TExporterRegistry.LoadProjectModel(LExportProjectModel);
     //Request user info
     if not RequestExportInfo(LExportProjectModel) then
       Exit(false);
+    TExporterRegistry.SaveProjectModel(LExportProjectModel);
     //Export the application file as the app initializer
     LAppExporter := TApplicationExporter.Create(LExportProjectModel, FProject);
     try
@@ -100,9 +102,9 @@ var
 begin
   Result := TExportProjectDesignModel.Create();
   try
+    Result.ApplicationId := FProject.GetProjectGUID();
     Result.ApplicationName := ChangeFileExt(
       ExtractFileName(FProject.FileName), String.Empty);
-    Result.ApplicationDirectory := ExtractFileDir(FProject.FileName);
     LFormInfo := TFormNameAndFileList.Create();
     try
       TIOTAUtils.EnumForms(FProject, procedure(AFormInfo: TIOTAFormInfo) begin

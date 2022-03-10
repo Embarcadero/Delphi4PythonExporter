@@ -228,21 +228,18 @@ begin
 end;
 
 function TFormsExportDialog.Execute(const AModel: TExportFormsDesignModel): boolean;
-
-  function GetDescForm(const AFormNameAndFile: TFormNameAndFile): string;
-  begin
-    Result := AFormNameAndFile.FileName + '.' + AFormNameAndFile.FormName;
-  end;
-
 var
   LInput: TInputForm;
   LOutput: TList<TOutputForm>;
 begin
+  edtDirectory.Text := AModel.Directory;
+  cbShowExportedFiles.Checked := AModel.ShowInExplorer;
+
   cdsForms.EmptyDataSet();
   for LInput in AModel.InputForms do begin
     cdsForms.AppendRecord([
       true,
-      GetDescForm(LInput.Form),
+      LInput.Form.CombineFileAndFormName(),
       LInput.Title,
       True,
       TFormFileKind.ffkText.ToString()
@@ -268,7 +265,7 @@ begin
     try
       cdsForms.First();
       for LInput in AModel.InputForms do begin
-        if cdsForms.Locate('DESC_FORM', GetDescForm(LInput.Form), []) then begin
+        if cdsForms.Locate('DESC_FORM', LInput.Form.CombineFileAndFormName(), []) then begin
           if not cdsFormsFL_EXPORT.AsBoolean then
             Continue;
           LOutput.Add(TOutputForm.Create(

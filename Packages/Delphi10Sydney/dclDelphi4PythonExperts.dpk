@@ -64,6 +64,8 @@ contains
   PythonTools.Model.Producer.FormFile in '..\..\Source\Model\Producer\PythonTools.Model.Producer.FormFile.pas',
   PythonTools.Model.Producer.Form in '..\..\Source\Model\Producer\PythonTools.Model.Producer.Form.pas',
   PythonTools.Model.Design.Forms in '..\..\Source\Model\Design\PythonTools.Model.Design.Forms.pas',
-  PythonTools.Model.Design.Project in '..\..\Source\Model\Design\PythonTools.Model.Design.Project.pas';
+  PythonTools.Model.Design.Project in '..\..\Source\Model\Design\PythonTools.Model.Design.Project.pas',
+  PythonTools.Registry in '..\..\Source\PythonTools.Registry.pas',
+  PythonTools.Design in '..\..\Source\Design\PythonTools.Design.pas' {DesignForm};
 
 end.

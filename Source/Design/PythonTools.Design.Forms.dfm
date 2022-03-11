@@ -2425,7 +2425,7 @@ object FormsExportDialog: TFormsExportDialog
       Height = 17
       Margins.Left = 8
       Margins.Right = 8
-      Caption = 'Show exported files in explorer'
+      Caption = 'Show exported files in explorer.'
       TabOrder = 2
     end
   end

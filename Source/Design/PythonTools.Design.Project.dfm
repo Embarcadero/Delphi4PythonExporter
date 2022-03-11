@@ -2288,7 +2288,7 @@ object ProjectExportDialog: TProjectExportDialog
       Top = 12
       Width = 187
       Height = 17
-      Caption = 'Show exported files in explorer'
+      Caption = 'Show exported files in explorer.'
       TabOrder = 2
     end
   end

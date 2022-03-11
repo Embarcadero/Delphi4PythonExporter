@@ -47,14 +47,14 @@ object FormsExportDialog: TFormsExportDialog
     TabOrder = 0
     object imgExport: TImage
       AlignWithMargins = True
-      Left = 5
-      Top = 5
-      Width = 50
-      Height = 70
-      Margins.Left = 5
-      Margins.Top = 5
+      Left = 8
+      Top = 8
+      Width = 54
+      Height = 64
+      Margins.Left = 8
+      Margins.Top = 8
       Margins.Right = 0
-      Margins.Bottom = 5
+      Margins.Bottom = 8
       Align = alLeft
       Picture.Data = {
         0954506E67496D61676589504E470D0A1A0A0000000D49484452000001000000
@@ -2201,10 +2201,11 @@ object FormsExportDialog: TFormsExportDialog
         98A0C83E3C7DCB9CFE1305E49ECDB99D5F55F7414D0000000849444154CFCDFA
         FF3A013EC34395F1210000000049454E44AE426082}
       Proportional = True
-      ExplicitHeight = 50
+      ExplicitLeft = 5
+      ExplicitHeight = 70
     end
     object lblDescription: TLabel
-      Left = 66
+      Left = 70
       Top = 31
       Width = 89
       Height = 21
@@ -2217,7 +2218,7 @@ object FormsExportDialog: TFormsExportDialog
       ParentFont = False
     end
     object lblExport: TLabel
-      Left = 66
+      Left = 70
       Top = 8
       Width = 121
       Height = 25

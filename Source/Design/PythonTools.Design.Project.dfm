@@ -47,11 +47,12 @@ object ProjectExportDialog: TProjectExportDialog
       AlignWithMargins = True
       Left = 8
       Top = 8
-      Width = 50
-      Height = 69
+      Width = 54
+      Height = 64
       Margins.Left = 8
       Margins.Top = 8
       Margins.Right = 0
+      Margins.Bottom = 8
       Align = alLeft
       Picture.Data = {
         0954506E67496D61676589504E470D0A1A0A0000000D49484452000001000000
@@ -2198,10 +2199,11 @@ object ProjectExportDialog: TProjectExportDialog
         98A0C83E3C7DCB9CFE1305E49ECDB99D5F55F7414D0000000849444154CFCDFA
         FF3A013EC34395F1210000000049454E44AE426082}
       Proportional = True
-      ExplicitHeight = 50
+      ExplicitLeft = 5
+      ExplicitHeight = 69
     end
     object lblProjectName: TLabel
-      Left = 66
+      Left = 70
       Top = 31
       Width = 548
       Height = 21
@@ -2215,7 +2217,7 @@ object ProjectExportDialog: TProjectExportDialog
       ParentFont = False
     end
     object lblExport: TLabel
-      Left = 66
+      Left = 70
       Top = 8
       Width = 129
       Height = 25

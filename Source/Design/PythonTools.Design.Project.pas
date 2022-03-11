@@ -6,13 +6,14 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
   Vcl.StdCtrls, Vcl.Buttons,
+  PythonTools.Design,
   PythonTools.Common,
   PythonTools.Model.Design.Project, Vcl.WinXCtrls;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
 type
-  TProjectExportDialog = class(TForm)
+  TProjectExportDialog = class(TDesignForm)
     pnlHeader: TPanel;
     plnFooter: TPanel;
     pnlAppDir: TPanel;

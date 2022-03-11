@@ -4,9 +4,10 @@ interface
 
 uses
   System.SysUtils, System.Variants, System.Classes,
-  PythonTools.Model.Design.Forms, Data.DB, Datasnap.DBClient, Vcl.Dialogs,
+  Data.DB, Datasnap.DBClient, Vcl.Dialogs,
   Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.Buttons, Vcl.Imaging.pngimage,
-  Vcl.ExtCtrls, Vcl.Controls, Vcl.Forms, System.Types;
+  Vcl.ExtCtrls, Vcl.Controls, Vcl.Forms, System.Types,
+  PythonTools.Design, PythonTools.Model.Design.Forms;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
@@ -16,7 +17,7 @@ type
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
   end;
 
-  TFormsExportDialog = class(TForm)
+  TFormsExportDialog = class(TDesignForm)
     FileOpenDialog1: TFileOpenDialog;
     pnlHeader: TPanel;
     imgExport: TImage;
@@ -287,6 +288,7 @@ end;
 
 procedure TFormsExportDialog.FormCreate(Sender: TObject);
 begin
+  inherited;
   cdsForms.CreateDataSet();
 end;
 

@@ -45,7 +45,6 @@ object FormsExportDialog: TFormsExportDialog
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 632
     object imgExport: TImage
       AlignWithMargins = True
       Left = 5
@@ -2257,8 +2256,6 @@ object FormsExportDialog: TFormsExportDialog
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 632
-    ExplicitHeight = 353
     object pnlAppDir: TPanel
       Left = 0
       Top = 0
@@ -2267,7 +2264,6 @@ object FormsExportDialog: TFormsExportDialog
       Align = alTop
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 632
       object lblApplicationDirectory: TLabel
         AlignWithMargins = True
         Left = 8
@@ -2291,7 +2287,6 @@ object FormsExportDialog: TFormsExportDialog
         Align = alClient
         Enabled = False
         TabOrder = 0
-        ExplicitWidth = 583
       end
       object btnSelectDir: TButton
         AlignWithMargins = True
@@ -2306,7 +2301,6 @@ object FormsExportDialog: TFormsExportDialog
         Caption = '...'
         TabOrder = 1
         OnClick = btnSelectDirClick
-        ExplicitLeft = 594
       end
     end
     object pnlGrid: TPanel
@@ -2317,8 +2311,6 @@ object FormsExportDialog: TFormsExportDialog
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 632
-      ExplicitHeight = 293
       object grForms: TDBGrid
         AlignWithMargins = True
         Left = 8
@@ -2397,8 +2389,6 @@ object FormsExportDialog: TFormsExportDialog
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 434
-    ExplicitWidth = 632
     object btnCancel: TButton
       AlignWithMargins = True
       Left = 541
@@ -2412,7 +2402,6 @@ object FormsExportDialog: TFormsExportDialog
       Caption = 'Cancel'
       ModalResult = 2
       TabOrder = 1
-      ExplicitLeft = 539
     end
     object btnExport: TButton
       AlignWithMargins = True
@@ -2426,7 +2415,6 @@ object FormsExportDialog: TFormsExportDialog
       Caption = 'Export'
       TabOrder = 0
       OnClick = btnExportClick
-      ExplicitLeft = 448
     end
     object cbShowExportedFiles: TCheckBox
       AlignWithMargins = True

@@ -17,6 +17,7 @@ object ProjectExportDialog: TProjectExportDialog
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poMainFormCenter
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 15
   object spHeader: TShape

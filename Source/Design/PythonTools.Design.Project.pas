@@ -48,8 +48,9 @@ type
     procedure Label2Click(Sender: TObject);
     procedure llblNotificationLinkClick(Sender: TObject; const Link: string;
       LinkType: TSysLinkType);
+    procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
+    procedure EnableHorizontalScrollBar(const AListBox: TListBox);
   public
     function Execute(const AModel: TExportProjectDesignModel): boolean;
   end;
@@ -76,6 +77,26 @@ begin
     raise Exception.Create('Select the Application Directory.');
 
   ModalResult := mrOk;
+end;
+
+procedure TProjectExportDialog.EnableHorizontalScrollBar(
+  const AListBox: TListBox);
+var
+  I: integer;
+  LMaxWidth: integer;
+  LWidth: integer;
+begin
+  inherited;
+  LMaxWidth := AListBox.Width;
+  for I := 0 to Pred(AListBox.Items.Count) do begin
+    LWidth := Canvas.TextWidth(AListBox.Items[I]);
+    if LWidth > LMaxWidth then
+      LMaxWidth := LWidth;
+  end;
+
+  if (LMaxWidth > AListBox.Width) then
+    SendMessage(AListBox.Handle, LB_SETHORIZONTALEXTENT,
+      LMaxWidth + GetSystemMetrics(SM_CXFRAME), 0);
 end;
 
 function TProjectExportDialog.Execute(const AModel: TExportProjectDesignModel): boolean;
@@ -117,6 +138,12 @@ begin
     tssOff: AModel.FormFileKind := ffkText;
     tssOn: AModel.FormFileKind := ffkBinary;
   end;
+end;
+
+procedure TProjectExportDialog.FormShow(Sender: TObject);
+begin
+  inherited;
+  EnableHorizontalScrollBar(lbForms);
 end;
 
 procedure TProjectExportDialog.Label1Click(Sender: TObject);

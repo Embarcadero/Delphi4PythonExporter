@@ -31,7 +31,6 @@ type
     edtApplicationDirectory: TEdit;
     btnCancel: TButton;
     btnExport: TButton;
-    btnSelectDir: TSpeedButton;
     pnlFormFileKind: TPanel;
     lblFormFileKind: TLabel;
     swFormFileKind: TToggleSwitch;
@@ -42,6 +41,7 @@ type
     lbForms: TListBox;
     pnlClient: TPanel;
     cbShowExportedFiles: TCheckBox;
+    btnSelectDir: TButton;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
     procedure Label1Click(Sender: TObject);

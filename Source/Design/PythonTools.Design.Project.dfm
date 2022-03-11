@@ -2336,21 +2336,26 @@ object ProjectExportDialog: TProjectExportDialog
           Height = 15
           Caption = 'Application Directory:'
         end
-        object btnSelectDir: TSpeedButton
-          Left = 588
-          Top = 22
-          Width = 26
-          Height = 25
-          Caption = '...'
-          OnClick = btnSelectDirClick
-        end
         object edtApplicationDirectory: TEdit
           Left = 8
           Top = 24
-          Width = 577
+          Width = 573
           Height = 23
           Enabled = False
           TabOrder = 0
+        end
+        object btnSelectDir: TButton
+          AlignWithMargins = True
+          Left = 584
+          Top = 23
+          Width = 30
+          Height = 25
+          Margins.Top = 2
+          Margins.Right = 8
+          Margins.Bottom = 12
+          Caption = '...'
+          TabOrder = 1
+          OnClick = btnSelectDirClick
         end
       end
       object pnlAppSettings: TPanel

@@ -99,7 +99,7 @@ begin
             Pos('.', ARegistry.ReadString(PROJECT_MAIN_FORM)) + 1,
             Length(ARegistry.ReadString(PROJECT_MAIN_FORM))
               - Pos('.', ARegistry.ReadString(PROJECT_MAIN_FORM))),
-            Copy(ARegistry.ReadString(PROJECT_MAIN_FORM),
+          Copy(ARegistry.ReadString(PROJECT_MAIN_FORM),
             1,
             Pos('.', ARegistry.ReadString(PROJECT_MAIN_FORM)) - 1));
       finally

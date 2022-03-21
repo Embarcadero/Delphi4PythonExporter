@@ -6,13 +6,14 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Imaging.pngimage,
   Vcl.StdCtrls, Vcl.Buttons,
+  PythonTools.Design,
   PythonTools.Common,
   PythonTools.Model.Design.Project, Vcl.WinXCtrls;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
 type
-  TProjectExportDialog = class(TForm)
+  TProjectExportDialog = class(TDesignForm)
     pnlHeader: TPanel;
     plnFooter: TPanel;
     pnlAppDir: TPanel;
@@ -30,23 +31,26 @@ type
     edtApplicationDirectory: TEdit;
     btnCancel: TButton;
     btnExport: TButton;
-    btnSelectDir: TSpeedButton;
     pnlFormFileKind: TPanel;
     lblFormFileKind: TLabel;
     swFormFileKind: TToggleSwitch;
     Label1: TLabel;
     Label2: TLabel;
-    Label3: TLabel;
-    LinkLabel1: TLinkLabel;
-    LinkLabel2: TLinkLabel;
+    llblNotification: TLinkLabel;
+    pnlContents: TPanel;
+    lbForms: TListBox;
+    pnlClient: TPanel;
+    cbShowExportedFiles: TCheckBox;
+    btnSelectDir: TButton;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
     procedure Label1Click(Sender: TObject);
     procedure Label2Click(Sender: TObject);
-    procedure LinkLabel1LinkClick(Sender: TObject; const Link: string;
+    procedure llblNotificationLinkClick(Sender: TObject; const Link: string;
       LinkType: TSysLinkType);
+    procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
+    procedure EnableHorizontalScrollBar(const AListBox: TListBox);
   public
     function Execute(const AModel: TExportProjectDesignModel): boolean;
   end;
@@ -75,17 +79,45 @@ begin
   ModalResult := mrOk;
 end;
 
+procedure TProjectExportDialog.EnableHorizontalScrollBar(
+  const AListBox: TListBox);
+var
+  I: integer;
+  LMaxWidth: integer;
+  LWidth: integer;
+begin
+  inherited;
+  LMaxWidth := AListBox.Width;
+  for I := 0 to Pred(AListBox.Items.Count) do begin
+    LWidth := Canvas.TextWidth(AListBox.Items[I]);
+    if LWidth > LMaxWidth then
+      LMaxWidth := LWidth;
+  end;
+
+  if (LMaxWidth > AListBox.Width) then
+    SendMessage(AListBox.Handle, LB_SETHORIZONTALEXTENT,
+      LMaxWidth + GetSystemMetrics(SM_CXFRAME), 0);
+end;
+
 function TProjectExportDialog.Execute(const AModel: TExportProjectDesignModel): boolean;
 var
   LFormNameAndFile: TFormNameAndFile;
 begin
   lblProjectName.Caption := AModel.ApplicationName;
-  for LFormNameAndFile in AModel.ApplicationForms do begin
-    cbApplicationMainForm.Items.Add(LFormNameAndFile.FileName + '.' + LFormNameAndFile.FormName);
-  end;
-  if cbApplicationMainForm.Items.Count > 0 then
-    cbApplicationMainForm.ItemIndex := 0;
+  edtApplicationTitle.Text := AModel.ApplicationTitle;
   edtApplicationDirectory.Text := AModel.ApplicationDirectory;
+  cbShowExportedFiles.Checked := AModel.ShowInExplorer;
+
+  for LFormNameAndFile in AModel.ApplicationForms do begin
+    cbApplicationMainForm.Items.Add(LFormNameAndFile.CombineFileAndFormName());
+    lbForms.Items.Add(LFormNameAndFile.CombineFileAndFormName());
+  end;
+
+  if (AModel.ApplicationMainForm.CombineFileAndFormName() <> String.Empty) then
+    cbApplicationMainForm.ItemIndex := cbApplicationMainForm.Items.IndexOf(
+      AModel.ApplicationMainForm.CombineFileAndFormName())
+  else if (cbApplicationMainForm.Items.Count > 0) then
+    cbApplicationMainForm.ItemIndex := 0;
 
   case AModel.FormFileKind of
     ffkText: swFormFileKind.State := tssOff;
@@ -100,11 +132,18 @@ begin
   AModel.ApplicationTitle := edtApplicationTitle.Text;
   AModel.ApplicationMainForm := AModel.ApplicationForms[cbApplicationMainForm.ItemIndex];
   AModel.ApplicationDirectory := edtApplicationDirectory.Text;
+  Amodel.ShowInExplorer := cbShowExportedFiles.Checked;
 
   case swFormFileKind.State of
     tssOff: AModel.FormFileKind := ffkText;
     tssOn: AModel.FormFileKind := ffkBinary;
   end;
+end;
+
+procedure TProjectExportDialog.FormShow(Sender: TObject);
+begin
+  inherited;
+  EnableHorizontalScrollBar(lbForms);
 end;
 
 procedure TProjectExportDialog.Label1Click(Sender: TObject);
@@ -117,7 +156,7 @@ begin
   swFormFileKind.State := tssOff;
 end;
 
-procedure TProjectExportDialog.LinkLabel1LinkClick(Sender: TObject;
+procedure TProjectExportDialog.llblNotificationLinkClick(Sender: TObject;
   const Link: string; LinkType: TSysLinkType);
 Begin
   ShellExecute(0, 'open', pchar(Link), nil, nil, SW_NORMAL);

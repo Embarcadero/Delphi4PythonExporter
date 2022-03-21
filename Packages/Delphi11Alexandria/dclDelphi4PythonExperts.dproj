@@ -5,7 +5,7 @@
         <ProjectVersion>19.3</ProjectVersion>
         <FrameworkType>None</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Package</AppType>
@@ -197,6 +197,11 @@
         <DCCReference Include="..\..\Source\Model\Producer\PythonTools.Model.Producer.Form.pas"/>
         <DCCReference Include="..\..\Source\Model\Design\PythonTools.Model.Design.Forms.pas"/>
         <DCCReference Include="..\..\Source\Model\Design\PythonTools.Model.Design.Project.pas"/>
+        <DCCReference Include="..\..\Source\PythonTools.Registry.pas"/>
+        <DCCReference Include="..\..\Source\Design\PythonTools.Design.pas">
+            <Form>DesignForm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <RcItem Include="..\..\Images\EmbarcaderoPython(16px).png">
             <ResourceType>RCDATA</ResourceType>
             <ResourceId>embarcaderopython_16px</ResourceId>
@@ -235,6 +240,12 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
+                <DeployFile LocalName="..\..\..\..\..\..\..\..\..\Public\Documents\Embarcadero\Studio\22.0\Bpl\dclDelphi4PythonExperts280.bpl" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>dclDelphi4PythonExperts.bpl</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="$(BDS)\Redist\iossimulator\libpcre.dylib" Class="DependencyModule">
                     <Platform Name="iOSSimulator">
                         <Overwrite>true</Overwrite>
@@ -962,10 +973,10 @@
                 </DeployClass>
                 <ProjectRoot Platform="OSX32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="OSX64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
-                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Android64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Android" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Linux64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="iOSDevice32" Name="$(PROJECTNAME).app"/>

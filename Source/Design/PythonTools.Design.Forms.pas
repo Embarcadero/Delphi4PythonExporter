@@ -4,9 +4,10 @@ interface
 
 uses
   System.SysUtils, System.Variants, System.Classes,
-  PythonTools.Model.Design.Forms, Data.DB, Datasnap.DBClient, Vcl.Dialogs,
+  Data.DB, Datasnap.DBClient, Vcl.Dialogs,
   Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.Buttons, Vcl.Imaging.pngimage,
-  Vcl.ExtCtrls, Vcl.Controls, Vcl.Forms, System.Types;
+  Vcl.ExtCtrls, Vcl.Controls, Vcl.Forms, System.Types,
+  PythonTools.Design, PythonTools.Model.Design.Forms;
 
 {$WARN SYMBOL_PLATFORM OFF}
 
@@ -16,7 +17,7 @@ type
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
   end;
 
-  TFormsExportDialog = class(TForm)
+  TFormsExportDialog = class(TDesignForm)
     FileOpenDialog1: TFileOpenDialog;
     pnlHeader: TPanel;
     imgExport: TImage;
@@ -40,6 +41,8 @@ type
     cdsFormsFL_INITIALIZE: TBooleanField;
     cdsFormsFL_FORM_FILE_KIND: TStringField;
     btnSelectDir: TButton;
+    llblNotification: TLinkLabel;
+    cbShowExportedFiles: TCheckBox;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -53,6 +56,8 @@ type
     procedure grFormsTitleClick(Column: TColumn);
     procedure grFormsDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure llblNotificationLinkClick(Sender: TObject; const Link: string;
+      LinkType: TSysLinkType);
   public
     function Execute(const AModel: TExportFormsDesignModel): boolean;
   end;
@@ -64,7 +69,9 @@ implementation
 
 uses
   System.Generics.Collections, System.Math,
-  CommCtrl, UxTheme, Winapi.Windows,
+  CommCtrl, UxTheme,
+  ShellApi,
+  Winapi.Windows,
   Vcl.Graphics,
   PythonTools.Common;
 
@@ -215,23 +222,26 @@ begin
   end;
 end;
 
+procedure TFormsExportDialog.llblNotificationLinkClick(Sender: TObject;
+  const Link: string; LinkType: TSysLinkType);
+begin
+  ShellExecute(0, 'open', pchar(Link), nil, nil, SW_NORMAL);
+end;
+
 function TFormsExportDialog.Execute(const AModel: TExportFormsDesignModel): boolean;
-
-  function GetDescForm(const AFormNameAndFile: TFormNameAndFile): string;
-  begin
-    Result := AFormNameAndFile.FileName + '.' + AFormNameAndFile.FormName;
-  end;
-
 var
-  LFormNameAndFile: TFormNameAndFile;
+  LInput: TInputForm;
   LOutput: TList<TOutputForm>;
 begin
+  edtDirectory.Text := AModel.Directory;
+  cbShowExportedFiles.Checked := AModel.ShowInExplorer;
+
   cdsForms.EmptyDataSet();
-  for LFormNameAndFile in AModel.InputForms do begin
+  for LInput in AModel.InputForms do begin
     cdsForms.AppendRecord([
       true,
-      GetDescForm(LFormNameAndFile),
-      String.Empty,
+      LInput.Form.CombineFileAndFormName(),
+      LInput.Title,
       True,
       TFormFileKind.ffkText.ToString()
     ]);
@@ -248,18 +258,19 @@ begin
     Exit();
 
   AModel.Directory := edtDirectory.Text;
+  Amodel.ShowInExplorer := cbShowExportedFiles.Checked;
 
   LOutput := TList<TOutputForm>.Create();
   try
     cdsForms.DisableControls();
     try
       cdsForms.First();
-      for LFormNameAndFile in AModel.InputForms do begin
-        if cdsForms.Locate('DESC_FORM', GetDescForm(LFormNameAndFile), []) then begin
+      for LInput in AModel.InputForms do begin
+        if cdsForms.Locate('DESC_FORM', LInput.Form.CombineFileAndFormName(), []) then begin
           if not cdsFormsFL_EXPORT.AsBoolean then
             Continue;
           LOutput.Add(TOutputForm.Create(
-            LFormNameAndFile,
+            LInput.Form,
             cdsFormsFL_INITIALIZE.AsBoolean,
             cdsFormsTITLE.AsString,
             TFormFileKind.FromString(cdsFormsFL_FORM_FILE_KIND.AsString)
@@ -277,6 +288,7 @@ end;
 
 procedure TFormsExportDialog.FormCreate(Sender: TObject);
 begin
+  inherited;
   cdsForms.CreateDataSet();
 end;
 

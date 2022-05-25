@@ -1,4 +1,4 @@
-# [Delphi4PythonExporter](https://github.com/Embarcadero/Delphi4PythonExporter/)
+# Delphi4PythonExporter<a href="https://github.com/Embarcadero/Delphi4PythonExporter/"><img src="https://github.com/Embarcadero/Delphi4PythonExporter/blob/main/images/EmbarcaderoPython(154px).png?raw=true" align="Right" alt="Python for Delphi Exporter"></a>
 For use with [DelphiFMX4Python](https://github.com/Embarcadero/DelphiFMX4Python) or [DelphiVCL4Python](https://github.com/Embarcadero/DelphiVCL4Python).
 
 Design your Python GUI using Delphi's VCL and FMX designers and then export them for Python use.

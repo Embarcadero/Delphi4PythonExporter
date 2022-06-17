@@ -15,17 +15,19 @@ type
   TPythonToolsMenu = class
   private
     class var FInstance: TPythonToolsMenu;
-    class procedure Initialize();
-    class procedure Finalize();
   private
     FToolsMenuItems: TObjectList<TMenuItem>;
     FToolsMenuHook: TToolsMenuEventHook;
     function GetINTAServices(): INTAServices;
+    function GetToolsMenu(): TMenuItem;
     function LoadPythonToolMenuImage(): integer;
 
     procedure DoCreateMenuHooked(Sender: TObject);
     procedure DoDestroyMenu();
   public
+    class constructor Create();
+    class destructor Destroy();
+
     constructor Create();    
     destructor Destroy(); override;
 
@@ -79,11 +81,20 @@ type
 
 { TPythonToolsMenu }
 
+class constructor TPythonToolsMenu.Create;
+begin
+  FInstance := TPythonToolsMenu.Create();
+end;
+
+class destructor TPythonToolsMenu.Destroy;
+begin
+  FInstance.Free();
+end;
+
 constructor TPythonToolsMenu.Create;
 begin
   FToolsMenuItems := TObjectList<TMenuItem>.Create();
-  FToolsMenuHook := TToolsMenuEventHook.Create(
-    GetINTAServices().MainMenu.Items.Find('Tools'));
+  FToolsMenuHook := TToolsMenuEventHook.Create(GetToolsMenu());
 end;
 
 destructor TPythonToolsMenu.Destroy;
@@ -94,14 +105,15 @@ begin
   inherited;
 end;
 
-class procedure TPythonToolsMenu.Initialize;
+function TPythonToolsMenu.GetToolsMenu: TMenuItem;
+var
+  LMenuItem: TMenuItem;
 begin
-  FInstance := TPythonToolsMenu.Create();
-end;
-
-class procedure TPythonToolsMenu.Finalize;
-begin
-  FInstance.Free();
+  for LMenuItem in GetINTAServices().MainMenu.Items do begin
+    if (LMenuItem.Name = sToolsMenu) then
+      Exit(LMenuItem);
+  end;
+  raise Exception.Create('Tools menu not found.');
 end;
 
 function TPythonToolsMenu.GetINTAServices: INTAServices;
@@ -221,7 +233,7 @@ var
   LRoot: TMenuItem;
   LMenuItem: TMenuItem;
 begin
-  LRoot := GetINTAServices().MainMenu.Items.Find('Tools');
+  LRoot := GetToolsMenu();
   if Assigned(LRoot) then begin
     with GetINTAServices() do begin
       MenuBeginUpdate();
@@ -285,11 +297,5 @@ begin
     and (TMethod(FHook).Data = TMethod(AEvt).Data) then
       FHook := nil;
 end;
-
-initialization
-  TPythonToolsMenu.Initialize();
-
-finalization
-  TPythonToolsMenu.Finalize();
 
 end.

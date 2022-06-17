@@ -69,33 +69,71 @@ implementation
 
 uses
   System.Generics.Collections, System.Math,
-  CommCtrl, UxTheme,
+  CommCtrl, Vcl.Themes,
   ShellApi,
   Winapi.Windows,
   Vcl.Graphics,
   PythonTools.Common;
 
+var
+  gCheckBoxElement: TCheckBox;
+
 {$R *.dfm}
 
-procedure DrawCheckBox(const ADBGrid: TDBGrid; const AColumn: TColumn; ARect: TRect; const AChecked: boolean);
+function RectVCenter(var R: TRect; Bounds: TRect): TRect;
+begin
+  OffsetRect(R, -R.Left, -R.Top);
+  OffsetRect(R, Bounds.Right - (R.Width div 2), (Bounds.Height - R.Height) div 2);
+  OffsetRect(R, Bounds.Left, Bounds.Top);
+
+  Result := R;
+end;
+
+procedure DrawCheckBox(const ADBGrid: TDBGrid; const AColumn: TColumn;
+  ARect: TRect; const AChecked: boolean; AState: TGridDrawState);
 const
   IS_CHECKED: array[boolean] of integer = (DFCS_BUTTONCHECK, DFCS_BUTTONCHECK or DFCS_CHECKED);
 var
   LhTheme: Cardinal;
   LSize: TSize;
+  LStyle: TCustomStyleServices;
+  LBoxSize: TSize;
+  LDetail: TThemedButton;
+  LDetails: TThemedElementDetails;
+  LRect: TRect;
 begin
   ADBGrid.Canvas.FillRect(ARect);
-  if UseThemes then begin
-    LhTheme := OpenThemeData(ADBGrid.Handle, 'BUTTON');
-    if LhTheme <> 0 then
-      try
-        GetThemePartSize(LhTheme, ADBGrid.Canvas.Handle, BP_CHECKBOX, CBS_CHECKEDNORMAL, nil, TS_DRAW, LSize);
-        DrawThemeBackground(LhTheme, ADBGrid.Canvas.Handle, BP_CHECKBOX,
-          IfThen(AChecked, CBS_CHECKEDNORMAL, CBS_UNCHECKEDNORMAL),
-          ARect, nil);
-      finally
-        CloseThemeData(LhTheme);
-      end;
+
+  LStyle := StyleServices;
+  if LStyle.Available then begin
+    LDetail := tbCheckBoxUncheckedNormal;
+
+    if (gdPressed in AState) then
+      LDetail := tbCheckBoxUncheckedPressed
+    else if (gdFocused in AState) then
+      LDetail := tbCheckBoxUncheckedHot;
+
+    if AChecked then
+      LDetail := TThemedButton(Integer(LDetail) + 4);
+
+    LDetails := LStyle.GetElementDetails(tbCheckBoxUncheckedNormal);
+    if not LStyle.GetElementSize(gCheckBoxElement.Handle, LDetails, esActual, LBoxSize, ADBGrid.CurrentPPI)  then
+    begin
+      LBoxSize.cx := GetSystemMetrics(SM_CXMENUCHECK);
+      LBoxSize.cy := GetSystemMetrics(SM_CYMENUCHECK);
+    end;
+
+    if LStyle.IsSystemStyle then
+      LBoxSize := ADBGrid.ScaleValue(LBoxSize);
+
+    LRect := Rect(0, 0, LBoxSize.cx, LBoxSize.cy);
+    RectVCenter(LRect, Rect(0, ARect.Top, ARect.Right, ARect.Bottom));
+
+    LDetails := LStyle.GetElementDetails(LDetail);
+    LStyle.DrawElement(ADBGrid.Canvas.Handle, LDetails, LRect, nil, ADBGrid.CurrentPPI);
+
+    if not (gdFocused in AState) then
+      ADBGrid.Canvas.Brush.Color := LStyle.GetSystemColor(clHighlight);
   end else
     DrawFrameControl(ADBGrid.Canvas.Handle, ARect, DFC_BUTTON, IS_CHECKED[AChecked]);
 end;
@@ -177,8 +215,15 @@ procedure TFormsExportDialog.grFormsDrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin
   inherited;
-  if Column.Field.DataType = ftBoolean then
-    DrawCheckBox(TDBGrid(Sender), Column, Rect, Column.Field.AsBoolean);
+  if Column.Field.DataType = ftBoolean then begin
+    var LRect := System.Classes.Rect(
+      Rect.Left,
+      Rect.Top,
+      Rect.Right - (Column.Width div 2),
+      Rect.Bottom
+    );
+    DrawCheckBox(TDBGrid(Sender), Column, LRect, Column.Field.AsBoolean, State);
+  end;
 end;
 
 procedure TFormsExportDialog.grFormsKeyPress(Sender: TObject; var Key: Char);
@@ -289,6 +334,7 @@ end;
 procedure TFormsExportDialog.FormCreate(Sender: TObject);
 begin
   inherited;
+  gCheckBoxElement := cbShowExportedFiles;
   cdsForms.CreateDataSet();
 end;
 
@@ -296,6 +342,8 @@ end;
 
 procedure TDBGrid.DrawCell(ACol, ARow: Longint; ARect: TRect;
   AState: TGridDrawState);
+const
+  TEXT_LEFT_OFFSET = 15;
 var
   LRect: TRect;
   LChecked: Boolean;
@@ -305,9 +353,13 @@ begin
   if ARow < 0 then
     if Columns[ACol].Field.DataType = ftBoolean then begin
       LRect := ARect;
-      LRect.Right := LRect.Right - Canvas.TextWidth(Columns[ACol].Title.Caption) - 25;
+      LRect.Right := LRect.Right - (
+          (ColWidths[ACol] div 2)
+        + (Canvas.TextWidth(Columns[ACol].Title.Caption) div 2)
+        + ScaleValue(TEXT_LEFT_OFFSET)
+      );
       LChecked := Boolean(Columns[ACol].Field.Tag);
-      DrawCheckBox(Self, Columns[ACol], LRect, LChecked);
+      DrawCheckBox(Self, Columns[ACol], LRect, LChecked, AState);
     end;
 end;
 

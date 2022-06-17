@@ -21,6 +21,7 @@ type
   TIOTAUtils = class
   private
     class function ModuleIsPas(const AModule: IOTAModule): boolean;
+    class function ModuleIsCpp(const AModule: IOTAModule): boolean;
     class function ModuleIsForm(const AModule: IOTAModule): boolean;
 
     class procedure EnumComps(const AFormEditor: IOTAFormEditor; const ACallback: TProc<TComponent>);
@@ -102,7 +103,7 @@ begin
       LModule := LModuleServices.Modules[I];
       LEditor := GetFormEditorFromModule(LModule);
 
-      if not (ModuleIsPas(LModule) and ModuleIsForm(LModule)) then
+      if not ((ModuleIsPas(LModule) or ModuleIsCpp(LModule)) and ModuleIsForm(LModule)) then
         Continue;
 
       LDesigner := (LEditor as INTAFormEditor).FormDesigner;
@@ -305,10 +306,18 @@ begin
   LModuleServices := (BorlandIDEServices as IOTAModuleServices);
   for I := 0 to LModuleServices.ModuleCount - 1 do begin
     LModule := LModuleServices.Modules[I];
-    if ModuleIsPas(LModule) and ModuleIsForm(LModule) then
+    if (ModuleIsPas(LModule) or ModuleIsCpp(LModule)) and ModuleIsForm(LModule) then
       Exit(true);
   end;
   Result := false;
+end;
+
+class function TIOTAUtils.ModuleIsCpp(const AModule: IOTAModule): boolean;
+begin
+  if SameText(ExtractFileExt(AModule.FileName), '.cpp') then
+    Result := true
+  else
+    Result := false;
 end;
 
 class function TIOTAUtils.ModuleIsForm(const AModule: IOTAModule): boolean;

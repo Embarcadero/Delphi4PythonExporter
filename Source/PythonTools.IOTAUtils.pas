@@ -23,6 +23,7 @@ type
     class function ModuleIsPas(const AModule: IOTAModule): boolean;
     class function ModuleIsCpp(const AModule: IOTAModule): boolean;
     class function ModuleIsForm(const AModule: IOTAModule): boolean;
+    class function ModuleIsExportable(const AModule: IOTAModule): boolean;
 
     class procedure EnumComps(const AFormEditor: IOTAFormEditor; const ACallback: TProc<TComponent>);
     class function GetFormCaption(const AComponent: TComponent): string;
@@ -103,7 +104,7 @@ begin
       LModule := LModuleServices.Modules[I];
       LEditor := GetFormEditorFromModule(LModule);
 
-      if not ((ModuleIsPas(LModule) or ModuleIsCpp(LModule)) and ModuleIsForm(LModule)) then
+      if not ModuleIsExportable(LModule) then
         Continue;
 
       LDesigner := (LEditor as INTAFormEditor).FormDesigner;
@@ -306,18 +307,10 @@ begin
   LModuleServices := (BorlandIDEServices as IOTAModuleServices);
   for I := 0 to LModuleServices.ModuleCount - 1 do begin
     LModule := LModuleServices.Modules[I];
-    if (ModuleIsPas(LModule) or ModuleIsCpp(LModule)) and ModuleIsForm(LModule) then
+    if ModuleIsExportable(LModule) then
       Exit(true);
   end;
   Result := false;
-end;
-
-class function TIOTAUtils.ModuleIsCpp(const AModule: IOTAModule): boolean;
-begin
-  if SameText(ExtractFileExt(AModule.FileName), '.cpp') then
-    Result := true
-  else
-    Result := false;
 end;
 
 class function TIOTAUtils.ModuleIsForm(const AModule: IOTAModule): boolean;
@@ -347,10 +340,19 @@ end;
 
 class function TIOTAUtils.ModuleIsPas(const AModule: IOTAModule): boolean;
 begin
-  if SameText(ExtractFileExt(AModule.FileName), '.pas') then
-    Result := true
-  else
-    Result := false;
+  Result := SameText(ExtractFileExt(AModule.FileName), '.pas');
+end;
+
+class function TIOTAUtils.ModuleIsCpp(const AModule: IOTAModule): boolean;
+begin
+  Result := SameText(ExtractFileExt(AModule.FileName), '.cpp');
+end;
+
+class function TIOTAUtils.ModuleIsExportable(
+  const AModule: IOTAModule): boolean;
+begin
+  Result := (ModuleIsPas(AModule) or ModuleIsCpp(AModule))
+    and ModuleIsForm(AModule);
 end;
 
 class procedure TIOTAUtils.EnumComps(const AFormEditor: IOTAFormEditor;

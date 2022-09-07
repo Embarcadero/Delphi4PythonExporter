@@ -1,3 +1,4 @@
+{$I PythonTools.inc}
 unit PythonTools.Design.Forms;
 
 interface
@@ -15,6 +16,9 @@ type
   TDBGrid = class(Vcl.DBGrids.TDBGrid)
   protected
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
+  public
+    function ScaleValue(const Value: Integer): Integer; overload;
+    function ScaleValue(const Value: TSize): TSize; overload;
   end;
 
   TFormsExportDialog = class(TDesignForm)
@@ -94,8 +98,6 @@ procedure DrawCheckBox(const ADBGrid: TDBGrid; const AColumn: TColumn;
 const
   IS_CHECKED: array[boolean] of integer = (DFCS_BUTTONCHECK, DFCS_BUTTONCHECK or DFCS_CHECKED);
 var
-  LhTheme: Cardinal;
-  LSize: TSize;
   LStyle: TCustomStyleServices;
   LBoxSize: TSize;
   LDetail: TThemedButton;
@@ -117,7 +119,7 @@ begin
       LDetail := TThemedButton(Integer(LDetail) + 4);
 
     LDetails := LStyle.GetElementDetails(tbCheckBoxUncheckedNormal);
-    if not LStyle.GetElementSize(gCheckBoxElement.Handle, LDetails, esActual, LBoxSize, ADBGrid.CurrentPPI)  then
+    if not LStyle.GetElementSize(gCheckBoxElement.Handle, LDetails, esActual, LBoxSize {$IFDEF DELPHI10_3_UP}, ADBGrid.CurrentPPI {$ENDIF})  then
     begin
       LBoxSize.cx := GetSystemMetrics(SM_CXMENUCHECK);
       LBoxSize.cy := GetSystemMetrics(SM_CYMENUCHECK);
@@ -130,7 +132,7 @@ begin
     RectVCenter(LRect, Rect(0, ARect.Top, ARect.Right, ARect.Bottom));
 
     LDetails := LStyle.GetElementDetails(LDetail);
-    LStyle.DrawElement(ADBGrid.Canvas.Handle, LDetails, LRect, nil, ADBGrid.CurrentPPI);
+    LStyle.DrawElement(ADBGrid.Canvas.Handle, LDetails, LRect, nil {$IFDEF DELPHI10_3_UP}, ADBGrid.CurrentPPI {$ENDIF});
 
     if not (gdFocused in AState) then
       ADBGrid.Canvas.Brush.Color := LStyle.GetSystemColor(clHighlight);
@@ -213,10 +215,12 @@ end;
 
 procedure TFormsExportDialog.grFormsDrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+var
+  LRect: TRect;
 begin
   inherited;
   if Column.Field.DataType = ftBoolean then begin
-    var LRect := System.Classes.Rect(
+    LRect := System.Classes.Rect(
       Rect.Left,
       Rect.Top,
       Rect.Right - (Column.Width div 2),
@@ -361,6 +365,24 @@ begin
       LChecked := Boolean(Columns[ACol].Field.Tag);
       DrawCheckBox(Self, Columns[ACol], LRect, LChecked, AState);
     end;
+end;
+
+function TDBGrid.ScaleValue(const Value: TSize): TSize;
+begin
+  {$IFDEF DELPHI10_4_UP}
+  Result := inherited;
+  {$ELSE}
+  Result := Value;
+  {$ENDIF}
+end;
+
+function TDBGrid.ScaleValue(const Value: Integer): Integer;
+begin
+  {$IFDEF DELPHI10_4_UP}
+  Result := inherited;
+  {$ELSE}
+  Result := Value;
+  {$ENDIF}
 end;
 
 end.

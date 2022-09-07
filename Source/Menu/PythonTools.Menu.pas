@@ -25,8 +25,8 @@ type
     procedure DoCreateMenuHooked(Sender: TObject);
     procedure DoDestroyMenu();
   public
-    class constructor Create();
-    class destructor Destroy();
+    class procedure Initialize();
+    class procedure Finalize();
 
     constructor Create();    
     destructor Destroy(); override;
@@ -81,12 +81,12 @@ type
 
 { TPythonToolsMenu }
 
-class constructor TPythonToolsMenu.Create;
+class procedure TPythonToolsMenu.Initialize;
 begin
   FInstance := TPythonToolsMenu.Create();
 end;
 
-class destructor TPythonToolsMenu.Destroy;
+class procedure TPythonToolsMenu.Finalize;
 begin
   FInstance.Free();
 end;
@@ -297,5 +297,11 @@ begin
     and (TMethod(FHook).Data = TMethod(AEvt).Data) then
       FHook := nil;
 end;
+
+initialization
+  TPythonToolsMenu.Initialize();
+
+finalization
+  TPythonToolsMenu.Finalize();
 
 end.

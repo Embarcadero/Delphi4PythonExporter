@@ -112,7 +112,7 @@ begin
   Result := TFormFileProducerModel.Create();
   try
     Result.Directory := GetFilesDir();
-    Result.FormFile := 'Data.VCLForm';
+    Result.FileName := 'Data.VCLForm';
     var LStream := TFileStream.Create(TPath.Combine(GetDataDir(), 'Data.VCLForm.dfm'), fmOpenRead);
     try
       Result.FormResource := LStream;
@@ -121,6 +121,8 @@ begin
       LStream.Free();
     end;
     Result.Form := VclForm;
+    Result.Mode := TFormFileMode.ffmPython;
+    Result.FrameworkType := 'VCL';
   except
     on E: Exception do begin
       FreeAndNil(Result);
@@ -174,7 +176,8 @@ end;
 procedure TVCLProducerTest.GenerateApplication;
 begin
   //Save the project file
-  FProducer.SavePyApplicationFile(FApplicationModel);
+  FProducer.SavePyApplicationFile(FApplicationModel, FApplicationModel.Stream);
+  FApplicationModel.Stream.Position := 0;
 
   //Check for the generated file
   var LFilePath := TPath.Combine(FApplicationModel.Directory, FApplicationModel.FileName.AsPython());
@@ -182,7 +185,7 @@ begin
 
   var LStrings := TStringList.Create();
   try
-    LStrings.LoadFromFile(LFilePath);
+    LStrings.LoadFromStream(FApplicationModel.Stream);
 
     {** this is what we excpect **}
 //    from delphivcl import *
@@ -225,7 +228,8 @@ end;
 procedure TVCLProducerTest.GenerateForm;
 begin
   //Save the form file
-  FProducer.SavePyForm(FFormModel);
+  FProducer.SavePyForm(FFormModel, FFormFileModel, FFormModel.Stream);
+  FFormModel.Stream.Position := 0;
 
   //Check for the generated file
   var LFilePath := TPath.Combine(FFormModel.Directory, FFormModel.FileName.AsPython());
@@ -233,7 +237,7 @@ begin
 
   var LStrings := TStringList.Create();
   try
-    LStrings.LoadFromFile(LFilePath);
+    LStrings.LoadFromStream(FFormModel.Stream);
     {** this is what we excpect **}
 //    import os
 //    from delphivcl import *
@@ -273,13 +277,13 @@ end;
 procedure TVCLProducerTest.GenerateFormFileBin;
 begin
   //Save the project file
-  FProducer.SavePyFormFileBin(FFormFileModel);
+  FProducer.SavePyFormFileBin(FFormFileModel, FFormFileModel.Stream);
 
   //Check for the generated file
   var LFilePath := TPath.Combine(FFormFileModel.Directory, FFormFileModel.FormFile.AsPythonDfm());
   Assert.IsTrue(TFile.Exists(LFilePath));
 
-  var LStream := TFileStream.Create(LFilePath, fmOpenRead);
+  var LStream := TFileStream.Create(LFilePath, fmOpenRead or fmShareDenyNone);
   try
     var LReader := TReader.Create(LStream, 4096);
     try
@@ -305,13 +309,13 @@ end;
 procedure TVCLProducerTest.GenerateFormFileTxt;
 begin
   //Save the project file
-  FProducer.SavePyFormFileTxt(FFormFileModel);
+  FProducer.SavePyFormFileTxt(FFormFileModel, FFormFileModel.Stream);
 
   //Check for the generated file
   var LFilePath := TPath.Combine(FFormFileModel.Directory, FFormFileModel.FormFile.AsPythonDfm());
   Assert.IsTrue(TFile.Exists(LFilePath));
 
-  var LInput := TFileStream.Create(LFilePath, fmOpenRead);
+  var LInput := TFileStream.Create(LFilePath, fmOpenRead or fmShareDenyNone);
   try
     var LOutput := TMemoryStream.Create();
     try

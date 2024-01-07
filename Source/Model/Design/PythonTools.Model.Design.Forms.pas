@@ -13,16 +13,19 @@ type
     FGenerateInitialization: boolean;
     FTitle: string;
     FFormFileKind: TFormFileKind;
+    FFormFileMode: TFormFileMode;
   public
     constructor Create(const AForm: TFormNameAndFile;
       const AGenerateInitialization: boolean;
       const ATitle: string;
-      const AFormFileKind: TFormFileKind);
+      const AFormFileKind: TFormFileKind;
+      const AFormFileMode: TFormFileMode);
 
     property Form: TFormNameAndFile read FForm write FForm;
     property GenerateInitialization: boolean read FGenerateInitialization write FGenerateInitialization;
     property Title: string read FTitle write FTitle;
     property FormFileKind: TFormFileKind read FFormFileKind write FFormFileKind;
+    property FormFileMode: TFormFileMode read FFormFileMode write FFormFileMode;
   end;
 
   TInputForm = record
@@ -53,12 +56,13 @@ implementation
 
 constructor TOutputForm.Create(const AForm: TFormNameAndFile;
   const AGenerateInitialization: boolean; const ATitle: string;
-  const AFormFileKind: TFormFileKind);
+  const AFormFileKind: TFormFileKind; const AFormFileMode: TFormFileMode);
 begin
   Form := AForm;
   GenerateInitialization := AGenerateInitialization;
   Title := ATitle;
   FormFileKind := AFormFileKind;
+  FormFileMode := AFormFileMode;
 end;
 
 end.

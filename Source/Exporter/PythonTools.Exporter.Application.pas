@@ -4,6 +4,7 @@ interface
 
 uses
   ToolsAPI,
+  PythonTools.Common,
   PythonTools.Producer,
   PythonTools.Producer.SimpleFactory,
   PythonTools.Model.Design.Project,
@@ -16,7 +17,7 @@ type
     FProject: IOTAProject;
   protected
     //Producers models
-    function BuildApplicationModel: TApplicationProducerModel;
+    function BuildApplicationProducerModel: TApplicationProducerModel;
     //Exporters
     procedure DoExportApplication;
   public
@@ -29,21 +30,21 @@ type
 implementation
 
 uses
+  System.IOUtils,
+  System.Classes,
   System.SysUtils;
 
 { TApplicationExporter }
 
-function TApplicationExporter.BuildApplicationModel: TApplicationProducerModel;
+function TApplicationExporter.BuildApplicationProducerModel: TApplicationProducerModel;
 begin
   Result := TApplicationProducerModel.Create();
   try
-    with Result do begin
-      MainForm := FModel.ApplicationMainForm.FormName;
-      Title := FModel.ApplicationTitle;
-      FileName := ChangeFileExt(ExtractFileName(FProject.FileName), '');
-      ImportedForms := [FModel.ApplicationMainForm];
-      Directory := FModel.ApplicationDirectory;
-    end;
+    Result.Directory := FModel.ApplicationDirectory;
+    Result.FileName := ChangeFileExt(ExtractFileName(FProject.FileName), '');
+    Result.MainForm := FModel.ApplicationMainForm.FormName;
+    Result.Title := FModel.ApplicationTitle;
+    Result.ImportedForms := [FModel.ApplicationMainForm];
   except
     on E: Exception do begin
       FreeAndNil(Result);
@@ -65,9 +66,10 @@ var
   LProducerModel: TApplicationProducerModel;
 begin
   LProducer := TProducerSimpleFactory.CreateProducer(FProject.FrameworkType);
-  LProducerModel := BuildApplicationModel();
+
+  LProducerModel := BuildApplicationProducerModel();
   try
-    LProducer.SavePyApplicationFile(LProducerModel);
+    LProducer.SavePyApplicationFile(LProducerModel, LProducerModel.Stream);
   finally
     LProducerModel.Free();
   end;

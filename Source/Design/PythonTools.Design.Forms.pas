@@ -47,6 +47,8 @@ type
     btnSelectDir: TButton;
     llblNotification: TLinkLabel;
     cbShowExportedFiles: TCheckBox;
+    pnlFormFileOptions: TPanel;
+    cbFormFileCompatibleMode: TCheckBox;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -281,6 +283,7 @@ function TFormsExportDialog.Execute(const AModel: TExportFormsDesignModel): bool
 var
   LInput: TInputForm;
   LOutput: TList<TOutputForm>;
+  LFormFileMode: TFormFileMode;
 begin
   edtDirectory.Text := AModel.Directory;
   cbShowExportedFiles.Checked := AModel.ShowInExplorer;
@@ -307,7 +310,11 @@ begin
     Exit();
 
   AModel.Directory := edtDirectory.Text;
-  Amodel.ShowInExplorer := cbShowExportedFiles.Checked;
+  AModel.ShowInExplorer := cbShowExportedFiles.Checked;
+
+  LFormFileMode := TFormFileMode.ffmPython;
+  if cbFormFileCompatibleMode.Checked then
+    LFormFileMode := TFormFileMode.ffmCompatible;
 
   LOutput := TList<TOutputForm>.Create();
   try
@@ -322,7 +329,8 @@ begin
             LInput.Form,
             cdsFormsFL_INITIALIZE.AsBoolean,
             cdsFormsTITLE.AsString,
-            TFormFileKind.FromString(cdsFormsFL_FORM_FILE_KIND.AsString)
+            TFormFileKind.FromString(cdsFormsFL_FORM_FILE_KIND.AsString),
+            LFormFileMode
           ));
         end;
       end;

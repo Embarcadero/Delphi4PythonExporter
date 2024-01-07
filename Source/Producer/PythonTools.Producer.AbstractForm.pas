@@ -14,13 +14,19 @@ type
   TAbstractFormProducer = class abstract(TInterfacedObject)
   protected
     function GetPythonModuleName(): string; virtual; abstract;
-    function GetPythonFormFileExtension(): string; virtual; abstract;
+    function GetPythonFormFileExtension(
+      const AMode: TFormFileMode): string; virtual; abstract;
     function GetAppInitializationSection(): string; virtual; abstract;
     //File generators
-    procedure GeneratePyApplicationFile(const AStream: TStream; const AModel: TApplicationProducerModel);
-    procedure GeneratePyFormFile(const AStream: TStream; const AModel: TFormProducerModel);
-    procedure GeneratePyFormFileBin(const AStream: TStream; const AModel: TFormFileProducerModel);
-    procedure GeneratePyFormFileTxt(const AStream: TStream; const AModel: TFormFileProducerModel);
+    procedure GeneratePyApplicationFile(const AStream: TStream;
+      const AModel: TApplicationProducerModel);
+    procedure GeneratePyFormFile(const AStream: TStream;
+      const AFormModel: TFormProducerModel;
+      const AFormFileModel: TFormFileProducerModel);
+    procedure GeneratePyFormFileBin(const AStream: TStream;
+      const AModel: TFormFileProducerModel);
+    procedure GeneratePyFormFileTxt(const AStream: TStream;
+      const AModel: TFormFileProducerModel);
   public
 
   end;
@@ -103,7 +109,8 @@ begin
 end;
 
 procedure TAbstractFormProducer.GeneratePyFormFile(const AStream: TStream;
-  const AModel: TFormProducerModel);
+  const AFormModel: TFormProducerModel;
+  const AFormFileModel: TFormFileProducerModel);
 var
   LProps: string;
   LComp: TExportedComponent;
@@ -114,7 +121,7 @@ var
   LBytes: TBytes;
 begin
   LProps := String.Empty;
-  for LComp in AModel.ExportedComponents do begin
+  for LComp in AFormModel.ExportedComponents do begin
     if not LProps.IsEmpty() then
       LProps := LProps
         + sLineBreak
@@ -123,7 +130,7 @@ begin
   end;
 
   LEvts := String.Empty;
-  for LEvt in AModel.ExportedEvents do begin
+  for LEvt in AFormModel.ExportedEvents do begin
     if not LEvts.IsEmpty then
       LEvts := LEvts
         + sLineBreak
@@ -145,8 +152,8 @@ begin
   + sLineBreak
   + sLineBreak
   + PY_MODULE_CLASS
-      .Replace('@CLASSNAME', AModel.FormName)
-      .Replace('@CLASSPARENT', AModel.FormParentName);
+      .Replace('@CLASSNAME', AFormModel.FormName)
+      .Replace('@CLASSPARENT', AFormModel.FormParentName);
 
   if not LProps.IsEmpty() then
     LStrFile := LStrFile
@@ -157,8 +164,8 @@ begin
   LStrFile := LStrFile
     + sLineBreak
     + PY_MODULE_LOAD_PROPS
-      .Replace('@FILE', AModel.FileName)
-      .Replace('@FORMFILEEXT', GetPythonFormFileExtension());
+      .Replace('@FILE', AFormModel.FileName)
+      .Replace('@FORMFILEEXT', GetPythonFormFileExtension(AFormFileModel.Mode));
 
   if not LEvts.IsEmpty() then
     LStrFile := LStrFile
@@ -167,13 +174,13 @@ begin
       + PY_MODULE_EVTS
         .Replace('@EVENTS', LEvts);
 
-  if AModel.ModuleInitialization.GenerateInitialization then
+  if AFormModel.ModuleInitialization.GenerateInitialization then
     LStrFile := LStrFile
     + sLineBreak
     + sLineBreak
     + GetAppInitializationSection()
-      .Replace('@APP_TITLE', AModel.ModuleInitialization.Title.QuotedString())
-      .Replace('@CLASSNAME', AModel.ModuleInitialization.MainForm);
+      .Replace('@APP_TITLE', AFormModel.ModuleInitialization.Title.QuotedString())
+      .Replace('@CLASSNAME', AFormModel.ModuleInitialization.MainForm);
 
   LBytes := TEncoding.UTF8.GetBytes(LStrFile);
   AStream.WriteData(LBytes, Length(LBytes));

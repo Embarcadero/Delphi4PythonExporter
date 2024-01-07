@@ -31,7 +31,7 @@ type
     edtApplicationDirectory: TEdit;
     btnCancel: TButton;
     btnExport: TButton;
-    pnlFormFileKind: TPanel;
+    pnlFormFileOptions: TPanel;
     lblFormFileKind: TLabel;
     swFormFileKind: TToggleSwitch;
     Label1: TLabel;
@@ -42,6 +42,7 @@ type
     pnlClient: TPanel;
     cbShowExportedFiles: TCheckBox;
     btnSelectDir: TButton;
+    cbFormFileCompatibleMode: TCheckBox;
     procedure btnExportClick(Sender: TObject);
     procedure btnSelectDirClick(Sender: TObject);
     procedure Label1Click(Sender: TObject);
@@ -132,6 +133,10 @@ begin
   AModel.ApplicationTitle := edtApplicationTitle.Text;
   AModel.ApplicationMainForm := AModel.ApplicationForms[cbApplicationMainForm.ItemIndex];
   AModel.ApplicationDirectory := edtApplicationDirectory.Text;
+  if cbFormFileCompatibleMode.Checked then
+    AModel.FormFileMode := TFormFileMode.ffmCompatible
+  else
+    AModel.FormFileMode := TFormFileMode.ffmPython;
   Amodel.ShowInExplorer := cbShowExportedFiles.Checked;
 
   case swFormFileKind.State of

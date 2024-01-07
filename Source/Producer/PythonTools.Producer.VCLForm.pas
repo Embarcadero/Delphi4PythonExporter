@@ -3,6 +3,7 @@ unit PythonTools.Producer.VCLForm;
 interface
 
 uses
+  System.Classes,
   PythonTools.Common,
   PythonTools.Producer,
   PythonTools.Producer.AbstractForm,
@@ -14,24 +15,35 @@ type
   TVCLFormProducer = class(TAbstractFormProducer, IPythonCodeProducer)
   protected
     function GetPythonModuleName(): string; override;
-    function GetPythonFormFileExtension(): string; override;
+    function GetPythonFormFileExtension(const AMode: TFormFileMode): string; override;
     function GetAppInitializationSection(): string; override;
   public
     function IsValidFormInheritance(const AClass: TClass): boolean;
-    procedure SavePyApplicationFile(const AModel: TApplicationProducerModel);
-    procedure SavePyForm(const AModel: TFormProducerModel);
-    procedure SavePyFormFileBin(const AModel: TFormFileProducerModel);
-    procedure SavePyFormFileTxt(const AModel: TFormFileProducerModel);
+
+    procedure SavePyApplicationFile(
+      const AModel: TApplicationProducerModel;
+      const AStream: TStream);
+    procedure SavePyForm(
+      const AFormModel: TFormProducerModel;
+      const AFormFileModel: TFormFileProducerModel;
+      const AStream: TStream);
+    procedure SavePyFormFileBin(
+      const AModel: TFormFileProducerModel;
+      const AStream: TStream);
+    procedure SavePyFormFileTxt(
+      const AModel: TFormFileProducerModel;
+      const AStream: TStream);
   end;
 
 implementation
 
 uses
-  System.SysUtils, System.IOUtils, System.Classes, Vcl.Forms,
+  System.SysUtils, System.IOUtils, Vcl.Forms,
   PythonTools.Exceptions;
 
 const
   DELPHI_VCL_MODULE_NAME = 'delphivcl';
+
   PY_MODULE_APP_INITIALIZATION =
     'def main():'
   + sLineBreak
@@ -62,9 +74,10 @@ const
 
 { TVCLFormProducer }
 
-function TVCLFormProducer.GetPythonFormFileExtension: string;
+function TVCLFormProducer.GetPythonFormFileExtension(
+  const AMode: TFormFileMode): string;
 begin
-  Result := TFormFile('').AsPythonDfm();
+  Result := TFormFile('').AsDfm(AMode);
 end;
 
 function TVCLFormProducer.GetPythonModuleName: string;
@@ -83,65 +96,27 @@ begin
 end;
 
 procedure TVCLFormProducer.SavePyApplicationFile(
-  const AModel: TApplicationProducerModel);
-var
-  LFilePath: string;
-  LStream: TStream;
+  const AModel: TApplicationProducerModel; const AStream: TStream);
 begin
-  LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
-
-  LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
-  try
-    GeneratePyApplicationFile(LStream, AModel);
-  finally
-    LStream.Free();
-  end;
+  GeneratePyApplicationFile(AStream, AModel);
 end;
 
-procedure TVCLFormProducer.SavePyForm(const AModel: TFormProducerModel);
-var
-  LFilePath: string;
-  LStream: TStream;
+procedure TVCLFormProducer.SavePyForm(const AFormModel: TFormProducerModel;
+  const AFormFileModel: TFormFileProducerModel; const AStream: TStream);
 begin
-  LFilePath := TPath.Combine(AModel.Directory, AModel.FileName.AsPython());
-
-  LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
-  try
-    GeneratePyFormFile(LStream, AModel);
-  finally
-    LStream.Free();
-  end;
+  GeneratePyFormFile(AStream, AFormModel, AFormFileModel);
 end;
 
-procedure TVCLFormProducer.SavePyFormFileBin(const AModel: TFormFileProducerModel);
-var
-  LFilePath: string;
-  LStream: TStream;
+procedure TVCLFormProducer.SavePyFormFileBin(
+  const AModel: TFormFileProducerModel; const AStream: TStream);
 begin
-  LFilePath := TPath.Combine(AModel.Directory, AModel.FormFile.AsPythonDfm());
-
-  LStream := TFileStream.Create(LFilePath, fmCreate or fmOpenWrite);
-  try
-    GeneratePyFormFileBin(LStream, AModel);
-  finally
-    LStream.Free();
-  end;
+  GeneratePyFormFileBin(AStream, AModel);
 end;
 
 procedure TVCLFormProducer.SavePyFormFileTxt(
-  const AModel: TFormFileProducerModel);
-var
-  LPyDfmFile: string;
-  LStream: TStream;
+  const AModel: TFormFileProducerModel; const AStream: TStream);
 begin
-  LPyDfmFile := TPath.Combine(AModel.Directory, AModel.FormFile.AsPythonDfm());
-
-  LStream := TFileStream.Create(LPyDfmFile, fmCreate or fmOpenWrite);
-  try
-    GeneratePyFormFileTxt(LStream, AModel);
-  finally
-    LStream.Free();
-  end;
+  GeneratePyFormFileTxt(AStream, AModel);
 end;
 
 end.

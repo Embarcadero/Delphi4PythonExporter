@@ -7,6 +7,7 @@ uses
 
 type
   TFormFileKind = (ffkText, ffkBinary);
+  TFormFileMode = (ffmDelphi, ffmPython, ffmCompatible);
 
   TFormNameAndFile = record
   public
@@ -14,7 +15,6 @@ type
     FileName: string;
   public
     constructor Create(const AFormName, AFileName: string);
-
     function CombineFileAndFormName(): string;
   end;
 
@@ -41,7 +41,6 @@ type
 
   TExportedEvents = TArray<TExportedEvent>;
   TExportedEventList = TList<TExportedEvent>;
-
   TApplicationFile = System.SysUtils.TFileName;
   TFileName = System.SysUtils.TFileName;
   TFormFile = type string;
@@ -63,9 +62,10 @@ type
   public
     function AsDelphiDfm(): string;
     function AsDelphiFmx(): string;
-
     function AsPythonDfm(): string;
     function AsPythonFmx(): string;
+    function AsDfm(const AMode: TFormFileMode): string;
+    function AsFmx(const AMode: TFormFileMode): string;
   end;
 
   TFormFileKindHelper = record helper for TFormFileKind
@@ -154,6 +154,32 @@ begin
   Result := Self + '.pyfmx';
 end;
 
+function TFormFileHelper.AsDfm(const AMode: TFormFileMode): string;
+begin
+  case AMode of
+    ffmCompatible,
+    ffmDelphi:
+      Result := AsDelphiDfm();
+    ffmPython:
+      Result := AsPythonDfm();
+    else
+      Result := String.Empty;
+  end;
+end;
+
+function TFormFileHelper.AsFmx(const AMode: TFormFileMode): string;
+begin
+  case AMode of
+    ffmCompatible,
+    ffmDelphi:
+      Result := AsDelphiFmx();
+    ffmPython:
+      Result := AsPythonFmx();
+    else
+      Result := String.Empty;
+  end;
+end;
+
 { TFormFileKindHelper }
 
 class function TFormFileKindHelper.FromString(
@@ -170,9 +196,12 @@ end;
 function TFormFileKindHelper.ToString: string;
 begin
   case Self of
-    ffkText: Result := 'Text';
-    ffkBinary: Result := 'Binary';
-    else raise ENotImplemented.Create('Form file kind not found.');
+    ffkText:
+      Result := 'Text';
+    ffkBinary:
+      Result := 'Binary';
+    else
+      raise ENotImplemented.Create('Form file kind not found.');
   end;
 end;
 

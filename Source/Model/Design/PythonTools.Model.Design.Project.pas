@@ -16,6 +16,7 @@ type
     FApplicationForms: TFormNamesAndFiles;
     FApplicationMainForm: TFormNameAndFile;
     FFormFileKind: TFormFileKind;
+    FFormFileMode: TFormFileMode;
     FShowInExplorer: boolean;
   public
     property ApplicationId: TGUID read FApplicationId write FApplicationId;
@@ -25,6 +26,7 @@ type
     property ApplicationMainForm: TFormNameAndFile read FApplicationMainForm write FApplicationMainForm;
     property ApplicationDirectory: string read FApplicationDirectory write FApplicationDirectory;
     property FormFileKind: TFormFileKind read FFormFileKind write FFormFileKind;
+    property FormFileMode: TFormFileMode read FFormFileMode write FFormFileMode;
     property ShowInExplorer: boolean read FShowInExplorer write FShowInExplorer;
   end;
 

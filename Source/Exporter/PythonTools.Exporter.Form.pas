@@ -24,7 +24,8 @@ type
     function BuildFormModel: TFormProducerModel; virtual;
     function BuildFormFileModel: TFormFileProducerModel; virtual;
     //Exporters
-    procedure DoExportForm(const AModel: TFormProducerModel);
+    procedure DoExportForm(const AFormModel: TFormProducerModel;
+      const AFormFileModel: TFormFileProducerModel);
     procedure DoExportFormFileBin(const AModel: TFormFileProducerModel);
     procedure DoExportFormFileTxt(const AModel: TFormFileProducerModel);
   public
@@ -42,7 +43,8 @@ type
     function BuildFormModel: TFormProducerModel; override;
     function BuildFormFileModel: TFormFileProducerModel; override;
   public
-    constructor Create(const AModel: TExportProjectDesignModel; const  AFormInfo: TIOTAFormInfo);
+    constructor Create(const AModel: TExportProjectDesignModel;
+      const AFormInfo: TIOTAFormInfo);
   end;
 
   TFormExporterFromForms = class sealed(TFormExporter)
@@ -55,7 +57,7 @@ type
     function BuildFormFileModel: TFormFileProducerModel; override;
   public
     constructor Create(const AModel: TExportFormsDesignModel;
-      const ACurrentForm: integer; const  AFormInfo: TIOTAFormInfo);
+      const ACurrentForm: integer; const AFormInfo: TIOTAFormInfo);
   end;
 
 implementation
@@ -85,13 +87,19 @@ end;
 
 procedure TFormExporter.ExportForm;
 var
-  LProducerModel: TFormProducerModel;
+  LFormProducerModel: TFormProducerModel;
+  LFormFileProducerModel: TFormFileProducerModel;
 begin
-  LProducerModel := BuildFormModel();
+  LFormProducerModel := BuildFormModel();
   try
-    DoExportForm(LProducerModel);
+    LFormFileProducerModel := BuildFormFileModel();
+    try
+      DoExportForm(LFormProducerModel, LFormFileProducerModel);
+    finally
+      LFormFileProducerModel.Free();
+    end;
   finally
-    LProducerModel.Free();
+    LFormProducerModel.Free();
   end;
 end;
 
@@ -138,16 +146,13 @@ begin
 end;
 
 function TFormExporter.BuildFormFileModel: TFormFileProducerModel;
-var
-  LStreamAdapter: TStreamAdapter;
 begin
   Result := TFormFileProducerModel.Create();
   try
     with Result do begin
-      FormFile := ChangeFileExt(ExtractFileName(FormInfo.FileName), '');
+      FileName := ChangeFileExt(ExtractFileName(FormInfo.FileName), '');
       Form := FormInfo.Designer.Root;
-      LStreamAdapter := TStreamAdapter.Create(FormResource);
-      FormInfo.Editor.GetFormResource(LStreamAdapter);
+      FormInfo.Editor.GetFormResource(TStreamAdapter.Create(FormResource));
       FormResource.Position := 0;
     end;
   except
@@ -158,7 +163,8 @@ begin
   end;
 end;
 
-procedure TFormExporter.DoExportForm(const AModel: TFormProducerModel);
+procedure TFormExporter.DoExportForm(const AFormModel: TFormProducerModel;
+  const AFormFileModel: TFormFileProducerModel);
 var
   LProducer: IPythonCodeProducer;
 begin
@@ -168,7 +174,7 @@ begin
     raise EFormInheritanceNotSupported.CreateFmt(
       '%s TForm direct inheritance only', [FormInfo.FrameworkType]);
 
-  LProducer.SavePyForm(AModel);
+  LProducer.SavePyForm(AFormModel, AFormFileModel, AFormModel.Stream);
 end;
 
 procedure TFormExporter.DoExportFormFileTxt(const AModel: TFormFileProducerModel);
@@ -176,7 +182,7 @@ var
   LProducer: IPythonCodeProducer;
 begin
   LProducer := TProducerSimpleFactory.CreateProducer(FormInfo.FrameworkType);
-  LProducer.SavePyFormFileTxt(AModel);
+  LProducer.SavePyFormFileTxt(AModel, AModel.Stream);
 end;
 
 procedure TFormExporter.DoExportFormFileBin(const AModel: TFormFileProducerModel);
@@ -184,7 +190,7 @@ var
   LProducer: IPythonCodeProducer;
 begin
   LProducer := TProducerSimpleFactory.CreateProducer(FormInfo.FrameworkType);
-  LProducer.SavePyFormFileBin(AModel);
+  LProducer.SavePyFormFileBin(AModel, AModel.Stream);
 end;
 
 { TFormExporterFromProject }
@@ -196,16 +202,20 @@ begin
   FModel := AModel;
 end;
 
-function TFormExporterFromProject.BuildFormFileModel: TFormFileProducerModel;
-begin
-  Result := inherited;
-  Result.Directory := FModel.ApplicationDirectory;
-end;
-
 function TFormExporterFromProject.BuildFormModel: TFormProducerModel;
 begin
   Result := inherited;
   Result.Directory := FModel.ApplicationDirectory;
+  Result.FileName := ChangeFileExt(ExtractFileName(FormInfo.FileName), '');
+end;
+
+function TFormExporterFromProject.BuildFormFileModel: TFormFileProducerModel;
+begin
+  Result := inherited;
+  Result.Directory := FModel.ApplicationDirectory;
+  Result.FileName := ChangeFileExt(ExtractFileName(FormInfo.FileName), '');
+  Result.Mode := FModel.FormFileMode;
+  Result.FrameworkType := FormInfo.FrameworkType;
 end;
 
 { TFormExporterFromForms }
@@ -218,18 +228,13 @@ begin
   FCurrentForm := ACurrentForm;
 end;
 
-function TFormExporterFromForms.BuildFormFileModel: TFormFileProducerModel;
-begin
-  Result := inherited;
-  Result.Directory := FModel.Directory;
-end;
-
 function TFormExporterFromForms.BuildFormModel: TFormProducerModel;
 var
   LForm: TOutputForm;
 begin
   Result := inherited;
   Result.Directory := FModel.Directory;
+  Result.FileName := ChangeFileExt(ExtractFileName(FormInfo.FileName), '');
   with Result.ModuleInitialization do begin
     LForm := FModel.OutputForms[FCurrentForm];
     //Generate the initialization section for the MainForm only
@@ -242,6 +247,15 @@ begin
     end else
       GenerateInitialization := false;
   end;
+end;
+
+function TFormExporterFromForms.BuildFormFileModel: TFormFileProducerModel;
+begin
+  Result := inherited;
+  Result.Directory := FModel.Directory;
+  Result.FileName := ChangeFileExt(ExtractFileName(FormInfo.FileName), '');
+  Result.Mode := FModel.OutputForms[FCurrentForm].FormFileMode;
+  Result.FrameworkType := FormInfo.FrameworkType;
 end;
 
 end.

@@ -18,24 +18,30 @@ type
     Designer: IDesigner;
   end;
 
+  TFormClassName = string;
+  TFormGlobalVarName = string;
+  TDprEntry = TPair<TFormClassName, TFormGlobalVarName>;
+  TDprEntries = TArray<TDprEntry>;
+
   TIOTAUtils = class
   private
     class function ModuleIsPas(const AModule: IOTAModule): boolean;
     class function ModuleIsCpp(const AModule: IOTAModule): boolean;
     class function ModuleIsForm(const AModule: IOTAModule): boolean;
     class function ModuleIsExportable(const AModule: IOTAModule): boolean;
-
     class procedure EnumComps(const AFormEditor: IOTAFormEditor; const ACallback: TProc<TComponent>);
     class function GetFormCaption(const AComponent: TComponent): string;
+    class function ScanDprEntries(const AProject: IOTAProject): TDprEntries;
   public
     class function FindComponents(const AFormEditor: IOTAFormEditor): TExportedComponents;
     class function FindEvents(const AFormEditor: IOTAFormEditor; const ADesigner: IDesigner): TExportedEvents;
-
     class function HasForms(): boolean;
     class procedure EnumForms(const AProc: TProc<TIOTAFormInfo>); overload;
     class procedure EnumForms(const AProject: IOTAProject; const AProc: TProc<TIOTAFormInfo>); overload;
     class function FindForm(const AFormName: string; out AFormInfo: TIOTAFormInfo): boolean;
-
+    class function FindDelphiProjectEditor(const AProject: IOTAProject): IOTAEditor;
+    class function GuessMainForm(const AProject: IOTAProject): IOTAModule;
+    class function GetEditorContentFromEditor(const AEditor: IOTAEditor): IOTAEditorContent;
     class function GetFormEditorFromModule(const AModule: IOTAModule): IOTAFormEditor;
     class function GetFrameworkTypeFromDesigner(const ADesigner: IDesigner): string;
   end;
@@ -43,8 +49,10 @@ type
 implementation
 
 uses
-  TypInfo,
+  System.TypInfo,
   System.Generics.Defaults,
+  System.RegularExpressions,
+  Vcl.AxCtrls,
   Vcl.Forms,
   Fmx.Forms,
   PythonTools.Exceptions;
@@ -63,12 +71,10 @@ begin
     Result := (AModuleInfo.ModuleType = omtForm)
       and not AModuleInfo.FormName.Trim().IsEmpty();
   end;
-
   for I := 0 to AProject.GetModuleCount() - 1 do begin
     LModuleInfo := AProject.GetModule(I);
     if not LFormPredicate(LModuleInfo) then
       Continue;
-
     LResult.Module := LModuleInfo.OpenModule();
     LResult.Editor := TIOTAUtils.GetFormEditorFromModule(LResult.Module);
     LResult.Designer := (LResult.Editor as INTAFormEditor).FormDesigner;
@@ -91,7 +97,6 @@ var
   LResult: TIOTAFormInfo;
 begin
   LModuleServices := (BorlandIDEServices as IOTAModuleServices);
-
   //User has created a project and added files on it.
   if Assigned(LModuleServices.MainProjectGroup) then begin
     for I := 0 to LModuleServices.MainProjectGroup.ProjectCount - 1 do begin
@@ -103,14 +108,11 @@ begin
     for I := 0 to LModuleServices.ModuleCount - 1 do begin
       LModule := LModuleServices.Modules[I];
       LEditor := GetFormEditorFromModule(LModule);
-
       if not ModuleIsExportable(LModule) then
         Continue;
-
       LDesigner := (LEditor as INTAFormEditor).FormDesigner;
       if not Assigned(LDesigner) then
         Continue;
-
       LResult.FileName := LModule.FileName;
       LResult.FormName := LDesigner.Root.Name;
       LResult.Caption := GetFormCaption(LDesigner.Root);
@@ -131,15 +133,25 @@ begin
     EnumComps(AFormEditor, procedure(AComponent: TComponent) begin 
       LCompList.Add(TExportedComponent.Create(AComponent.Name));
     end);
-
     Result := LCompList.ToArray();
   finally
     LCompList.Free();
   end;
 end;
 
-class function TIOTAUtils.FindEvents(const AFormEditor: IOTAFormEditor; const ADesigner: IDesigner): TExportedEvents;
+class function TIOTAUtils.FindDelphiProjectEditor(
+  const AProject: IOTAProject): IOTAEditor;
+var
+  I: Integer;
+begin
+  for I := 0 to AProject.ModuleFileCount -1 do
+    if AProject.ModuleFileEditors[I].FileName.EndsWith('.dpr') then
+      Exit(AProject.ModuleFileEditors[I]);
 
+  Result := nil;
+end;
+
+class function TIOTAUtils.FindEvents(const AFormEditor: IOTAFormEditor; const ADesigner: IDesigner): TExportedEvents;
   procedure ExtractPropertyEvents(const ARttiContext: TRttiContext;
     const AComponent: TComponent; const AEvents: TExportedEventList);
   var
@@ -153,42 +165,33 @@ class function TIOTAUtils.FindEvents(const AFormEditor: IOTAFormEditor; const AD
     LEvt: TExportedEvent;
   begin
     LRttiType := ARttiContext.GetType(AComponent.ClassInfo);
-    try
-      for LRttiProp in LRttiType.GetProperties() do begin
-        if not (LRttiProp.Visibility = TMemberVisibility.mvPublished) then
-          Continue;
+    for LRttiProp in LRttiType.GetProperties() do begin
+      if not (LRttiProp.Visibility = TMemberVisibility.mvPublished) then
+        Continue;
+      if not (LRttiProp.PropertyType is TRttiMethodType) then
+        Continue;
+      LMethod := LRttiProp.GetValue(AComponent);
+      if LMethod.IsEmpty then
+        Continue;
 
-        if not (LRttiProp.PropertyType is TRttiMethodType) then
-          Continue;
+      LMethodName := ADesigner.GetMethodName(PMethod(LMethod.GetReferenceToRawData)^);
+      if not ADesigner.MethodExists(LMethodName) then
+        Continue;
 
-        LMethod := LRttiProp.GetValue(AComponent);
-
-        if LMethod.IsEmpty then
-          Continue;
-                                
-        LMethodName := ADesigner.GetMethodName(PMethod(LMethod.GetReferenceToRawData)^);
-        if not ADesigner.MethodExists(LMethodName) then
-          Continue;
-
-        LRttiMethod := LRttiProp.PropertyType as TRttiMethodType;
-        LParamList := TList<string>.Create();
-        try
-          for LParam in LRttiMethod.GetParameters() do begin
-            LParamList.Add(LParam.Name);
-          end;
-
-          LEvt := TExportedEvent.Create(LMethodName, LParamList.ToArray());
-          if not AEvents.Contains(LEvt) then
-            AEvents.Add(LEvt);
-        finally
-          LParamList.Free();
+      LRttiMethod := LRttiProp.PropertyType as TRttiMethodType;
+      LParamList := TList<string>.Create();
+      try
+        for LParam in LRttiMethod.GetParameters() do begin
+          LParamList.Add(LParam.Name);
         end;
+        LEvt := TExportedEvent.Create(LMethodName, LParamList.ToArray());
+        if not AEvents.Contains(LEvt) then
+          AEvents.Add(LEvt);
+      finally
+        LParamList.Free();
       end;
-    finally
-      LRttiType.Free();
     end;
   end;
-
   function FindComponentRefs(): TArray<TComponent>;
   var
     LCompList: TList<TComponent>;
@@ -204,7 +207,6 @@ class function TIOTAUtils.FindEvents(const AFormEditor: IOTAFormEditor; const AD
       LCompList.Free();
     end;
   end;
-
 var
   LEvts: TExportedEventList;
   LRttiCtx: TRttiContext;
@@ -215,6 +217,7 @@ begin
       function(const Left, Right: TExportedEvent): Integer begin
         Result := CompareStr(Left.MethodName, Right.MethodName);
       end));
+
   try      
     LRttiCtx := TRttiContext.Create();
     try
@@ -258,8 +261,14 @@ begin
   AFormInfo.Module := LModule;
   AFormInfo.Editor := LEditor;
   AFormInfo.Designer := LDesigner;
-
   Result := true;
+end;
+
+class function TIOTAUtils.GetEditorContentFromEditor(
+  const AEditor: IOTAEditor): IOTAEditorContent;
+begin
+  if not Supports(AEditor, IOTAEditorContent, Result) then
+    Result := nil;
 end;
 
 class function TIOTAUtils.GetFormCaption(const AComponent: TComponent): string;
@@ -298,6 +307,20 @@ begin
     raise EUnknownFrameworkType.Create('Unknown framework type.');
 end;
 
+class function TIOTAUtils.GuessMainForm(
+  const AProject: IOTAProject): IOTAModule;
+var
+  LEntries: TDprEntries;
+  LModuleServices: IOTAModuleServices;
+begin
+  LEntries := ScanDprEntries(AProject);
+  if not Assigned(LEntries) then
+    Exit(nil);
+
+  LModuleServices := (BorlandIDEServices as IOTAModuleServices);
+  Result := LModuleServices.FindFormModule(LEntries[Low(LEntries)].Value);
+end;
+
 class function TIOTAUtils.HasForms: boolean;
 var
   LModuleServices: IOTAModuleServices;
@@ -322,25 +345,89 @@ begin
   LEditor := GetFormEditorFromModule(AModule);
   if not Assigned(LEditor) then
     Exit(false);
-
   LDesigner := (LEditor as INTAFormEditor).FormDesigner;
   if not Assigned(LDesigner) then
     Exit(false);
-
   LRoot := LDesigner.Root;
   if not Assigned(LRoot) then
     Exit(false);
-
   if not (LRoot.InheritsFrom(Vcl.Forms.TForm)
     or LRoot.InheritsFrom(Fmx.Forms.TForm)) then
       Exit(false);
-
   Result := true;
 end;
 
 class function TIOTAUtils.ModuleIsPas(const AModule: IOTAModule): boolean;
 begin
   Result := SameText(ExtractFileExt(AModule.FileName), '.pas');
+end;
+
+class function TIOTAUtils.ScanDprEntries(
+  const AProject: IOTAProject): TDprEntries;
+var
+  I: integer;
+  LEditor: IOTAEditor;
+  LEditorContent: IOTAEditorContent;
+  LOleStream: TStream;
+  LStream: TStringStream;
+  LMatches: TMatchCollection;
+  LValues: string;
+  LPair: TArray<string>;
+begin
+  LEditor := FindDelphiProjectEditor(AProject);
+  if not Assigned(LEditor) then
+    Exit(nil);
+
+  LEditorContent := GetEditorContentFromEditor(LEditor);
+  if not Assigned(LEditorContent) then
+    Exit(nil);
+
+  LOleStream := TOleStream.Create(LEditorContent.Content);
+  try
+    LStream := TStringStream.Create('');
+    try
+      LStream.CopyFrom(LOleStream);
+
+      LMatches := TRegEx.Matches(
+        LStream.DataString,
+        'Application.CreateForm\((.*?)\);',
+        [roIgnoreCase, roMultiLine]);
+
+    finally
+      LStream.Free();
+    end;
+  finally
+    LOleStream.Free();
+  end;
+
+  if (LMatches.Count = 0) then
+    Exit(nil);
+
+  LValues := String.Empty;
+  for I := 0 to LMatches.Count - 1 do
+    LValues := LValues + LMatches.Item[I].Value + sLineBreak;
+
+  LMatches := TRegEx.Matches(
+    LValues,
+    '\((.*?)\)',
+    [roIgnoreCase, roMultiLine]);
+
+  for I := 0 to LMatches.Count - 1 do begin
+    LPair := LMatches.Item[I].Value
+      .Replace('(', '', [])
+      .Replace(')', '', [])
+      .Replace(' ', '', [rfReplaceAll])
+      .Split([',']);
+
+    if Length(LPair) <> 2 then
+      Continue;
+
+    Result := Result + [
+      TDprEntry.Create(
+        LPair[Low(LPair)],
+        LPair[Low(LPair) + 1])
+    ];
+  end;
 end;
 
 class function TIOTAUtils.ModuleIsCpp(const AModule: IOTAModule): boolean;
@@ -364,21 +451,17 @@ var
 begin
   if not Assigned(ACallback) then
     Exit;
-
   LRoot := AFormEditor.GetRootComponent();
-
   if not Assigned(LRoot) then
     Exit;
   
   for I := 0 to LRoot.GetComponentCount() - 1 do begin
     LComp := TComponent(LRoot.GetComponent(I).GetComponentHandle());
-
     if not Assigned(LComp) then
       Continue;
        
     ACallback(LComp);
   end;
-  
 end;
 
 end.

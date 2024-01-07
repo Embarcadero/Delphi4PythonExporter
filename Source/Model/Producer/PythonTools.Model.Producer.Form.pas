@@ -3,11 +3,13 @@ unit PythonTools.Model.Producer.Form;
 interface
 
 uses
-  System.Classes, System.Rtti,
-  PythonTools.Common;
+  System.Rtti,
+  System.Classes,
+  PythonTools.Common,
+  PythonTools.Model.Producer;
 
 type
-  TFormProducerModel = class
+  TBaseFormProducerModel = class(TAbastractProducerModel)
   private type
     TModuleInitialization = class
     private
@@ -31,13 +33,11 @@ type
   private
     FFormName: string;
     FFormParentName: string;
-    FFileName: TFileName;
-    FDirectory: string;
     FExportedComponents: TExportedComponents;
     FModuleInitialization: TModuleInitialization;
     FExportedEvents: TExportedEvents;
   public
-    constructor Create();
+    constructor Create(); override;
     destructor Destroy(); override;
     /// <summary>
     ///   The Form name: used to generate the Python class name
@@ -47,14 +47,6 @@ type
     ///   The Form parent class name: used to the Form inheritance chain
     /// </summary>
     property FormParentName: string read FFormParentName write FFormParentName;
-    /// <summary>
-    ///   The Unit name: used to generate the Python (.py) file name. Warning: Must not contain extension.
-    /// </summary>
-    property FileName: TFileName read FFileName write FFileName;
-    /// <summary>
-    ///   The directory where the generated files will be saved
-    /// </summary>
-    property Directory: string read FDirectory write FDirectory;
     /// <summary>
     ///   List of exported components
     /// </summary>
@@ -69,16 +61,19 @@ type
     property ModuleInitialization: TModuleInitialization read FModuleInitialization;
   end;
 
+  TFormProducerModel = class(TBaseFormProducerModel);
+
 implementation
 
-{ TFormProducerModel }
+{ TBaseFormProducerModel }
 
-constructor TFormProducerModel.Create;
+constructor TBaseFormProducerModel.Create;
 begin
+  inherited;
   FModuleInitialization := TModuleInitialization.Create();
 end;
 
-destructor TFormProducerModel.Destroy;
+destructor TBaseFormProducerModel.Destroy;
 begin
   FModuleInitialization.Free();
   inherited;

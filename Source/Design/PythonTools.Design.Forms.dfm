@@ -6,8 +6,8 @@ object FormsExportDialog: TFormsExportDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Forms Export'
-  ClientHeight = 471
-  ClientWidth = 634
+  ClientHeight = 454
+  ClientWidth = 628
   Color = clBtnFace
   Constraints.MaxHeight = 510
   Constraints.MaxWidth = 650
@@ -21,13 +21,12 @@ object FormsExportDialog: TFormsExportDialog
   Font.Style = []
   Position = poScreenCenter
   OnCreate = FormCreate
-  PixelsPerInch = 96
   TextHeight = 15
   object spHeader: TShape
     AlignWithMargins = True
     Left = 0
     Top = 80
-    Width = 634
+    Width = 628
     Height = 1
     Margins.Left = 0
     Margins.Top = 0
@@ -40,7 +39,7 @@ object FormsExportDialog: TFormsExportDialog
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 634
+    Width = 628
     Height = 80
     Align = alTop
     BevelOuter = bvNone
@@ -2252,15 +2251,15 @@ object FormsExportDialog: TFormsExportDialog
   object pnlContents: TPanel
     Left = 0
     Top = 81
-    Width = 634
-    Height = 350
+    Width = 628
+    Height = 333
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
     object pnlAppDir: TPanel
       Left = 0
       Top = 0
-      Width = 634
+      Width = 628
       Height = 60
       Align = alTop
       BevelOuter = bvNone
@@ -2269,7 +2268,7 @@ object FormsExportDialog: TFormsExportDialog
         AlignWithMargins = True
         Left = 8
         Top = 3
-        Width = 623
+        Width = 617
         Height = 15
         Margins.Left = 8
         Align = alTop
@@ -2280,7 +2279,7 @@ object FormsExportDialog: TFormsExportDialog
         AlignWithMargins = True
         Left = 8
         Top = 24
-        Width = 585
+        Width = 579
         Height = 23
         Margins.Left = 8
         Margins.Right = 0
@@ -2291,7 +2290,7 @@ object FormsExportDialog: TFormsExportDialog
       end
       object btnSelectDir: TButton
         AlignWithMargins = True
-        Left = 596
+        Left = 590
         Top = 23
         Width = 30
         Height = 25
@@ -2306,18 +2305,20 @@ object FormsExportDialog: TFormsExportDialog
     end
     object pnlGrid: TPanel
       Left = 0
-      Top = 60
-      Width = 634
-      Height = 290
+      Top = 88
+      Width = 628
+      Height = 245
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitTop = 60
+      ExplicitHeight = 273
       object grForms: TDBGrid
         AlignWithMargins = True
         Left = 8
         Top = 3
-        Width = 618
-        Height = 284
+        Width = 612
+        Height = 239
         Margins.Left = 8
         Margins.Right = 8
         Align = alClient
@@ -2381,18 +2382,39 @@ object FormsExportDialog: TFormsExportDialog
           end>
       end
     end
+    object pnlFormFileOptions: TPanel
+      Left = 0
+      Top = 60
+      Width = 628
+      Height = 28
+      Align = alTop
+      BevelOuter = bvNone
+      TabOrder = 2
+      object cbFormFileCompatibleMode: TCheckBox
+        AlignWithMargins = True
+        Left = 8
+        Top = 3
+        Width = 209
+        Height = 17
+        Hint = 'Form files compatible with Delphi and Python.'
+        Margins.Left = 8
+        Margins.Right = 8
+        Caption = 'Form files in compatibility mode.'
+        TabOrder = 0
+      end
+    end
   end
   object plnFooter: TPanel
     Left = 0
-    Top = 431
-    Width = 634
+    Top = 414
+    Width = 628
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
     object btnCancel: TButton
       AlignWithMargins = True
-      Left = 541
+      Left = 535
       Top = 6
       Width = 85
       Height = 28
@@ -2406,7 +2428,7 @@ object FormsExportDialog: TFormsExportDialog
     end
     object btnExport: TButton
       AlignWithMargins = True
-      Left = 450
+      Left = 444
       Top = 6
       Width = 85
       Height = 28

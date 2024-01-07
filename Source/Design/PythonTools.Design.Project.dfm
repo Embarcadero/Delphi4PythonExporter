@@ -4,8 +4,8 @@ object ProjectExportDialog: TProjectExportDialog
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Project Export'
-  ClientHeight = 417
-  ClientWidth = 820
+  ClientHeight = 400
+  ClientWidth = 814
   Color = clBtnFace
   Constraints.MaxHeight = 456
   Constraints.MaxWidth = 836
@@ -18,13 +18,12 @@ object ProjectExportDialog: TProjectExportDialog
   Font.Style = []
   Position = poMainFormCenter
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 15
   object spHeader: TShape
     AlignWithMargins = True
     Left = 0
     Top = 80
-    Width = 820
+    Width = 814
     Height = 1
     Margins.Left = 0
     Margins.Top = 0
@@ -37,7 +36,7 @@ object ProjectExportDialog: TProjectExportDialog
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 820
+    Width = 814
     Height = 80
     Margins.Left = 5
     Margins.Top = 5
@@ -2251,15 +2250,15 @@ object ProjectExportDialog: TProjectExportDialog
   end
   object plnFooter: TPanel
     Left = 0
-    Top = 377
-    Width = 820
+    Top = 360
+    Width = 814
     Height = 40
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
     object btnCancel: TButton
       AlignWithMargins = True
-      Left = 727
+      Left = 721
       Top = 6
       Width = 85
       Height = 28
@@ -2273,7 +2272,7 @@ object ProjectExportDialog: TProjectExportDialog
     end
     object btnExport: TButton
       AlignWithMargins = True
-      Left = 636
+      Left = 630
       Top = 6
       Width = 85
       Height = 28
@@ -2296,8 +2295,8 @@ object ProjectExportDialog: TProjectExportDialog
   object pnlContents: TPanel
     Left = 0
     Top = 81
-    Width = 820
-    Height = 296
+    Width = 814
+    Height = 279
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
@@ -2306,7 +2305,7 @@ object ProjectExportDialog: TProjectExportDialog
       Left = 8
       Top = 3
       Width = 187
-      Height = 290
+      Height = 273
       Margins.Left = 8
       Align = alLeft
       BevelOuter = bvNone
@@ -2317,15 +2316,15 @@ object ProjectExportDialog: TProjectExportDialog
     object pnlClient: TPanel
       Left = 198
       Top = 0
-      Width = 622
-      Height = 296
+      Width = 616
+      Height = 279
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
       object pnlAppDir: TPanel
         Left = 0
         Top = 60
-        Width = 622
+        Width = 616
         Height = 60
         Align = alTop
         BevelOuter = bvNone
@@ -2362,7 +2361,7 @@ object ProjectExportDialog: TProjectExportDialog
       object pnlAppSettings: TPanel
         Left = 0
         Top = 0
-        Width = 622
+        Width = 616
         Height = 60
         Align = alTop
         BevelOuter = bvNone
@@ -2396,10 +2395,10 @@ object ProjectExportDialog: TProjectExportDialog
           TabOrder = 1
         end
       end
-      object pnlFormFileKind: TPanel
+      object pnlFormFileOptions: TPanel
         Left = 0
         Top = 120
-        Width = 622
+        Width = 616
         Height = 60
         Align = alTop
         BevelOuter = bvNone
@@ -2436,6 +2435,18 @@ object ProjectExportDialog: TProjectExportDialog
           ShowStateCaption = False
           State = tssOn
           TabOrder = 0
+        end
+        object cbFormFileCompatibleMode: TCheckBox
+          AlignWithMargins = True
+          Left = 169
+          Top = 3
+          Width = 208
+          Height = 17
+          Hint = 'Form files compatible with Delphi and Python.'
+          Margins.Left = 8
+          Margins.Right = 8
+          Caption = 'Form files in compatibility mode.'
+          TabOrder = 1
         end
       end
     end

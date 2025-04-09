@@ -122,6 +122,8 @@ var
 begin
   LProps := String.Empty;
   for LComp in AFormModel.ExportedComponents do begin
+    if LComp.ComponentName.IsEmpty() then
+      Continue;
     if not LProps.IsEmpty() then
       LProps := LProps
         + sLineBreak

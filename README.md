@@ -10,7 +10,7 @@ There is an free [eBook and styles bundle](https://embt.co/PythonGUIBundle) with
 
 ## Usage
 
-Install this Export in Delphi, C++Builder, or RAD Studio 11 Alexandria. Design your GUI forms with VCL or FireMonkey (FMX) and then select **Tools** -> **Export to Python**.
+Install this Export in Delphi, C++Builder, or RAD Studio 13 Florence. Design your GUI forms with VCL or FireMonkey (FMX) and then select **Tools** -> **Export to Python**.
 
 The easiest way to install is via the [GetIt Package Manager](https://getitnow.embarcadero.com/?q=Delphi4PythonExporter). Instructions for [installing via GetIt](https://docwiki.embarcadero.com/RADStudio/en/Installing_a_Package_Using_GetIt_Package_Manager). 
 

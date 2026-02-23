@@ -1,0 +1,71 @@
+package dclDelphi4PythonExperts;
+{$R *.res}
+{$R *.dres}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST OFF}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DEFINE RELEASE}
+{$ENDIF IMPLICITBUILDING}
+{$DESCRIPTION 'Delphi4Python - Export forms for Python'}
+{$LIBSUFFIX AUTO}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  rtl,
+  designide,
+  fmx,
+  vcl,
+  dbrtl,
+  vcldb,
+  dsnap;
+
+contains
+  PythonTools.Registration in '..\..\Source\PythonTools.Registration.pas',
+  PythonTools.SplashScreen in '..\..\Source\PythonTools.SplashScreen.pas',
+  PythonTools.IOTAUtils in '..\..\Source\PythonTools.IOTAUtils.pas',
+  PythonTools.Exceptions in '..\..\Source\PythonTools.Exceptions.pas',
+  PythonTools.Common in '..\..\Source\PythonTools.Common.pas',
+  PythonTools.Menu in '..\..\Source\Menu\PythonTools.Menu.pas',
+  PythonTools.Menu.ExportProject in '..\..\Source\Menu\PythonTools.Menu.ExportProject.pas',
+  PythonTools.Menu.ExportForms in '..\..\Source\Menu\PythonTools.Menu.ExportForms.pas',
+  PythonTools.Design.Project in '..\..\Source\Design\PythonTools.Design.Project.pas' {ProjectExportDialog},
+  PythonTools.Exporter.Application in '..\..\Source\Exporter\PythonTools.Exporter.Application.pas',
+  PythonTools.Exporter.Form in '..\..\Source\Exporter\PythonTools.Exporter.Form.pas',
+  PythonTools.Exporter.Project in '..\..\Source\Exporter\PythonTools.Exporter.Project.pas',
+  PythonTools.Producer.FMXForm in '..\..\Source\Producer\PythonTools.Producer.FMXForm.pas',
+  PythonTools.Producer in '..\..\Source\Producer\PythonTools.Producer.pas',
+  PythonTools.Producer.SimpleFactory in '..\..\Source\Producer\PythonTools.Producer.SimpleFactory.pas',
+  PythonTools.Producer.VCLForm in '..\..\Source\Producer\PythonTools.Producer.VCLForm.pas',
+  PythonTools.Producer.AbstractForm in '..\..\Source\Producer\PythonTools.Producer.AbstractForm.pas',
+  PythonTools.Design.Forms in '..\..\Source\Design\PythonTools.Design.Forms.pas' {FormsExportDialog},
+  PythonTools.Exporter.Forms in '..\..\Source\Exporter\PythonTools.Exporter.Forms.pas',
+  PythonTools.Model.Producer.Application in '..\..\Source\Model\Producer\PythonTools.Model.Producer.Application.pas',
+  PythonTools.Model.Producer.FormFile in '..\..\Source\Model\Producer\PythonTools.Model.Producer.FormFile.pas',
+  PythonTools.Model.Producer.Form in '..\..\Source\Model\Producer\PythonTools.Model.Producer.Form.pas',
+  PythonTools.Model.Design.Forms in '..\..\Source\Model\Design\PythonTools.Model.Design.Forms.pas',
+  PythonTools.Model.Design.Project in '..\..\Source\Model\Design\PythonTools.Model.Design.Project.pas',
+  PythonTools.Registry in '..\..\Source\PythonTools.Registry.pas',
+  PythonTools.Design in '..\..\Source\Design\PythonTools.Design.pas' {DesignForm},
+  PythonTools.Model.Producer in '..\..\Source\Model\Producer\PythonTools.Model.Producer.pas';
+
+end.
